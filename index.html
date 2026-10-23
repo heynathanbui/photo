@@ -7,18 +7,47 @@
   <meta name="description" content="Sydney photographer for portraits, graduation, events and scenery. Natural light, shot on Fujifilm. Sessions in English or tiếng Việt.">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Nathan Bui — Photography, Sydney">
-  <meta property="og:description" content="Portraits, events and scenery in natural light. Book a shoot in Sydney.">
+  <meta property="og:description" content="Portraits, graduations, events and scenery. Book a shoot in Sydney.">
   <meta property="og:url" content="https://heynathanbui.github.io/photo/">
-  <meta property="og:image" content="https://heynathanbui.github.io/photo/assets/img/harbour-5341.jpg">
+  <meta property="og:image" content="https://heynathanbui.github.io/photo/assets/img/sydney-4407.jpg">
   <link rel="canonical" href="https://heynathanbui.github.io/photo/">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#120607">
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Be+Vietnam+Pro:wght@400;500;600&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css?v=20261022a">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Be+Vietnam+Pro:wght@400;500;600&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/site.css?v=20261023a">
+  <script>document.documentElement.classList.add('js');</script>
+  <script type="importmap">
+    { "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    } }
+  </script>
 </head>
 <body>
+
+  <!-- one WebGL canvas behind the dark sections: the lens, then the film roll -->
+  <canvas id="gl" aria-hidden="true"></canvas>
+  <div class="grain" aria-hidden="true"></div>
+
+  <!-- viewfinder overlay: reads out the photo currently in frame -->
+  <div class="hud" aria-hidden="true">
+    <i class="hud__c hud__c--tl"></i><i class="hud__c hud__c--tr"></i><i class="hud__c hud__c--bl"></i><i class="hud__c hud__c--br"></i>
+    <div class="hud__top"><span class="hud__mode">A</span><span class="hud__batt"><i></i><i></i><i></i></span></div>
+    <div class="hud__level"><i></i></div>
+    <div class="hud__bottom">
+      <span data-hud="ss">1/250</span><span data-hud="f">F22</span><span data-hud="iso">ISO 320</span><span data-hud="mm">45mm</span>
+      <span class="hud__count"><b data-hud="n">000</b>/081</span>
+    </div>
+  </div>
+
+  <!-- autofocus reticle cursor -->
+  <div class="af" aria-hidden="true"><i></i><i></i><i></i><i></i><span class="af__label"></span></div>
+
+  <!-- focal-plane shutter for transitions -->
+  <div class="shutter" aria-hidden="true"><i></i><i></i></div>
 
   <nav class="nav" aria-label="Main">
     <div class="nav__pill">
@@ -40,97 +69,163 @@
   </nav>
 
   <header class="hero" id="top">
-    <div class="wrap hero__grid">
-      <div class="hero__copy">
-        <p class="eyebrow">Photography · Sydney</p>
-        <h1 class="hero__t">Put yourself <em>in the picture.</em></h1>
-        <p class="hero__lede">Portraits, events and places, shot in natural light. I look for the frame that puts you inside the place rather than in front of it, then wait for the moment that makes it yours.</p>
-        <div class="hero__cta">
+    <div class="hero__pin">
+      <img class="hero__fallback" src="assets/img/sydney-4407.jpg" alt="" width="1800" height="1200">
+      <div class="wrap hero__copy">
+        <p class="eyebrow" data-intro>Photography · Sydney</p>
+        <h1 class="hero__t"><span class="line" data-intro>Put yourself</span><span class="line" data-intro><em>in the picture.</em></span></h1>
+        <p class="hero__lede" data-intro>Portraits, graduations, events and places, shot in natural light. I look for the frame that puts you inside the place, then wait for the moment that makes it yours.</p>
+        <div class="hero__cta" data-intro>
           <a class="btn btn--solid" href="#book">Book a shoot</a>
-          <a class="btn" href="#scenery">See the work</a>
+          <a class="btn btn--ghost" href="#scenery">See the work</a>
         </div>
-        <p class="hero__note">Sessions in English or tiếng Việt · Fujifilm X-T30 II</p>
       </div>
-      <div class="strip" aria-label="Galleries">
-        <a class="strip__frame" href="#scenery">
-          <img src="assets/img/harbour-5287-sm.jpg" alt="" width="533" height="800">
-          <span class="strip__no">01</span><span class="strip__name">Scenery</span>
-        </a>
-        <a class="strip__frame" href="#people">
-          <img src="assets/img/ivy-5504-sm.jpg" alt="" width="533" height="800">
-          <span class="strip__no">02</span><span class="strip__name">People</span>
-        </a>
-        <a class="strip__frame" href="#events">
-          <img src="assets/img/events-0320-sm.jpg" alt="" width="533" height="800">
-          <span class="strip__no">03</span><span class="strip__name">Events</span>
-        </a>
-      </div>
+      <div class="hero__scroll" data-intro><span>Scroll to focus</span><i></i></div>
+      <div class="hero__aperture" data-intro><small>Aperture</small><b data-aperture>f/22</b></div>
     </div>
   </header>
 
-  <main>
+  <section class="roll" id="roll" aria-label="A roll of favourite frames">
+    <div class="roll__pin">
+      <div class="wrap roll__ui">
+        <p class="roll__k">Roll 01 · 24 exposures</p>
+        <h2 class="roll__t">Developing<span class="roll__dots">…</span></h2>
+        <p class="roll__lede">Under the safelight, every frame starts as a negative. Keep scrolling to bring each one up.</p>
+      </div>
+      <div class="roll__meta">
+        <span class="roll__no" data-roll="no">01</span>
+        <span class="roll__cap" data-roll="cap"></span>
+        <span class="roll__exif" data-roll="exif"></span>
+      </div>
+      <div class="roll__bar"><i data-roll="bar"></i></div>
+    </div>
+  </section>
+
+  <main class="paper">
     <section class="set" id="scenery">
       <div class="wrap">
         <header class="set__head">
           <span class="set__no">01 / Scenery</span>
           <h2 class="set__t">The light does <em>half the work.</em></h2>
           <div class="set__side">
-            <p>Sydney Harbour from full sun into blue hour, plus a summer in Shanghai and its water towns. The same view reads differently every twenty minutes, so I plan around the light, not the clock.</p>
+            <p>Sydney from full sun into blue hour, the lanterns of Hội An, the karsts of Ninh Bình and a summer in Shanghai. The same view reads differently every twenty minutes, so I plan around the light, not the clock.</p>
             <p class="set__for"><b>Good for</b> venues and cafés, travel and tourism content, website imagery</p>
           </div>
         </header>
+        <div class="chips" role="group" aria-label="Filter scenery">
+            <button class="chip is-on" data-filter="all" aria-pressed="true">All</button>
+            <button class="chip" data-filter="sydney" aria-pressed="false">Sydney</button>
+            <button class="chip" data-filter="vietnam" aria-pressed="false">Vietnam</button>
+            <button class="chip" data-filter="abroad" aria-pressed="false">Shanghai</button>
+        </div>
         <div class="grid">
-          <figure class="ph ph--land">
-            <a href="assets/img/harbour-5341.jpg" data-cap="Harbour, golden hour" data-exif="f/4.5 · 1/105s · ISO 320 · 21mm"><img src="assets/img/harbour-5341-sm.jpg" srcset="assets/img/harbour-5341-sm.jpg 800w, assets/img/harbour-5341.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Harbour, golden hour" loading="lazy" decoding="async"></a>
+          <figure class="ph ph--land" data-tag="sydney" data-n="001">
+            <a href="assets/img/sydney-4407.jpg" data-cap="Opera House, blue hour · Sydney" data-exif="f/3.6 · 1/26s · ISO 6400 · 16mm"><img src="assets/img/sydney-4407-sm.jpg" srcset="assets/img/sydney-4407-sm.jpg 800w, assets/img/sydney-4407.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Opera House, blue hour" loading="lazy" decoding="async"></a>
+            <figcaption>Opera House, blue hour</figcaption>
+          </figure>
+          <figure class="ph" data-tag="vietnam" data-n="002">
+            <a href="assets/img/ninhbinh-9334.jpg" data-cap="Pagoda tower, reflected · Ninh Bình" data-exif="f/5.6 · 1/80s · ISO 80 · 22mm"><img src="assets/img/ninhbinh-9334-sm.jpg" srcset="assets/img/ninhbinh-9334-sm.jpg 800w, assets/img/ninhbinh-9334.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Pagoda tower, reflected" loading="lazy" decoding="async"></a>
+            <figcaption>Pagoda tower, reflected</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="vietnam" data-n="003">
+            <a href="assets/img/hoian-4516.jpg" data-cap="Lanterns · Hội An" data-exif="f/5.6 · 1/60s · ISO 4000 · 21mm"><img src="assets/img/hoian-4516-sm.jpg" srcset="assets/img/hoian-4516-sm.jpg 800w, assets/img/hoian-4516.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Lanterns" loading="lazy" decoding="async"></a>
+            <figcaption>Lanterns</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="sydney" data-n="004">
+            <a href="assets/img/harbour-5341.jpg" data-cap="Harbour, golden hour · Sydney" data-exif="f/4.5 · 1/105s · ISO 320 · 21mm"><img src="assets/img/harbour-5341-sm.jpg" srcset="assets/img/harbour-5341-sm.jpg 800w, assets/img/harbour-5341.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Harbour, golden hour" loading="lazy" decoding="async"></a>
             <figcaption>Harbour, golden hour</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/harbour-5284.jpg" data-cap="Afternoon glare" data-exif="f/13 · 1/400s · ISO 320 · 45mm"><img src="assets/img/harbour-5284-sm.jpg" srcset="assets/img/harbour-5284-sm.jpg 800w, assets/img/harbour-5284.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Afternoon glare" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="sydney" data-n="005">
+            <a href="assets/img/sydney-4376.jpg" data-cap="Looking up · Sydney CBD" data-exif="f/5 · 1/125s · ISO 2000 · 16mm"><img src="assets/img/sydney-4376-sm.jpg" srcset="assets/img/sydney-4376-sm.jpg 800w, assets/img/sydney-4376.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Looking up" loading="lazy" decoding="async"></a>
+            <figcaption>Looking up</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="vietnam" data-n="006">
+            <a href="assets/img/ninhbinh-9301.jpg" data-cap="Temple gate between the karsts · Ninh Bình" data-exif="f/5.6 · 1/250s · ISO 200 · 45mm"><img src="assets/img/ninhbinh-9301-sm.jpg" srcset="assets/img/ninhbinh-9301-sm.jpg 800w, assets/img/ninhbinh-9301.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Temple gate between the karsts" loading="lazy" decoding="async"></a>
+            <figcaption>Temple gate between the karsts</figcaption>
+          </figure>
+          <figure class="ph" data-tag="sydney" data-n="007">
+            <a href="assets/img/harbour-5284.jpg" data-cap="Afternoon glare · Sydney" data-exif="f/13 · 1/400s · ISO 320 · 45mm"><img src="assets/img/harbour-5284-sm.jpg" srcset="assets/img/harbour-5284-sm.jpg 800w, assets/img/harbour-5284.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Afternoon glare" loading="lazy" decoding="async"></a>
             <figcaption>Afternoon glare</figcaption>
           </figure>
-          <figure class="ph ph--land">
-            <a href="assets/img/harbour-5313.jpg" data-cap="The bridge from the rocks" data-exif="f/13 · 1/120s · ISO 640 · 40mm"><img src="assets/img/harbour-5313-sm.jpg" srcset="assets/img/harbour-5313-sm.jpg 800w, assets/img/harbour-5313.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="The bridge from the rocks" loading="lazy" decoding="async"></a>
+          <figure class="ph ph--land" data-tag="sydney" data-n="008">
+            <a href="assets/img/sydney-4417.jpg" data-cap="The bridge at night · Sydney" data-exif="f/4.7 · 1/7s · ISO 6400 · 30mm"><img src="assets/img/sydney-4417-sm.jpg" srcset="assets/img/sydney-4417-sm.jpg 800w, assets/img/sydney-4417.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="The bridge at night" loading="lazy" decoding="async"></a>
+            <figcaption>The bridge at night</figcaption>
+          </figure>
+          <figure class="ph" data-tag="abroad" data-n="009">
+            <a href="assets/img/elsewhere-4649.jpg" data-cap="Looking up · Lujiazui, Shanghai" data-exif="f/4.4 · 1/125s · ISO 200 · 26mm"><img src="assets/img/elsewhere-4649-sm.jpg" srcset="assets/img/elsewhere-4649-sm.jpg 800w, assets/img/elsewhere-4649.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Looking up" loading="lazy" decoding="async"></a>
+            <figcaption>Looking up</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="vietnam" data-n="010">
+            <a href="assets/img/hoian-4536.jpg" data-cap="After dark · Hội An" data-exif="f/5.6 · 1/60s · ISO 8000 · 45mm"><img src="assets/img/hoian-4536-sm.jpg" srcset="assets/img/hoian-4536-sm.jpg 800w, assets/img/hoian-4536.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="After dark" loading="lazy" decoding="async"></a>
+            <figcaption>After dark</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="sydney" data-n="011">
+            <a href="assets/img/harbour-5313.jpg" data-cap="The bridge from the rocks · Sydney" data-exif="f/13 · 1/120s · ISO 640 · 40mm"><img src="assets/img/harbour-5313-sm.jpg" srcset="assets/img/harbour-5313-sm.jpg 800w, assets/img/harbour-5313.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="The bridge from the rocks" loading="lazy" decoding="async"></a>
             <figcaption>The bridge from the rocks</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/harbour-5287.jpg" data-cap="Climbing into the sun" data-exif="f/13 · 1/100s · ISO 320 · 20mm"><img src="assets/img/harbour-5287-sm.jpg" srcset="assets/img/harbour-5287-sm.jpg 800w, assets/img/harbour-5287.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Climbing into the sun" loading="lazy" decoding="async"></a>
-            <figcaption>Climbing into the sun</figcaption>
+          <figure class="ph ph--land" data-tag="vietnam" data-n="012">
+            <a href="assets/img/ninhbinh-9316.jpg" data-cap="Path through the cliffs · Ninh Bình" data-exif="f/5.6 · 1/80s · ISO 80 · 15mm"><img src="assets/img/ninhbinh-9316-sm.jpg" srcset="assets/img/ninhbinh-9316-sm.jpg 800w, assets/img/ninhbinh-9316.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Path through the cliffs" loading="lazy" decoding="async"></a>
+            <figcaption>Path through the cliffs</figcaption>
           </figure>
-          <figure class="ph ph--land">
-            <a href="assets/img/harbour-5355.jpg" data-cap="Blue hour" data-exif="f/4.9 · 1/100s · ISO 2500 · 32mm"><img src="assets/img/harbour-5355-sm.jpg" srcset="assets/img/harbour-5355-sm.jpg 800w, assets/img/harbour-5355.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Blue hour" loading="lazy" decoding="async"></a>
+          <figure class="ph ph--land" data-tag="sydney" data-n="013">
+            <a href="assets/img/harbour-5355.jpg" data-cap="Blue hour · Sydney" data-exif="f/4.9 · 1/100s · ISO 2500 · 32mm"><img src="assets/img/harbour-5355-sm.jpg" srcset="assets/img/harbour-5355-sm.jpg 800w, assets/img/harbour-5355.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Blue hour" loading="lazy" decoding="async"></a>
             <figcaption>Blue hour</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/elsewhere-4649.jpg" data-cap="Looking up, Lujiazui" data-exif="f/4.4 · 1/125s · ISO 200 · 26mm"><img src="assets/img/elsewhere-4649-sm.jpg" srcset="assets/img/elsewhere-4649-sm.jpg 800w, assets/img/elsewhere-4649.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Looking up, Lujiazui" loading="lazy" decoding="async"></a>
-            <figcaption>Looking up, Lujiazui</figcaption>
+          <figure class="ph ph--land" data-tag="abroad" data-n="014">
+            <a href="assets/img/elsewhere-4629.jpg" data-cap="Skyline · Shanghai" data-exif="f/4.5 · 1/180s · ISO 80 · 28mm"><img src="assets/img/elsewhere-4629-sm.jpg" srcset="assets/img/elsewhere-4629-sm.jpg 800w, assets/img/elsewhere-4629.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Skyline" loading="lazy" decoding="async"></a>
+            <figcaption>Skyline</figcaption>
           </figure>
-          <figure class="ph ph--land">
-            <a href="assets/img/elsewhere-4629.jpg" data-cap="Shanghai skyline" data-exif="f/4.5 · 1/180s · ISO 80 · 28mm"><img src="assets/img/elsewhere-4629-sm.jpg" srcset="assets/img/elsewhere-4629-sm.jpg 800w, assets/img/elsewhere-4629.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Shanghai skyline" loading="lazy" decoding="async"></a>
-            <figcaption>Shanghai skyline</figcaption>
+          <figure class="ph ph--land" data-tag="sydney" data-n="015">
+            <a href="assets/img/sydney-4412.jpg" data-cap="The skyline after sunset · Sydney" data-exif="f/5.2 · 1/17s · ISO 6400 · 38mm"><img src="assets/img/sydney-4412-sm.jpg" srcset="assets/img/sydney-4412-sm.jpg 800w, assets/img/sydney-4412.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="The skyline after sunset" loading="lazy" decoding="async"></a>
+            <figcaption>The skyline after sunset</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/harbour-5357.jpg" data-cap="Dusk, the city at rest" data-exif="f/5.6 · 1/85s · ISO 12800 · 45mm"><img src="assets/img/harbour-5357-sm.jpg" srcset="assets/img/harbour-5357-sm.jpg 800w, assets/img/harbour-5357.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Dusk, the city at rest" loading="lazy" decoding="async"></a>
-            <figcaption>Dusk, the city at rest</figcaption>
+          <figure class="ph ph--land" data-tag="vietnam" data-n="016">
+            <a href="assets/img/ninhbinh-9326.jpg" data-cap="Temple roofs by the lake · Ninh Bình" data-exif="f/5.6 · 1/80s · ISO 80 · 40mm"><img src="assets/img/ninhbinh-9326-sm.jpg" srcset="assets/img/ninhbinh-9326-sm.jpg 800w, assets/img/ninhbinh-9326.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Temple roofs by the lake" loading="lazy" decoding="async"></a>
+            <figcaption>Temple roofs by the lake</figcaption>
           </figure>
-          <figure class="ph ph--land">
-            <a href="assets/img/elsewhere-4670.jpg" data-cap="Water town" data-exif="f/4.4 · 1/125s · ISO 400 · 24mm"><img src="assets/img/elsewhere-4670-sm.jpg" srcset="assets/img/elsewhere-4670-sm.jpg 800w, assets/img/elsewhere-4670.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Water town" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="sydney" data-n="017">
+            <a href="assets/img/harbour-5287.jpg" data-cap="Climbing into the sun · Sydney" data-exif="f/13 · 1/100s · ISO 320 · 20mm"><img src="assets/img/harbour-5287-sm.jpg" srcset="assets/img/harbour-5287-sm.jpg 800w, assets/img/harbour-5287.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Climbing into the sun" loading="lazy" decoding="async"></a>
+            <figcaption>Climbing into the sun</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="vietnam" data-n="018">
+            <a href="assets/img/hoian-4521.jpg" data-cap="Lantern stall · Hội An" data-exif="f/5.6 · 1/60s · ISO 2000 · 15mm"><img src="assets/img/hoian-4521-sm.jpg" srcset="assets/img/hoian-4521-sm.jpg 800w, assets/img/hoian-4521.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Lantern stall" loading="lazy" decoding="async"></a>
+            <figcaption>Lantern stall</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="sydney" data-n="019">
+            <a href="assets/img/sydney-4251.jpg" data-cap="The sails at midday · Sydney" data-exif="f/5.6 · 1/250s · ISO 500 · 37mm"><img src="assets/img/sydney-4251-sm.jpg" srcset="assets/img/sydney-4251-sm.jpg 800w, assets/img/sydney-4251.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="The sails at midday" loading="lazy" decoding="async"></a>
+            <figcaption>The sails at midday</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="abroad" data-n="020">
+            <a href="assets/img/elsewhere-4670.jpg" data-cap="Water town · near Shanghai" data-exif="f/4.4 · 1/125s · ISO 400 · 24mm"><img src="assets/img/elsewhere-4670-sm.jpg" srcset="assets/img/elsewhere-4670-sm.jpg 800w, assets/img/elsewhere-4670.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Water town" loading="lazy" decoding="async"></a>
             <figcaption>Water town</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/elsewhere-4558.jpg" data-cap="Street shade" data-exif="f/5.6 · 1/60s · ISO 250 · 35mm"><img src="assets/img/elsewhere-4558-sm.jpg" srcset="assets/img/elsewhere-4558-sm.jpg 800w, assets/img/elsewhere-4558.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Street shade" loading="lazy" decoding="async"></a>
-            <figcaption>Street shade</figcaption>
+          <figure class="ph" data-tag="vietnam" data-n="021">
+            <a href="assets/img/ninhbinh-9347.jpg" data-cap="Taking it in · Ninh Bình" data-exif="f/4.5 · 1/180s · ISO 200 · 15mm"><img src="assets/img/ninhbinh-9347-sm.jpg" srcset="assets/img/ninhbinh-9347-sm.jpg 800w, assets/img/ninhbinh-9347.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Taking it in" loading="lazy" decoding="async"></a>
+            <figcaption>Taking it in</figcaption>
           </figure>
-          <figure class="ph ph--land">
-            <a href="assets/img/harbour-5334.jpg" data-cap="Last light" data-exif="f/5.6 · 1/320s · ISO 320 · 26mm"><img src="assets/img/harbour-5334-sm.jpg" srcset="assets/img/harbour-5334-sm.jpg 800w, assets/img/harbour-5334.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Last light" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="sydney" data-n="022">
+            <a href="assets/img/harbour-5357.jpg" data-cap="Dusk, the city at rest · Sydney" data-exif="f/5.6 · 1/85s · ISO 12800 · 45mm"><img src="assets/img/harbour-5357-sm.jpg" srcset="assets/img/harbour-5357-sm.jpg 800w, assets/img/harbour-5357.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Dusk, the city at rest" loading="lazy" decoding="async"></a>
+            <figcaption>Dusk, the city at rest</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="sydney" data-n="023">
+            <a href="assets/img/sydney-4236.jpg" data-cap="Harbour Bridge, clear day · Sydney" data-exif="f/5.6 · 1/250s · ISO 500 · 23mm"><img src="assets/img/sydney-4236-sm.jpg" srcset="assets/img/sydney-4236-sm.jpg 800w, assets/img/sydney-4236.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Harbour Bridge, clear day" loading="lazy" decoding="async"></a>
+            <figcaption>Harbour Bridge, clear day</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="vietnam" data-n="024">
+            <a href="assets/img/ninhbinh-9351.jpg" data-cap="Rooftops over the valley · Ninh Bình" data-exif="f/4.9 · 1/180s · ISO 400 · 33mm"><img src="assets/img/ninhbinh-9351-sm.jpg" srcset="assets/img/ninhbinh-9351-sm.jpg 800w, assets/img/ninhbinh-9351.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Rooftops over the valley" loading="lazy" decoding="async"></a>
+            <figcaption>Rooftops over the valley</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="sydney" data-n="025">
+            <a href="assets/img/harbour-5334.jpg" data-cap="Last light · Sydney" data-exif="f/5.6 · 1/320s · ISO 320 · 26mm"><img src="assets/img/harbour-5334-sm.jpg" srcset="assets/img/harbour-5334-sm.jpg 800w, assets/img/harbour-5334.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Last light" loading="lazy" decoding="async"></a>
             <figcaption>Last light</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/harbour-5285.jpg" data-cap="Crown, Barangaroo" data-exif="f/13 · 1/100s · ISO 400 · 22mm"><img src="assets/img/harbour-5285-sm.jpg" srcset="assets/img/harbour-5285-sm.jpg 800w, assets/img/harbour-5285.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Crown, Barangaroo" loading="lazy" decoding="async"></a>
-            <figcaption>Crown, Barangaroo</figcaption>
-          </figure>
-          <figure class="ph">
-            <a href="assets/img/elsewhere-4745.jpg" data-cap="Feeding the koi" data-exif="f/5.6 · 1/60s · ISO 1000 · 44mm"><img src="assets/img/elsewhere-4745-sm.jpg" srcset="assets/img/elsewhere-4745-sm.jpg 800w, assets/img/elsewhere-4745.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Feeding the koi" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="abroad" data-n="026">
+            <a href="assets/img/elsewhere-4745.jpg" data-cap="Feeding the koi · near Shanghai" data-exif="f/5.6 · 1/60s · ISO 1000 · 44mm"><img src="assets/img/elsewhere-4745-sm.jpg" srcset="assets/img/elsewhere-4745-sm.jpg 800w, assets/img/elsewhere-4745.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Feeding the koi" loading="lazy" decoding="async"></a>
             <figcaption>Feeding the koi</figcaption>
+          </figure>
+          <figure class="ph" data-tag="abroad" data-n="027">
+            <a href="assets/img/elsewhere-4558.jpg" data-cap="Street shade · Shanghai" data-exif="f/5.6 · 1/60s · ISO 250 · 35mm"><img src="assets/img/elsewhere-4558-sm.jpg" srcset="assets/img/elsewhere-4558-sm.jpg 800w, assets/img/elsewhere-4558.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Street shade" loading="lazy" decoding="async"></a>
+            <figcaption>Street shade</figcaption>
           </figure>
         </div>
       </div>
@@ -142,65 +237,126 @@
           <span class="set__no">02 / People</span>
           <h2 class="set__t">You, <em>in your place.</em></h2>
           <div class="set__side">
-            <p>A portrait session timed for jacaranda season at the University of Sydney. Sandstone arches, stairs and branches frame the subject, so the photo says where you were as well as who you are.</p>
-            <p class="set__for"><b>Good for</b> portraits, graduation, couples and friends, profile and personal-brand photos</p>
+            <p>Portrait sessions and graduation days at the University of Sydney and Macquarie. Sandstone arches, the Quad and the lawns frame the subject, so the photo says where you were as well as who you are.</p>
+            <p class="set__for"><b>Good for</b> graduation, portraits, couples and friends, profile and personal-brand photos</p>
           </div>
         </header>
+        <div class="chips" role="group" aria-label="Filter people">
+            <button class="chip is-on" data-filter="all" aria-pressed="true">All</button>
+            <button class="chip" data-filter="portrait" aria-pressed="false">Portraits</button>
+            <button class="chip" data-filter="graduation" aria-pressed="false">Graduation</button>
+        </div>
         <div class="grid">
-          <figure class="ph">
-            <a href="assets/img/ivy-5378.jpg" data-cap="On the sandstone ledge" data-exif="f/7.1 · 1/170s · ISO 320 · 15mm"><img src="assets/img/ivy-5378-sm.jpg" srcset="assets/img/ivy-5378-sm.jpg 800w, assets/img/ivy-5378.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="On the sandstone ledge" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="portrait" data-n="028">
+            <a href="assets/img/ivy-5378.jpg" data-cap="On the sandstone ledge · USyd" data-exif="f/7.1 · 1/170s · ISO 320 · 15mm"><img src="assets/img/ivy-5378-sm.jpg" srcset="assets/img/ivy-5378-sm.jpg 800w, assets/img/ivy-5378.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="On the sandstone ledge" loading="lazy" decoding="async"></a>
             <figcaption>On the sandstone ledge</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5413.jpg" data-cap="Chin in hand" data-exif="f/5.6 · 1/140s · ISO 1600 · 45mm"><img src="assets/img/ivy-5413-sm.jpg" srcset="assets/img/ivy-5413-sm.jpg 800w, assets/img/ivy-5413.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Chin in hand" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="graduation" data-n="029">
+            <a href="assets/img/grad-4198.jpg" data-cap="Áo dài on graduation day · USyd" data-exif="f/18 · 1/125s · ISO 160 · 58mm"><img src="assets/img/grad-4198-sm.jpg" srcset="assets/img/grad-4198-sm.jpg 800w, assets/img/grad-4198.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Áo dài on graduation day" loading="lazy" decoding="async"></a>
+            <figcaption>Áo dài on graduation day</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="030">
+            <a href="assets/img/ivy-5413.jpg" data-cap="Chin in hand · USyd" data-exif="f/5.6 · 1/140s · ISO 1600 · 45mm"><img src="assets/img/ivy-5413-sm.jpg" srcset="assets/img/ivy-5413-sm.jpg 800w, assets/img/ivy-5413.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Chin in hand" loading="lazy" decoding="async"></a>
             <figcaption>Chin in hand</figcaption>
           </figure>
-          <figure class="ph ph--land">
-            <a href="assets/img/ivy-5450.jpg" data-cap="On the lawn" data-exif="f/7.1 · 1/150s · ISO 320 · 21mm"><img src="assets/img/ivy-5450-sm.jpg" srcset="assets/img/ivy-5450-sm.jpg 800w, assets/img/ivy-5450.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="On the lawn" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="graduation" data-n="031">
+            <a href="assets/img/mqgrad-4761.jpg" data-cap="Tilted, on purpose · Macquarie" data-exif="f/22 · 1/125s · ISO 2000 · 35mm"><img src="assets/img/mqgrad-4761-sm.jpg" srcset="assets/img/mqgrad-4761-sm.jpg 800w, assets/img/mqgrad-4761.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Tilted, on purpose" loading="lazy" decoding="async"></a>
+            <figcaption>Tilted, on purpose</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="portrait" data-n="032">
+            <a href="assets/img/ivy-5450.jpg" data-cap="On the lawn · USyd" data-exif="f/7.1 · 1/150s · ISO 320 · 21mm"><img src="assets/img/ivy-5450-sm.jpg" srcset="assets/img/ivy-5450-sm.jpg 800w, assets/img/ivy-5450.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="On the lawn" loading="lazy" decoding="async"></a>
             <figcaption>On the lawn</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5400.jpg" data-cap="Courtyard light" data-exif="f/5.6 · 1/125s · ISO 800 · 42mm"><img src="assets/img/ivy-5400-sm.jpg" srcset="assets/img/ivy-5400-sm.jpg 800w, assets/img/ivy-5400.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Courtyard light" loading="lazy" decoding="async"></a>
+          <figure class="ph ph--land" data-tag="graduation" data-n="033">
+            <a href="assets/img/grad-4310.jpg" data-cap="Bench portrait · USyd graduation" data-exif="f/22 · 1/125s · ISO 12800 · 86mm"><img src="assets/img/grad-4310-sm.jpg" srcset="assets/img/grad-4310-sm.jpg 800w, assets/img/grad-4310.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Bench portrait" loading="lazy" decoding="async"></a>
+            <figcaption>Bench portrait</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="034">
+            <a href="assets/img/ivy-5400.jpg" data-cap="Courtyard light · USyd" data-exif="f/5.6 · 1/125s · ISO 800 · 42mm"><img src="assets/img/ivy-5400-sm.jpg" srcset="assets/img/ivy-5400-sm.jpg 800w, assets/img/ivy-5400.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Courtyard light" loading="lazy" decoding="async"></a>
             <figcaption>Courtyard light</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5385.jpg" data-cap="The Quad behind" data-exif="f/7.1 · 1/150s · ISO 320 · 23mm"><img src="assets/img/ivy-5385-sm.jpg" srcset="assets/img/ivy-5385-sm.jpg 800w, assets/img/ivy-5385.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="The Quad behind" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="graduation" data-n="035">
+            <a href="assets/img/mqgrad-5091.jpg" data-cap="By the fountain · Macquarie" data-exif="f/5.6 · 1/240s · ISO 320 · 42mm"><img src="assets/img/mqgrad-5091-sm.jpg" srcset="assets/img/mqgrad-5091-sm.jpg 800w, assets/img/mqgrad-5091.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="By the fountain" loading="lazy" decoding="async"></a>
+            <figcaption>By the fountain</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="036">
+            <a href="assets/img/ivy-5385.jpg" data-cap="The Quad behind · USyd" data-exif="f/7.1 · 1/150s · ISO 320 · 23mm"><img src="assets/img/ivy-5385-sm.jpg" srcset="assets/img/ivy-5385-sm.jpg 800w, assets/img/ivy-5385.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="The Quad behind" loading="lazy" decoding="async"></a>
             <figcaption>The Quad behind</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5493.jpg" data-cap="Framed by the cloister" data-exif="f/5.6 · 1/160s · ISO 320 · 16mm"><img src="assets/img/ivy-5493-sm.jpg" srcset="assets/img/ivy-5493-sm.jpg 800w, assets/img/ivy-5493.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Framed by the cloister" loading="lazy" decoding="async"></a>
+          <figure class="ph ph--land" data-tag="graduation" data-n="037">
+            <a href="assets/img/grad-4422.jpg" data-cap="Shades and flowers · USyd graduation" data-exif="f/20 · 1/60s · ISO 160 · 55mm"><img src="assets/img/grad-4422-sm.jpg" srcset="assets/img/grad-4422-sm.jpg 800w, assets/img/grad-4422.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1389" alt="Shades and flowers" loading="lazy" decoding="async"></a>
+            <figcaption>Shades and flowers</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="038">
+            <a href="assets/img/ivy-5493.jpg" data-cap="Framed by the cloister · USyd" data-exif="f/5.6 · 1/160s · ISO 320 · 16mm"><img src="assets/img/ivy-5493-sm.jpg" srcset="assets/img/ivy-5493-sm.jpg 800w, assets/img/ivy-5493.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Framed by the cloister" loading="lazy" decoding="async"></a>
             <figcaption>Framed by the cloister</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5420.jpg" data-cap="Against the rail" data-exif="f/5.6 · 1/140s · ISO 800 · 45mm"><img src="assets/img/ivy-5420-sm.jpg" srcset="assets/img/ivy-5420-sm.jpg 800w, assets/img/ivy-5420.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Against the rail" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="graduation" data-n="039">
+            <a href="assets/img/mqgrad-4889.jpg" data-cap="Hands up · Macquarie" data-exif="f/22 · 1/125s · ISO 1600 · 33mm"><img src="assets/img/mqgrad-4889-sm.jpg" srcset="assets/img/mqgrad-4889-sm.jpg 800w, assets/img/mqgrad-4889.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Hands up" loading="lazy" decoding="async"></a>
+            <figcaption>Hands up</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="040">
+            <a href="assets/img/ivy-5420.jpg" data-cap="Against the rail · USyd" data-exif="f/5.6 · 1/140s · ISO 800 · 45mm"><img src="assets/img/ivy-5420-sm.jpg" srcset="assets/img/ivy-5420-sm.jpg 800w, assets/img/ivy-5420.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Against the rail" loading="lazy" decoding="async"></a>
             <figcaption>Against the rail</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5504.jpg" data-cap="Down the path" data-exif="f/6.4 · 1/160s · ISO 320 · 17mm"><img src="assets/img/ivy-5504-sm.jpg" srcset="assets/img/ivy-5504-sm.jpg 800w, assets/img/ivy-5504.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Down the path" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="graduation" data-n="041">
+            <a href="assets/img/grad-4549.jpg" data-cap="The flex · USyd graduation" data-exif="f/5.6 · 1/1250s · ISO 320 · 58mm"><img src="assets/img/grad-4549-sm.jpg" srcset="assets/img/grad-4549-sm.jpg 800w, assets/img/grad-4549.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="The flex" loading="lazy" decoding="async"></a>
+            <figcaption>The flex</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="042">
+            <a href="assets/img/ivy-5504.jpg" data-cap="Down the path · USyd" data-exif="f/6.4 · 1/160s · ISO 320 · 17mm"><img src="assets/img/ivy-5504-sm.jpg" srcset="assets/img/ivy-5504-sm.jpg 800w, assets/img/ivy-5504.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Down the path" loading="lazy" decoding="async"></a>
             <figcaption>Down the path</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5411.jpg" data-cap="On the stairs" data-exif="f/5.6 · 1/140s · ISO 2000 · 45mm"><img src="assets/img/ivy-5411-sm.jpg" srcset="assets/img/ivy-5411-sm.jpg 800w, assets/img/ivy-5411.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="On the stairs" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="graduation" data-n="043">
+            <a href="assets/img/mqgrad-5123.jpg" data-cap="The stole, from behind · Macquarie" data-exif="f/5.6 · 1/150s · ISO 160 · 30mm"><img src="assets/img/mqgrad-5123-sm.jpg" srcset="assets/img/mqgrad-5123-sm.jpg 800w, assets/img/mqgrad-5123.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="The stole, from behind" loading="lazy" decoding="async"></a>
+            <figcaption>The stole, from behind</figcaption>
+          </figure>
+          <figure class="ph" data-tag="graduation" data-n="044">
+            <a href="assets/img/grad-4232.jpg" data-cap="Three in front of the Quad · USyd" data-exif="f/22 · 1/125s · ISO 320 · 55mm"><img src="assets/img/grad-4232-sm.jpg" srcset="assets/img/grad-4232-sm.jpg 800w, assets/img/grad-4232.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Three in front of the Quad" loading="lazy" decoding="async"></a>
+            <figcaption>Three in front of the Quad</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="045">
+            <a href="assets/img/ivy-5411.jpg" data-cap="On the stairs · USyd" data-exif="f/5.6 · 1/140s · ISO 2000 · 45mm"><img src="assets/img/ivy-5411-sm.jpg" srcset="assets/img/ivy-5411-sm.jpg 800w, assets/img/ivy-5411.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="On the stairs" loading="lazy" decoding="async"></a>
             <figcaption>On the stairs</figcaption>
           </figure>
-          <figure class="ph ph--land">
-            <a href="assets/img/ivy-5488.jpg" data-cap="Arch and tower" data-exif="f/6.4 · 1/150s · ISO 320 · 15mm"><img src="assets/img/ivy-5488-sm.jpg" srcset="assets/img/ivy-5488-sm.jpg 800w, assets/img/ivy-5488.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1786" alt="Arch and tower" loading="lazy" decoding="async"></a>
+          <figure class="ph ph--land" data-tag="graduation" data-n="046">
+            <a href="assets/img/grad-4386.jpg" data-cap="Two in the Quad · USyd graduation" data-exif="f/22 · 1/100s · ISO 400 · 58mm"><img src="assets/img/grad-4386-sm.jpg" srcset="assets/img/grad-4386-sm.jpg 800w, assets/img/grad-4386.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Two in the Quad" loading="lazy" decoding="async"></a>
+            <figcaption>Two in the Quad</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="portrait" data-n="047">
+            <a href="assets/img/ivy-5488.jpg" data-cap="Arch and tower · USyd" data-exif="f/6.4 · 1/150s · ISO 320 · 15mm"><img src="assets/img/ivy-5488-sm.jpg" srcset="assets/img/ivy-5488-sm.jpg 800w, assets/img/ivy-5488.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1786" alt="Arch and tower" loading="lazy" decoding="async"></a>
             <figcaption>Arch and tower</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5393.jpg" data-cap="Close, in the sun" data-exif="f/5.6 · 1/160s · ISO 320 · 29mm"><img src="assets/img/ivy-5393-sm.jpg" srcset="assets/img/ivy-5393-sm.jpg 800w, assets/img/ivy-5393.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Close, in the sun" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="graduation" data-n="048">
+            <a href="assets/img/mqgrad-4605.jpg" data-cap="Among the flowers · Macquarie" data-exif="f/16 · 1/60s · ISO 320 · 32mm"><img src="assets/img/mqgrad-4605-sm.jpg" srcset="assets/img/mqgrad-4605-sm.jpg 800w, assets/img/mqgrad-4605.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Among the flowers" loading="lazy" decoding="async"></a>
+            <figcaption>Among the flowers</figcaption>
+          </figure>
+          <figure class="ph" data-tag="graduation" data-n="049">
+            <a href="assets/img/grad-4459.jpg" data-cap="The crew · USyd graduation" data-exif="f/14 · 1/60s · ISO 320 · 58mm"><img src="assets/img/grad-4459-sm.jpg" srcset="assets/img/grad-4459-sm.jpg 800w, assets/img/grad-4459.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="The crew" loading="lazy" decoding="async"></a>
+            <figcaption>The crew</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="050">
+            <a href="assets/img/ivy-5393.jpg" data-cap="Close, in the sun · USyd" data-exif="f/5.6 · 1/160s · ISO 320 · 29mm"><img src="assets/img/ivy-5393-sm.jpg" srcset="assets/img/ivy-5393-sm.jpg 800w, assets/img/ivy-5393.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Close, in the sun" loading="lazy" decoding="async"></a>
             <figcaption>Close, in the sun</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5425.jpg" data-cap="Halfway up" data-exif="f/4.5 · 1/110s · ISO 320 · 19mm"><img src="assets/img/ivy-5425-sm.jpg" srcset="assets/img/ivy-5425-sm.jpg 800w, assets/img/ivy-5425.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Halfway up" loading="lazy" decoding="async"></a>
+          <figure class="ph ph--land" data-tag="graduation" data-n="051">
+            <a href="assets/img/mqgrad-4985.jpg" data-cap="The whole squad · Macquarie" data-exif="f/22 · 1/125s · ISO 3200 · 41mm"><img src="assets/img/mqgrad-4985-sm.jpg" srcset="assets/img/mqgrad-4985-sm.jpg 800w, assets/img/mqgrad-4985.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="The whole squad" loading="lazy" decoding="async"></a>
+            <figcaption>The whole squad</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="graduation" data-n="052">
+            <a href="assets/img/grad-4327.jpg" data-cap="On the bench · USyd graduation" data-exif="f/22 · 1/125s · ISO 12800 · 90mm"><img src="assets/img/grad-4327-sm.jpg" srcset="assets/img/grad-4327-sm.jpg 800w, assets/img/grad-4327.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="On the bench" loading="lazy" decoding="async"></a>
+            <figcaption>On the bench</figcaption>
+          </figure>
+          <figure class="ph" data-tag="portrait" data-n="053">
+            <a href="assets/img/ivy-5425.jpg" data-cap="Halfway up · USyd" data-exif="f/4.5 · 1/110s · ISO 320 · 19mm"><img src="assets/img/ivy-5425-sm.jpg" srcset="assets/img/ivy-5425-sm.jpg 800w, assets/img/ivy-5425.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Halfway up" loading="lazy" decoding="async"></a>
             <figcaption>Halfway up</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5484.jpg" data-cap="In the arch&#x27;s shade" data-exif="f/7.1 · 1/150s · ISO 320 · 15mm"><img src="assets/img/ivy-5484-sm.jpg" srcset="assets/img/ivy-5484-sm.jpg 800w, assets/img/ivy-5484.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="In the arch&#x27;s shade" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="portrait" data-n="054">
+            <a href="assets/img/ivy-5484.jpg" data-cap="In the arch&#x27;s shade · USyd" data-exif="f/7.1 · 1/150s · ISO 320 · 15mm"><img src="assets/img/ivy-5484-sm.jpg" srcset="assets/img/ivy-5484-sm.jpg 800w, assets/img/ivy-5484.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="In the arch&#x27;s shade" loading="lazy" decoding="async"></a>
             <figcaption>In the arch&#x27;s shade</figcaption>
           </figure>
-          <figure class="ph">
-            <a href="assets/img/ivy-5521.jpg" data-cap="By the lamppost" data-exif="f/7.1 · 1/160s · ISO 320 · 18mm"><img src="assets/img/ivy-5521-sm.jpg" srcset="assets/img/ivy-5521-sm.jpg 800w, assets/img/ivy-5521.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="By the lamppost" loading="lazy" decoding="async"></a>
+          <figure class="ph" data-tag="portrait" data-n="055">
+            <a href="assets/img/ivy-5521.jpg" data-cap="By the lamppost · USyd" data-exif="f/7.1 · 1/160s · ISO 320 · 18mm"><img src="assets/img/ivy-5521-sm.jpg" srcset="assets/img/ivy-5521-sm.jpg 800w, assets/img/ivy-5521.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="By the lamppost" loading="lazy" decoding="async"></a>
             <figcaption>By the lamppost</figcaption>
           </figure>
         </div>
@@ -213,52 +369,119 @@
           <span class="set__no">03 / Events</span>
           <h2 class="set__t">The recap starts <em>at the shutter.</em></h2>
           <div class="set__side">
-            <p>Coverage for UAVS NSW, the Vietnamese student association: Sydney Go 2026, a city-wide treasure hunt, and Sports Day 2026. I study marketing, so I shoot what the recap post needs: the group photo everyone tags, the candids, the sponsor and speaker frames.</p>
-            <p class="set__for"><b>Good for</b> student societies, launches and workshops, sports days, community events</p>
+            <p>Stage shows, a city-wide treasure hunt, a hackathon, a delegates' congress, Sports Day and Cultural Day, mostly for the Vietnamese student community in Sydney. I study marketing, so I shoot what the recap post needs: the group photo everyone tags, the candids, the speaker and sponsor frames.</p>
+            <p class="set__for"><b>Good for</b> student societies, launches and workshops, performances, sports days, community events</p>
           </div>
         </header>
+        <div class="chips" role="group" aria-label="Filter events">
+            <button class="chip is-on" data-filter="all" aria-pressed="true">All</button>
+            <button class="chip" data-filter="community" aria-pressed="false">Community</button>
+            <button class="chip" data-filter="stage" aria-pressed="false">Stage</button>
+            <button class="chip" data-filter="conference" aria-pressed="false">Conferences</button>
+            <button class="chip" data-filter="sport" aria-pressed="false">Sport</button>
+        </div>
         <div class="grid">
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="stage" data-n="056">
+            <a href="assets/img/stage-4156.jpg" data-cap="Serenade &#x27;24: Renaissance" data-exif="f/5.6 · 1/250s · ISO 4000 · 45mm"><img src="assets/img/stage-4156-sm.jpg" srcset="assets/img/stage-4156-sm.jpg 800w, assets/img/stage-4156.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Serenade &#x27;24: Renaissance" loading="lazy" decoding="async"></a>
+            <figcaption>Serenade &#x27;24: Renaissance</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="057">
             <a href="assets/img/sydneygo-1023.jpg" data-cap="Every team, one frame · Sydney Go 2026" data-exif="f/3.5 · 1/100s · ISO 400 · 15mm"><img src="assets/img/sydneygo-1023-sm.jpg" srcset="assets/img/sydneygo-1023-sm.jpg 800w, assets/img/sydneygo-1023.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1013" alt="Every team, one frame" loading="lazy" decoding="async"></a>
             <figcaption>Every team, one frame</figcaption>
           </figure>
-          <figure class="ph">
+          <figure class="ph ph--land" data-tag="conference" data-n="058">
+            <a href="assets/img/daihoi-4066.jpg" data-cap="Delegates and certificates · Đại hội 2026" data-exif="f/3.5 · 1/100s · ISO 2500 · 15mm"><img src="assets/img/daihoi-4066-sm.jpg" srcset="assets/img/daihoi-4066-sm.jpg 800w, assets/img/daihoi-4066.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1361" alt="Delegates and certificates" loading="lazy" decoding="async"></a>
+            <figcaption>Delegates and certificates</figcaption>
+          </figure>
+          <figure class="ph" data-tag="sport" data-n="059">
             <a href="assets/img/events-0320.jpg" data-cap="At the net · UAVS Sports Day 2026" data-exif="f/4 · 1/250s · ISO 3200 · 50mm"><img src="assets/img/events-0320-sm.jpg" srcset="assets/img/events-0320-sm.jpg 800w, assets/img/events-0320.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="At the net" loading="lazy" decoding="async"></a>
             <figcaption>At the net</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph" data-tag="conference" data-n="060">
+            <a href="assets/img/hack-9590.jpg" data-cap="On the mic · Hackathon 2026" data-exif="f/4.2 · 1/160s · ISO 2000 · 122mm"><img src="assets/img/hack-9590-sm.jpg" srcset="assets/img/hack-9590-sm.jpg 800w, assets/img/hack-9590.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1095" height="1800" alt="On the mic" loading="lazy" decoding="async"></a>
+            <figcaption>On the mic</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="061">
+            <a href="assets/img/cultural-8478.jpg" data-cap="Rolls done · Cultural Day 2025" data-exif="f/4.4 · 1/60s · ISO 1250 · 26mm"><img src="assets/img/cultural-8478-sm.jpg" srcset="assets/img/cultural-8478-sm.jpg 800w, assets/img/cultural-8478.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Rolls done" loading="lazy" decoding="async"></a>
+            <figcaption>Rolls done</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="062">
             <a href="assets/img/events-3138.jpg" data-cap="Sponsor moment · Sydney Go 2026" data-exif="f/4 · 1/500s · ISO 1250 · 32mm"><img src="assets/img/events-3138-sm.jpg" srcset="assets/img/events-3138-sm.jpg 800w, assets/img/events-3138.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="984" alt="Sponsor moment" loading="lazy" decoding="async"></a>
             <figcaption>Sponsor moment</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="stage" data-n="063">
+            <a href="assets/img/stage-4146.jpg" data-cap="Under the lights · Serenade &#x27;24" data-exif="f/5.6 · 1/250s · ISO 4000 · 45mm"><img src="assets/img/stage-4146-sm.jpg" srcset="assets/img/stage-4146-sm.jpg 800w, assets/img/stage-4146.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Under the lights" loading="lazy" decoding="async"></a>
+            <figcaption>Under the lights</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="conference" data-n="064">
+            <a href="assets/img/hack-9596.jpg" data-cap="Between rounds · Hackathon 2026" data-exif="f/3.8 · 1/160s · ISO 2000 · 78mm"><img src="assets/img/hack-9596-sm.jpg" srcset="assets/img/hack-9596-sm.jpg 800w, assets/img/hack-9596.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="841" alt="Between rounds" loading="lazy" decoding="async"></a>
+            <figcaption>Between rounds</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="065">
             <a href="assets/img/sydneygo-1087.jpg" data-cap="Heads together · Sydney Go 2026" data-exif="f/5.6 · 1/60s · ISO 1000 · 36mm"><img src="assets/img/sydneygo-1087-sm.jpg" srcset="assets/img/sydneygo-1087-sm.jpg 800w, assets/img/sydneygo-1087.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1013" alt="Heads together" loading="lazy" decoding="async"></a>
             <figcaption>Heads together</figcaption>
           </figure>
-          <figure class="ph">
+          <figure class="ph ph--land" data-tag="community" data-n="066">
+            <a href="assets/img/cultural-8460.jpg" data-cap="Rolling gỏi cuốn · Cultural Day 2025" data-exif="f/5.6 · 1/80s · ISO 2500 · 43mm"><img src="assets/img/cultural-8460-sm.jpg" srcset="assets/img/cultural-8460-sm.jpg 800w, assets/img/cultural-8460.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Rolling gỏi cuốn" loading="lazy" decoding="async"></a>
+            <figcaption>Rolling gỏi cuốn</figcaption>
+          </figure>
+          <figure class="ph" data-tag="sport" data-n="067">
             <a href="assets/img/events-0297.jpg" data-cap="Calling it · UAVS Sports Day 2026" data-exif="f/4 · 1/250s · ISO 3200 · 50mm"><img src="assets/img/events-0297-sm.jpg" srcset="assets/img/events-0297-sm.jpg 800w, assets/img/events-0297.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1200" height="1800" alt="Calling it" loading="lazy" decoding="async"></a>
             <figcaption>Calling it</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="conference" data-n="068">
+            <a href="assets/img/daihoi-4020.jpg" data-cap="The delegation · Đại hội 2026" data-exif="f/4.2 · 1/40s · ISO 3200 · 22mm"><img src="assets/img/daihoi-4020-sm.jpg" srcset="assets/img/daihoi-4020-sm.jpg 800w, assets/img/daihoi-4020.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1178" alt="The delegation" loading="lazy" decoding="async"></a>
+            <figcaption>The delegation</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="stage" data-n="069">
+            <a href="assets/img/stage-4166.jpg" data-cap="Finale · Serenade &#x27;24" data-exif="f/5.2 · 1/250s · ISO 4000 · 38mm"><img src="assets/img/stage-4166-sm.jpg" srcset="assets/img/stage-4166-sm.jpg 800w, assets/img/stage-4166.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Finale" loading="lazy" decoding="async"></a>
+            <figcaption>Finale</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="070">
             <a href="assets/img/events-3155.jpg" data-cap="Everyone, at the finish · Sydney Go 2026" data-exif="f/7.1 · 1/125s · ISO 1250 · 18mm"><img src="assets/img/events-3155-sm.jpg" srcset="assets/img/events-3155-sm.jpg 800w, assets/img/events-3155.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="984" alt="Everyone, at the finish" loading="lazy" decoding="async"></a>
             <figcaption>Everyone, at the finish</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="conference" data-n="071">
+            <a href="assets/img/hack-9616.jpg" data-cap="Team table · Hackathon 2026" data-exif="f/3.5 · 1/250s · ISO 1250 · 55mm"><img src="assets/img/hack-9616-sm.jpg" srcset="assets/img/hack-9616-sm.jpg 800w, assets/img/hack-9616.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="841" alt="Team table" loading="lazy" decoding="async"></a>
+            <figcaption>Team table</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="072">
+            <a href="assets/img/cultural-8315.jpg" data-cap="The spread · Cultural Day 2025" data-exif="f/5 · 1/160s · ISO 2500 · 35mm"><img src="assets/img/cultural-8315-sm.jpg" srcset="assets/img/cultural-8315-sm.jpg 800w, assets/img/cultural-8315.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="The spread" loading="lazy" decoding="async"></a>
+            <figcaption>The spread</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="073">
             <a href="assets/img/sydneygo-1041.jpg" data-cap="Reading the clue · Sydney Go 2026" data-exif="f/5.6 · 1/60s · ISO 800 · 33mm"><img src="assets/img/sydneygo-1041-sm.jpg" srcset="assets/img/sydneygo-1041-sm.jpg 800w, assets/img/sydneygo-1041.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1013" alt="Reading the clue" loading="lazy" decoding="async"></a>
             <figcaption>Reading the clue</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="conference" data-n="074">
+            <a href="assets/img/daihoi-4090.jpg" data-cap="Recognised · Đại hội 2026" data-exif="f/3.8 · 1/100s · ISO 5000 · 17mm"><img src="assets/img/daihoi-4090-sm.jpg" srcset="assets/img/daihoi-4090-sm.jpg 800w, assets/img/daihoi-4090.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Recognised" loading="lazy" decoding="async"></a>
+            <figcaption>Recognised</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="conference" data-n="075">
+            <a href="assets/img/hack-9578.jpg" data-cap="Heads down · Hackathon 2026" data-exif="f/3.5 · 1/160s · ISO 1600 · 55mm"><img src="assets/img/hack-9578-sm.jpg" srcset="assets/img/hack-9578-sm.jpg 800w, assets/img/hack-9578.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="841" alt="Heads down" loading="lazy" decoding="async"></a>
+            <figcaption>Heads down</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="076">
             <a href="assets/img/events-3059.jpg" data-cap="Working it out · Sydney Go 2026" data-exif="f/3.6 · 1/250s · ISO 500 · 18mm"><img src="assets/img/events-3059-sm.jpg" srcset="assets/img/events-3059-sm.jpg 800w, assets/img/events-3059.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="984" alt="Working it out" loading="lazy" decoding="async"></a>
             <figcaption>Working it out</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="community" data-n="077">
+            <a href="assets/img/cultural-8403.jpg" data-cap="Hands in · Cultural Day 2025" data-exif="f/5.6 · 1/60s · ISO 1600 · 45mm"><img src="assets/img/cultural-8403-sm.jpg" srcset="assets/img/cultural-8403-sm.jpg 800w, assets/img/cultural-8403.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1200" alt="Hands in" loading="lazy" decoding="async"></a>
+            <figcaption>Hands in</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="078">
             <a href="assets/img/sydneygo-1005.jpg" data-cap="Mid-challenge · Sydney Go 2026" data-exif="f/4 · 1/240s · ISO 640 · 19mm"><img src="assets/img/sydneygo-1005-sm.jpg" srcset="assets/img/sydneygo-1005-sm.jpg 800w, assets/img/sydneygo-1005.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1013" alt="Mid-challenge" loading="lazy" decoding="async"></a>
             <figcaption>Mid-challenge</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="conference" data-n="079">
+            <a href="assets/img/daihoi-4035.jpg" data-cap="Front of the hall · Đại hội 2026" data-exif="f/3.5 · 1/100s · ISO 4000 · 15mm"><img src="assets/img/daihoi-4035-sm.jpg" srcset="assets/img/daihoi-4035-sm.jpg 800w, assets/img/daihoi-4035.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="1388" alt="Front of the hall" loading="lazy" decoding="async"></a>
+            <figcaption>Front of the hall</figcaption>
+          </figure>
+          <figure class="ph ph--land" data-tag="community" data-n="080">
             <a href="assets/img/events-2428.jpg" data-cap="Team photo · Sydney Go 2026" data-exif="f/4 · 1/320s · ISO 640 · 27mm"><img src="assets/img/events-2428-sm.jpg" srcset="assets/img/events-2428-sm.jpg 800w, assets/img/events-2428.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="984" alt="Team photo" loading="lazy" decoding="async"></a>
             <figcaption>Team photo</figcaption>
           </figure>
-          <figure class="ph ph--land">
+          <figure class="ph ph--land" data-tag="community" data-n="081">
             <a href="assets/img/events-3062.jpg" data-cap="The build · Sydney Go 2026" data-exif="f/3.6 · 1/250s · ISO 1000 · 18mm"><img src="assets/img/events-3062-sm.jpg" srcset="assets/img/events-3062-sm.jpg 800w, assets/img/events-3062.jpg 1800w" sizes="(max-width: 700px) 50vw, 33vw" width="1800" height="984" alt="The build" loading="lazy" decoding="async"></a>
             <figcaption>The build</figcaption>
           </figure>
@@ -285,10 +508,10 @@
           <article class="card">
             <span class="card__no">02</span>
             <h3>Events</h3>
-            <p>Societies, launches, sports days, workshops. Photos your team can post the same week.</p>
+            <p>Societies, launches, performances, sports days, workshops. Photos your team can post the same week.</p>
             <ul>
               <li>Shot list agreed with the organiser</li>
-              <li>Group, candid, sponsor and detail coverage</li>
+              <li>Group, candid, stage, sponsor and detail coverage</li>
               <li>Crops ready for social: 4:5 and 9:16</li>
               <li>One shared gallery for the whole team</li>
             </ul>
@@ -321,7 +544,7 @@
         <div>
           <p class="eyebrow">About</p>
           <h2 class="about__t" id="about-t">Hi, I'm <em>Nathan.</em></h2>
-          <p>I'm Thanh Nhật Bùi, a Vietnamese photographer and marketing student based in Sydney. I photograph events for the Vietnamese student community, and portraits and the harbour whenever the light is good.</p>
+          <p>I'm Thanh Nhật Bùi, a Vietnamese photographer and marketing student based in Sydney. I photograph graduations, portraits and events for the Vietnamese student community, and the harbour whenever the light is good.</p>
           <p>Studying marketing changed how I shoot. A photo isn't finished until someone uses it, so I ask where it's going before I pick up the camera.</p>
           <p class="sig">— Nhật</p>
           <a class="more" href="https://heynathanbui.github.io/">My marketing portfolio →</a>
@@ -346,8 +569,8 @@
           <label>Email<input name="email" type="email" autocomplete="email" required></label>
           <label>What's the shoot?
             <select name="type">
-              <option>Portrait</option>
               <option>Graduation</option>
+              <option>Portrait</option>
               <option>Event</option>
               <option>Place / venue</option>
               <option>Something else</option>
@@ -372,10 +595,15 @@
   <footer class="footer">
     <div class="wrap">
       <span>© <span data-year>2026</span> Thanh (Nathan) Nhật Bùi · Photography</span>
-      <span>Scenery 13 · People 14 · Events 11</span>
+      <span>Scenery 27 · People 28 · Events 26 · Shot on Fujifilm X-T30 II</span>
     </div>
   </footer>
 
-  <script src="assets/js/site.js?v=20261020a"></script>
+  <script type="application/json" id="scene-data">{"roll": [{"src": "assets/img/sydney-4407-sm.jpg", "full": "assets/img/sydney-4407.jpg", "cap": "Opera House, blue hour · Sydney", "exif": "f/3.6 · 1/26s · ISO 6400 · 16mm", "w": 800, "h": 533}, {"src": "assets/img/ivy-5413-sm.jpg", "full": "assets/img/ivy-5413.jpg", "cap": "Chin in hand · USyd", "exif": "f/5.6 · 1/140s · ISO 1600 · 45mm", "w": 533, "h": 800}, {"src": "assets/img/stage-4156-sm.jpg", "full": "assets/img/stage-4156.jpg", "cap": "Serenade '24: Renaissance", "exif": "f/5.6 · 1/250s · ISO 4000 · 45mm", "w": 800, "h": 533}, {"src": "assets/img/ninhbinh-9334-sm.jpg", "full": "assets/img/ninhbinh-9334.jpg", "cap": "Pagoda tower, reflected · Ninh Bình", "exif": "f/5.6 · 1/80s · ISO 80 · 22mm", "w": 533, "h": 800}, {"src": "assets/img/grad-4198-sm.jpg", "full": "assets/img/grad-4198.jpg", "cap": "Áo dài on graduation day · USyd", "exif": "f/18 · 1/125s · ISO 160 · 58mm", "w": 533, "h": 800}, {"src": "assets/img/hoian-4516-sm.jpg", "full": "assets/img/hoian-4516.jpg", "cap": "Lanterns · Hội An", "exif": "f/5.6 · 1/60s · ISO 4000 · 21mm", "w": 800, "h": 533}, {"src": "assets/img/events-0320-sm.jpg", "full": "assets/img/events-0320.jpg", "cap": "At the net · UAVS Sports Day 2026", "exif": "f/4 · 1/250s · ISO 3200 · 50mm", "w": 533, "h": 800}, {"src": "assets/img/ivy-5378-sm.jpg", "full": "assets/img/ivy-5378.jpg", "cap": "On the sandstone ledge · USyd", "exif": "f/7.1 · 1/170s · ISO 320 · 15mm", "w": 533, "h": 800}, {"src": "assets/img/harbour-5341-sm.jpg", "full": "assets/img/harbour-5341.jpg", "cap": "Harbour, golden hour · Sydney", "exif": "f/4.5 · 1/105s · ISO 320 · 21mm", "w": 800, "h": 533}, {"src": "assets/img/mqgrad-5091-sm.jpg", "full": "assets/img/mqgrad-5091.jpg", "cap": "By the fountain · Macquarie", "exif": "f/5.6 · 1/240s · ISO 320 · 42mm", "w": 533, "h": 800}, {"src": "assets/img/daihoi-4066-sm.jpg", "full": "assets/img/daihoi-4066.jpg", "cap": "Delegates and certificates · Đại hội 2026", "exif": "f/3.5 · 1/100s · ISO 2500 · 15mm", "w": 800, "h": 605}, {"src": "assets/img/sydney-4417-sm.jpg", "full": "assets/img/sydney-4417.jpg", "cap": "The bridge at night · Sydney", "exif": "f/4.7 · 1/7s · ISO 6400 · 30mm", "w": 800, "h": 533}, {"src": "assets/img/ivy-5493-sm.jpg", "full": "assets/img/ivy-5493.jpg", "cap": "Framed by the cloister · USyd", "exif": "f/5.6 · 1/160s · ISO 320 · 16mm", "w": 533, "h": 800}, {"src": "assets/img/hack-9590-sm.jpg", "full": "assets/img/hack-9590.jpg", "cap": "On the mic · Hackathon 2026", "exif": "f/4.2 · 1/160s · ISO 2000 · 122mm", "w": 487, "h": 800}, {"src": "assets/img/ninhbinh-9301-sm.jpg", "full": "assets/img/ninhbinh-9301.jpg", "cap": "Temple gate between the karsts · Ninh Bình", "exif": "f/5.6 · 1/250s · ISO 200 · 45mm", "w": 800, "h": 533}, {"src": "assets/img/grad-4549-sm.jpg", "full": "assets/img/grad-4549.jpg", "cap": "The flex · USyd graduation", "exif": "f/5.6 · 1/1250s · ISO 320 · 58mm", "w": 533, "h": 800}, {"src": "assets/img/cultural-8478-sm.jpg", "full": "assets/img/cultural-8478.jpg", "cap": "Rolls done · Cultural Day 2025", "exif": "f/4.4 · 1/60s · ISO 1250 · 26mm", "w": 800, "h": 533}, {"src": "assets/img/harbour-5355-sm.jpg", "full": "assets/img/harbour-5355.jpg", "cap": "Blue hour · Sydney", "exif": "f/4.9 · 1/100s · ISO 2500 · 32mm", "w": 800, "h": 533}, {"src": "assets/img/ivy-5504-sm.jpg", "full": "assets/img/ivy-5504.jpg", "cap": "Down the path · USyd", "exif": "f/6.4 · 1/160s · ISO 320 · 17mm", "w": 533, "h": 800}, {"src": "assets/img/stage-4146-sm.jpg", "full": "assets/img/stage-4146.jpg", "cap": "Under the lights · Serenade '24", "exif": "f/5.6 · 1/250s · ISO 4000 · 45mm", "w": 800, "h": 533}, {"src": "assets/img/hoian-4536-sm.jpg", "full": "assets/img/hoian-4536.jpg", "cap": "After dark · Hội An", "exif": "f/5.6 · 1/60s · ISO 8000 · 45mm", "w": 800, "h": 533}, {"src": "assets/img/mqgrad-4761-sm.jpg", "full": "assets/img/mqgrad-4761.jpg", "cap": "Tilted, on purpose · Macquarie", "exif": "f/22 · 1/125s · ISO 2000 · 35mm", "w": 533, "h": 800}, {"src": "assets/img/sydneygo-1023-sm.jpg", "full": "assets/img/sydneygo-1023.jpg", "cap": "Every team, one frame · Sydney Go 2026", "exif": "f/3.5 · 1/100s · ISO 400 · 15mm", "w": 800, "h": 450}, {"src": "assets/img/elsewhere-4649-sm.jpg", "full": "assets/img/elsewhere-4649.jpg", "cap": "Looking up · Lujiazui, Shanghai", "exif": "f/4.4 · 1/125s · ISO 200 · 26mm", "w": 533, "h": 800}], "hero": [{"src": "assets/img/sydney-4407-sm.jpg", "full": "assets/img/sydney-4407.jpg", "cap": "Opera House, blue hour · Sydney", "exif": "f/3.6 · 1/26s · ISO 6400 · 16mm", "w": 800, "h": 533}, {"src": "assets/img/ivy-5413-sm.jpg", "full": "assets/img/ivy-5413.jpg", "cap": "Chin in hand · USyd", "exif": "f/5.6 · 1/140s · ISO 1600 · 45mm", "w": 533, "h": 800}, {"src": "assets/img/stage-4156-sm.jpg", "full": "assets/img/stage-4156.jpg", "cap": "Serenade '24: Renaissance", "exif": "f/5.6 · 1/250s · ISO 4000 · 45mm", "w": 800, "h": 533}, {"src": "assets/img/ninhbinh-9334-sm.jpg", "full": "assets/img/ninhbinh-9334.jpg", "cap": "Pagoda tower, reflected · Ninh Bình", "exif": "f/5.6 · 1/80s · ISO 80 · 22mm", "w": 533, "h": 800}, {"src": "assets/img/grad-4198-sm.jpg", "full": "assets/img/grad-4198.jpg", "cap": "Áo dài on graduation day · USyd", "exif": "f/18 · 1/125s · ISO 160 · 58mm", "w": 533, "h": 800}, {"src": "assets/img/hoian-4516-sm.jpg", "full": "assets/img/hoian-4516.jpg", "cap": "Lanterns · Hội An", "exif": "f/5.6 · 1/60s · ISO 4000 · 21mm", "w": 800, "h": 533}]}</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="assets/js/site.js?v=20261023a"></script>
+  <script type="module" src="assets/js/scene.js?v=20261023a"></script>
 </body>
 </html>
