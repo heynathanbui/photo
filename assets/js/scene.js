@@ -3,6 +3,7 @@
 // Scene 2 (roll): a spiral of film under a darkroom safelight; frames develop from negative as they reach you.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { buildBody } from './camera-body.js?v=20261024a';
 
 const NB = window.NB || (window.NB = {});
 const root = document.documentElement;
@@ -94,14 +95,14 @@ function start() {
   // ======================================================
   const hero = new THREE.Scene();
   hero.background = new THREE.Color(0x120607);
-  hero.fog = new THREE.Fog(0x120607, 14, 34);
+  hero.fog = new THREE.Fog(0x120607, 26, 60);
   const pmrem = new THREE.PMREMGenerator(renderer);
   hero.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   const cam = new THREE.PerspectiveCamera(30, innerWidth / innerHeight, 0.05, 80);
   cam.position.set(0, 0, 16);
 
-  const key = new THREE.DirectionalLight(0xffe7c4, 2.2); key.position.set(4, 6, 7); hero.add(key);
-  const rim = new THREE.PointLight(0xc9a43f, 60, 20); rim.position.set(-4, 3, -3); hero.add(rim);
+  const key = new THREE.DirectionalLight(0xfff1e0, 2.4); key.position.set(4, 6, 7); hero.add(key);
+  const rim = new THREE.PointLight(0xc9a43f, 28, 20); rim.position.set(-4, 3, -3); hero.add(rim);
   const warm = new THREE.PointLight(0xb3262d, 30, 18); warm.position.set(4, -3, 2); hero.add(warm);
 
   const rig = new THREE.Group(); hero.add(rig);       // moves the lens around the screen
@@ -186,6 +187,9 @@ function start() {
       clearcoat: 1, clearcoatRoughness: .02, iridescence: 1, iridescenceIOR: 1.7, iridescenceThicknessRange: [220, 820], envMapIntensity: 2.4,
     }));
   glass.rotation.x = Math.PI / 2; glass.position.z = 0.75 - 2.6 * Math.cos(Math.asin(1.22 / 2.6)); lens.add(glass);
+
+  // the camera body the lens is mounted on
+  lens.add(buildBody({ canvasTex, maxAniso }));
 
   // bokeh: soft out-of-focus discs drifting behind the lens
   function bokeh(count, spread, depth, palette) {
@@ -340,7 +344,9 @@ function start() {
   const apEl = document.querySelector('[data-aperture]');
   const ui = { no: rollEl.querySelector('[data-roll="no"]'), cap: rollEl.querySelector('[data-roll="cap"]'), exif: rollEl.querySelector('[data-roll="exif"]'), bar: rollEl.querySelector('[data-roll="bar"]') };
   const intro = { t: 0 };
-  NB.playIntro = () => gsap.to(intro, { t: 1, duration: 2.6, ease: 'power3.inOut' });
+  let introPlayed = false;
+  NB.playIntro = () => { if (introPlayed) return; introPlayed = true; gsap.to(intro, { t: 1, duration: 2.6, ease: 'power3.inOut' }); };
+  if (NB.opened) NB.playIntro();   // the page may have opened its shutter before this module finished loading
 
   const fstop = (ap) => 1.4 * Math.pow(2, (1 - clamp(ap)) * 4);
   const fmtF = (f) => (f >= 10 ? Math.round(f) : f.toFixed(1)).toString();
@@ -397,14 +403,14 @@ function start() {
       iris.uniforms.rot.value = (1 - ap) * 1.6;
       iris.uniforms.zoom.value = 1 + smooth(.7, 1, hp) * .35;
       // lens position: off to the side on wide screens, above the copy on tall ones
-      rig.position.x = lerp(wide ? 1.85 : .3, 0, e);
-      rig.position.y = lerp(wide ? 0 : 1.05, 0, e);
-      lens.rotation.y = lerp(lerp(-1.15, -.42, it), 0, e) + pointer.sx * .28 * (1 - e);
-      lens.rotation.x = lerp(lerp(.55, .16, it), 0, e) + pointer.sy * .2 * (1 - e);
+      rig.position.x = lerp(wide ? 2.75 : 0, 0, e);
+      rig.position.y = lerp(wide ? .15 : 3.4, 0, e);
+      lens.rotation.y = lerp(lerp(-2.4, -.62, it), 0, e) + pointer.sx * .3 * (1 - e);
+      lens.rotation.x = lerp(lerp(.7, .32, it), 0, e) + pointer.sy * .2 * (1 - e);
       lens.rotation.z = (1 - it) * .4;
       lens.position.y = Math.sin(time * .8) * .05 * (1 - e);
-      const z0 = wide ? 10.5 : 17;
-      cam.position.z = lerp(lerp(22, z0, it), 2.45, e);
+      const z0 = wide ? 17.5 : 31;
+      cam.position.z = lerp(lerp(34, z0, it), 2.45, e);
       cam.position.x = pointer.sx * .15 * (1 - e); cam.position.y = -pointer.sy * .1 * (1 - e);
       cam.lookAt(0, 0, 0);
       glass.material.opacity = .3 * (1 - smooth(.55, .8, hp));

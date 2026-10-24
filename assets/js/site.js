@@ -43,15 +43,15 @@
     copy.to('.hero__copy', { autoAlpha: 0, y: -60, ease: 'none', duration: .3 }, 0)
       .to('.hero__scroll', { autoAlpha: 0, duration: .1 }, 0)
       .to('.hero__aperture', { autoAlpha: 0, duration: .12 }, .7);
-    ScrollTrigger.create({ trigger: '.roll', pin: '.roll__pin', start: 'top top', end: '+=640%', onUpdate: (s) => { NB.rollP = s.progress; } });
+    ScrollTrigger.create({ trigger: '.roll', pin: '.roll__pin', start: 'top top', end: '+=520%', onUpdate: (s) => { NB.rollP = s.progress; } });
     gsap.from('.roll__ui > *', { autoAlpha: 0, y: 30, stagger: .1, scrollTrigger: { trigger: '.roll', start: 'top 40%', toggleActions: 'play none none reverse' } });
-    gsap.to('.roll__ui', { autoAlpha: 0, scrollTrigger: { trigger: '.roll', start: 'top -520%', end: 'top -620%', scrub: true } });
+    gsap.to('.roll__ui', { autoAlpha: 0, scrollTrigger: { trigger: '.roll', start: 'top -60%', end: 'top -110%', scrub: true } });
   }
 
   // ---------- intro: shutter opens once the lens has its first photos ----------
   let opened = false;
   NB.ready = () => {
-    if (opened) return; opened = true;
+    if (opened) return; opened = true; NB.opened = true;
     const tl = gsap.timeline();
     tl.to(curtA, { yPercent: -100, duration: .9, ease: 'expo.inOut' }, .1)
       .to(curtB, { yPercent: 100, duration: .9, ease: 'expo.inOut' }, .1)
