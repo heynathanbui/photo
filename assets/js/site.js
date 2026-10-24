@@ -71,24 +71,58 @@
   if (!gl) setTimeout(NB.ready, 300);
   setTimeout(NB.ready, 4000);
 
-  // ---------- develop-on-scroll reveal for gallery photos ----------
-  const imgs = gsap.utils.toArray('.ph img');
+  // ---------- aperture breaks between galleries: the iris opens as you scroll through ----------
+  if (reduce) root.classList.add('no-motion');
+  else gsap.utils.toArray('.iris-break').forEach((el) => {
+    const iris = el.querySelector('.iris'), label = el.querySelector('.iris-break__label');
+    gsap.timeline({ scrollTrigger: { trigger: el, start: 'top top', end: 'bottom bottom', scrub: .6 } })
+      .fromTo(iris, { '--r': '0vmax', '--spin': '-70deg' }, { '--r': '100vmax', '--spin': '0deg', ease: 'power2.in', duration: 1 }, 0)
+      .fromTo(label, { scale: .82 }, { scale: 1.06, ease: 'none', duration: 1 }, 0)
+      .to(label, { autoAlpha: 0, y: -40, duration: .25 }, .78);
+  });
+
+  // ---------- section motifs ----------
   if (!reduce) {
-    gsap.set(imgs, { clipPath: 'inset(0% 0% 100% 0%)', filter: 'invert(1) sepia(.7) saturate(1.6) brightness(.8)' });
+    const sky = { trigger: '.set--scenery', start: 'top bottom', end: 'top -30%', scrub: true };
+    gsap.fromTo('.m-sun', { y: 110 }, { y: -70, ease: 'none', scrollTrigger: sky });
+    gsap.fromTo('.m-far', { y: 40 }, { y: -10, ease: 'none', scrollTrigger: sky });
+    gsap.fromTo('.m-mid', { y: 24 }, { y: 0, ease: 'none', scrollTrigger: sky });
+  }
+
+  // ---------- each gallery reveals its photos differently ----------
+  // scenery: exposes up from the horizon like a sunrise · people: racks into focus · events: pops with a flash
+  const FX = {
+    expose: {
+      from: { clipPath: 'inset(100% 0% 0% 0%)', filter: 'brightness(.2) sepia(.9) saturate(1.5)', scale: 1.14 },
+      play: (img) => gsap.timeline()
+        .to(img, { clipPath: 'inset(0% 0% 0% 0%)', duration: .9, ease: 'power3.inOut' })
+        .to(img, { filter: 'brightness(1) sepia(0) saturate(1)', scale: 1, duration: 1.6, ease: 'power2.out', clearProps: 'filter,transform' }, '-=.5'),
+    },
+    focus: {
+      from: { filter: 'blur(18px)', scale: 1.08, opacity: 0 },
+      play: (img) => gsap.to(img, { filter: 'blur(0px)', scale: 1, opacity: 1, duration: 1.3, ease: 'power3.out', clearProps: 'filter,transform' }),
+    },
+    flash: {
+      from: { opacity: 0 },
+      play: (img, fig) => gsap.timeline()
+        .set(img, { opacity: 1, filter: 'brightness(1.9) contrast(.8)' })
+        .fromTo(fig.querySelector('.flash'), { opacity: .95 }, { opacity: 0, duration: .75, ease: 'expo.out' }, 0)
+        .to(img, { filter: 'brightness(1) contrast(1)', duration: 1.1, ease: 'power2.out', clearProps: 'filter' }, 0),
+    },
+  };
+  const fxOf = (fig) => FX[fig.closest('.set').dataset.fx] || FX.focus;
+  document.querySelectorAll('.set--events .ph').forEach((fig) => { const f = document.createElement('i'); f.className = 'flash'; fig.appendChild(f); });
+  if (!reduce) {
+    document.querySelectorAll('.ph').forEach((fig) => gsap.set(fig.querySelector('img'), fxOf(fig).from));
     ScrollTrigger.batch('.ph', {
       start: 'top 92%', once: true,
-      onEnter: (batch) => batch.forEach((fig, i) => {
-        const img = fig.querySelector('img');
-        gsap.timeline({ delay: i * .08 })
-          .to(img, { clipPath: 'inset(0% 0% 0% 0%)', duration: .7, ease: 'power3.inOut' })
-          .to(img, { filter: 'invert(0) sepia(0) saturate(1) brightness(1)', duration: 1.4, ease: 'power2.out', clearProps: 'filter' }, '-=.35');
-      }),
+      onEnter: (batch) => batch.forEach((fig, i) => gsap.delayedCall(i * .09, () => fxOf(fig).play(fig.querySelector('img'), fig))),
     });
   }
   // recent-events ticker: duplicate the items so the loop is seamless
   const track = document.querySelector('.recent__track');
   if (track) [...track.children].forEach((n) => { const c = n.cloneNode(true); c.setAttribute('aria-hidden', 'true'); track.appendChild(c); });
-  gsap.utils.toArray('.set__head, .tips, .set__cta, .offer__grid .card, .steps li, .faq__grid > *, .about__grid > *, .book__grid > *').forEach((el) => {
+  gsap.utils.toArray('.set__head, .tips, .set__cta, .offer__grid .card, .steps li, .about__grid > *, .book__grid > *').forEach((el) => {
     gsap.from(el, { autoAlpha: 0, y: 40, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
   });
 
@@ -102,7 +136,7 @@
       const figs = [...grid.children];
       gsap.to(grid, { autoAlpha: 0, duration: .2, onComplete: () => {
         figs.forEach((f) => { f.hidden = !(v === 'all' || f.dataset.tag === v); });
-        figs.filter((f) => !f.hidden).forEach((f) => { const im = f.querySelector('img'); gsap.set(im, { clipPath: 'none', filter: 'none' }); });
+        figs.filter((f) => !f.hidden).forEach((f) => { gsap.set(f.querySelector('img'), { clearProps: 'all' }); });
         gsap.to(grid, { autoAlpha: 1, duration: .35 });
         ScrollTrigger.refresh();
       } });
