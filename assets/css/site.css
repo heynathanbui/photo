@@ -172,6 +172,16 @@ body::before { content: ""; position: fixed; inset: 0; z-index: 1; background: #
 .roll__bar { position: absolute; left: var(--gutter); right: var(--gutter); bottom: 44px; height: 1px; background: rgba(246, 227, 203, .16); }
 .roll__bar i { display: block; height: 100%; background: #ff6a5f; transform-origin: left; transform: scaleX(0); }
 .roll-hover { cursor: zoom-in; }
+.roll__skip {
+  position: absolute; right: var(--gutter); top: clamp(90px, 13vh, 140px); z-index: 2;
+  display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 999px;
+  border: 1px solid rgba(246, 227, 203, .4); background: rgba(18, 6, 7, .55); backdrop-filter: blur(8px);
+  color: var(--cream); text-decoration: none; font: 500 12px/1 var(--mono); letter-spacing: .14em; text-transform: uppercase;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.roll__skip:hover, .roll__skip:focus-visible { background: var(--cream); color: var(--night); border-color: var(--cream); }
+.roll__skip span { transition: transform .2s; }
+.roll__skip:hover span { transform: translateY(3px); }
 
 /* ---------- paper: the galleries ---------- */
 .paper { position: relative; z-index: 3; background: var(--paper); box-shadow: 0 -40px 80px -20px rgba(0, 0, 0, .6); }
@@ -291,6 +301,7 @@ body::before { content: ""; position: fixed; inset: 0; z-index: 1; background: #
   .hud__bottom { left: 14px; right: 14px; bottom: 4px; gap: 10px; font-size: 9px; }
   .hud__bottom [data-hud="mm"] { display: none; }
   .roll__meta { bottom: 54px; }
+  .roll__skip { top: 84px; padding: 10px 14px; font-size: 11px; }
   .set__head { grid-template-columns: 1fr; }
   .grid { columns: 2; column-gap: 8px; }
   .ph { margin-bottom: 8px; }
