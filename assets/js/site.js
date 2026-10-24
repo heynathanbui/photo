@@ -46,6 +46,13 @@
     ScrollTrigger.create({ trigger: '.roll', pin: '.roll__pin', start: 'top top', end: '+=520%', onUpdate: (s) => { NB.rollP = s.progress; } });
     gsap.from('.roll__ui > *', { autoAlpha: 0, y: 30, stagger: .1, scrollTrigger: { trigger: '.roll', start: 'top 40%', toggleActions: 'play none none reverse' } });
     gsap.to('.roll__ui', { autoAlpha: 0, scrollTrigger: { trigger: '.roll', start: 'top -60%', end: 'top -110%', scrub: true } });
+    // the skip button pops in as the roll arrives, and Esc does the same thing
+    gsap.from('.roll__skip', { autoAlpha: 0, scale: .6, y: -20, duration: .7, ease: 'back.out(2)', scrollTrigger: { trigger: '.roll', start: 'top 30%', toggleActions: 'play none none reverse' } });
+    addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape' || document.querySelector('.lb[open]')) return;
+      const r = document.querySelector('.roll').getBoundingClientRect();
+      if (r.top < innerHeight * .5 && r.bottom > innerHeight * .5) document.querySelector('.roll__skip').click();
+    });
   }
 
   // ---------- intro: shutter opens once the lens has its first photos ----------
@@ -78,7 +85,10 @@
       }),
     });
   }
-  gsap.utils.toArray('.set__head, .offer__grid .card, .steps li, .about__grid > *, .book__grid > *').forEach((el) => {
+  // recent-events ticker: duplicate the items so the loop is seamless
+  const track = document.querySelector('.recent__track');
+  if (track) [...track.children].forEach((n) => { const c = n.cloneNode(true); c.setAttribute('aria-hidden', 'true'); track.appendChild(c); });
+  gsap.utils.toArray('.set__head, .tips, .set__cta, .offer__grid .card, .steps li, .faq__grid > *, .about__grid > *, .book__grid > *').forEach((el) => {
     gsap.from(el, { autoAlpha: 0, y: 40, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
   });
 
@@ -200,7 +210,7 @@
       e.preventDefault();
       const d = Object.fromEntries(new FormData(form));
       const subject = `Photo enquiry: ${d.type}${d.date ? ' on ' + d.date : ''}`;
-      const body = [`Hi Nathan,`, ``, `Shoot: ${d.type}`, `Date: ${d.date || 'flexible'}`, ``, d.msg || '', ``, `${d.name}`, `${d.email}`].join('\n');
+      const body = [`Hi Nathan,`, ``, `Shoot: ${d.type}`, `Date: ${d.date || 'flexible'}`, `Where: ${d.where || 'not sure yet'}`, ``, d.msg || '', ``, `${d.name}`, `${d.email}`, d.phone ? `${d.phone}` : ''].join('\n');
       window.location.href = `mailto:buithanhnhatstudent3@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     });
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
