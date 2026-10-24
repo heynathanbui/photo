@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Be+Vietnam+Pro:wght@400;500;600&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css?v=20261024a">
+  <link rel="stylesheet" href="assets/css/site.css?v=20261024b">
   <script>document.documentElement.classList.add('js');</script>
   <script type="importmap">
     { "imports": {
@@ -72,7 +72,7 @@
     <div class="hero__pin">
       <img class="hero__fallback" src="assets/img/sydney-4407.jpg" alt="" width="1800" height="1200">
       <div class="wrap hero__copy">
-        <p class="eyebrow" data-intro>Photography · Sydney</p>
+        <p class="eyebrow" data-intro>Graduation, portrait &amp; event photographer · Sydney</p>
         <h1 class="hero__t"><span class="line" data-intro>Hi, I'm Nathan.</span><span class="line" data-intro><em>I take photos.</em></span></h1>
         <p class="hero__lede" data-intro>Grads, portraits, events, and a lot of sunsets at the harbour. I'm based in Sydney and happy to shoot anywhere around the city.</p>
         <div class="hero__cta" data-intro>
@@ -98,11 +98,21 @@
         <span class="roll__exif" data-roll="exif"></span>
       </div>
       <div class="roll__bar"><i data-roll="bar"></i></div>
-      <a class="roll__skip" href="#scenery" data-skip>Skip the roll <span aria-hidden="true">↓</span></a>
+      <a class="roll__skip" href="#scenery" data-skip>
+        <span class="roll__skip-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5l9 7-9 7z"/><path d="M12 5l9 7-9 7z"/></svg></span>
+        <span class="roll__skip-text"><b>Skip the roll</b><small>Go straight to the photos</small></span>
+        <kbd aria-hidden="true">Esc</kbd>
+      </a>
     </div>
   </section>
 
   <main class="paper">
+    <div class="recent" aria-label="Recent events">
+      <div class="recent__track">
+        <span class="recent__k">Recently shot</span>
+        <span>UAVS Sydney Go 2026</span><span>UAVS Sports Day 2026</span><span>Hackathon 2026</span><span>Đại hội 2026</span><span>USyd &amp; Macquarie graduations 2026</span><span>Cultural Day 2025</span><span>Serenade '24</span>
+      </div>
+    </div>
     <section class="set" id="scenery">
       <div class="wrap">
         <header class="set__head">
@@ -229,6 +239,7 @@
             <figcaption>Tree-lined street</figcaption>
           </figure>
         </div>
+        <p class="set__cta">Need photos of your café, venue or space? <a href="#book">Get in touch →</a></p>
       </div>
     </section>
 
@@ -361,6 +372,16 @@
             <figcaption>By the lamppost</figcaption>
           </figure>
         </div>
+        <aside class="tips" aria-labelledby="tips-t">
+          <h3 id="tips-t">Booking a grad shoot? A few things that help</h3>
+          <ol>
+            <li><b>Book early.</b> Grad weeks fill up fast, and the nicest light is late in the afternoon.</li>
+            <li><b>Pick up your gown first.</b> That way we're not rushing straight after the ceremony.</li>
+            <li><b>Bring something personal.</b> Flowers, a bear, your family's áo dài. It makes the photos yours.</li>
+            <li><b>Tell me who's coming.</b> If family or friends are joining, we'll plan the group photos ahead.</li>
+          </ol>
+          <a class="btn btn--solid" href="#book">Book a grad or portrait shoot</a>
+        </aside>
       </div>
     </section>
 
@@ -487,6 +508,7 @@
             <figcaption>Hands-on challenge</figcaption>
           </figure>
         </div>
+        <p class="set__cta">Running an event soon? <a href="#book">Let's talk →</a></p>
       </div>
     </section>
 
@@ -531,11 +553,52 @@
         </div>
         <p class="offer__rate">Prices depend on the shoot, so send me the details and I'll give you a quote.</p>
 
+        <h3 class="expect__t">What to expect</h3>
         <ol class="steps">
-          <li><b>Send me the details</b><span>The date, where it is, and what you need the photos for.</span></li>
-          <li><b>We make a plan</b><span>Where to shoot, what time, and a shot list if it's an event.</span></li>
-          <li><b>I shoot and edit</b><span>You get the edited photos in an online gallery.</span></li>
+          <li><b>Before</b><span>You send me the date and what you need. We agree on a place, a time and a price. For events, we go through a shot list.</span></li>
+          <li><b>On the day</b><span>For portraits and grads, I'll tell you where to stand and help with posing. At events, I mostly stay out of the way and catch what happens.</span></li>
+          <li><b>After</b><span>I go through everything, edit the best shots, and send you a link to an online gallery to download them.</span></li>
         </ol>
+      </div>
+    </section>
+
+    <section class="faq" aria-labelledby="faq-t">
+      <div class="wrap faq__grid">
+        <div>
+          <p class="eyebrow">FAQ</p>
+          <h2 class="faq__t" id="faq-t">Questions people <em>usually ask</em></h2>
+          <p class="faq__more">Something else? <a href="#book">Just ask me.</a></p>
+        </div>
+        <div class="faq__list">
+          <details>
+            <summary>How far ahead should I book?</summary>
+            <p>As early as you can for graduation weeks, because those days go quickly. For other shoots a week or two is usually fine, but message me anyway. Sometimes I'm free sooner.</p>
+          </details>
+          <details>
+            <summary>Where can we shoot?</summary>
+            <p>Anywhere around Sydney: your campus, the harbour, a park, your place. If you're not sure, I'll suggest a few spots that work for the time of day.</p>
+          </details>
+          <details>
+            <summary>I'm awkward in front of the camera. Is that okay?</summary>
+            <p>Completely. Most people are. I'll tell you where to stand and what to do with your hands, and we start with a few easy shots so you can warm up.</p>
+          </details>
+          <details>
+            <summary>How many photos will I get, and when?</summary>
+            <p>It depends on the shoot. Before we book, I'll tell you roughly how many edited photos to expect and when they'll be ready.</p>
+          </details>
+          <details>
+            <summary>Can I post the photos on Instagram?</summary>
+            <p>Of course, that's what they're for. A tag is always appreciated.</p>
+          </details>
+          <details>
+            <summary>How much does it cost?</summary>
+            <p>It depends on how long the shoot is and what you need. Send me the details through the form below and I'll get back to you with a quote.</p>
+          </details>
+          <details>
+            <summary>Bạn nói tiếng Việt được không?</summary>
+            <p>Được nha! Mình nói được tiếng Việt, nên bạn cứ nhắn bằng tiếng Việt hoặc tiếng Anh đều được.</p>
+          </details>
+        </div>
       </div>
     </section>
 
@@ -578,7 +641,9 @@
             </select>
           </label>
           <label>Date<input name="date" type="date"></label>
-          <label class="form__wide">Where, and what are the photos for?<textarea name="msg" rows="4"></textarea></label>
+          <label>Where?<input name="where" placeholder="e.g. USyd, the Opera House"></label>
+          <label>Phone <span class="form__opt">(optional)</span><input name="phone" type="tel" autocomplete="tel"></label>
+          <label class="form__wide">Anything else I should know?<textarea name="msg" rows="4" placeholder="How many people, what the photos are for, ideas you have"></textarea></label>
           <button class="btn btn--solid form__wide" type="submit">Send enquiry</button>
           <p class="form__note form__wide">Opens your email app with the details filled in.</p>
         </form>
@@ -604,7 +669,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="assets/js/site.js?v=20261024a"></script>
-  <script type="module" src="assets/js/scene.js?v=20261024a"></script>
+  <script src="assets/js/site.js?v=20261024b"></script>
+  <script type="module" src="assets/js/scene.js?v=20261024b"></script>
 </body>
 </html>
