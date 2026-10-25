@@ -122,7 +122,7 @@
   // recent-events ticker: duplicate the items so the loop is seamless
   const track = document.querySelector('.recent__track');
   if (track) [...track.children].forEach((n) => { const c = n.cloneNode(true); c.setAttribute('aria-hidden', 'true'); track.appendChild(c); });
-  gsap.utils.toArray('.set__head, .tips, .set__cta, .offer__grid .card, .steps li, .about__grid > *, .book__grid > *').forEach((el) => {
+  gsap.utils.toArray('.set__head, .tips, .set__cta, .offer__grid .card, .steps li, .about__grid > *, .reach__card').forEach((el) => {
     gsap.from(el, { autoAlpha: 0, y: 40, duration: 1, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 88%' } });
   });
 
