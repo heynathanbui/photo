@@ -428,3 +428,16 @@ a { color: inherit; }
 :is(.alb--contact, .alb--blinds, .alb--skyline, .alb--route, .alb--terminal, .alb--ink) .ap:not(.ap--land) .ap__a { width: fit-content; max-width: 100%; margin-inline: auto; }
 :is(.alb--contact, .alb--blinds, .alb--skyline, .alb--route, .alb--terminal, .alb--ink) .ap:not(.ap--land) img { width: auto; max-height: 86vh; }
 .alb--terminal .ap:not(.ap--land) .ap__a { margin-block: 16px; }
+
+/* ================= arriving from an album card / leaving to the next album ================= */
+.into, .leave { position: fixed; z-index: 400; overflow: hidden; background: var(--acc, #111); }
+.into { inset: 0; animation: into-failsafe .5s 3s forwards; }
+.into img, .leave img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.into__iris, .leave__iris { --r: 0vmax; position: absolute; inset: 0; z-index: 3; background: #0a0505; -webkit-mask: radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 1px)); mask: radial-gradient(circle at 50% 50%, transparent var(--r), #000 calc(var(--r) + 1px)); }
+.leave__iris { --r: 150vmax; }
+.leave::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(10, 4, 3, .7)); }
+.leave__t { position: absolute; left: clamp(20px, 6vw, 90px); bottom: clamp(28px, 9vh, 90px); z-index: 2; display: grid; gap: 10px; color: #fff8ec; opacity: 0; }
+.leave__t small { font: 500 12px/1 'JetBrains Mono', monospace; letter-spacing: .22em; text-transform: uppercase; color: var(--acc); }
+.leave__t b { font: 400 clamp(40px, 7vw, 108px)/.95 'Fraunces', serif; }
+.leave__t b em { font-style: italic; }
+@keyframes into-failsafe { to { opacity: 0; visibility: hidden; } }
