@@ -250,3 +250,16 @@
     document.querySelectorAll('[data-year]').forEach((el) => { el.textContent = new Date().getFullYear(); });
   }
 })();
+
+// album cards: hovering flips through a few frames from that album
+(() => {
+  document.querySelectorAll('.acard').forEach((card) => {
+    const cover = card.querySelector('.acard__cover');
+    let list = []; try { list = JSON.parse(card.dataset.thumbs || '[]'); } catch (e) {}
+    if (!cover || list.length < 2) return;
+    let t = 0, i = 0;
+    list.slice(1).forEach((src) => { const im = new Image(); card.addEventListener('pointerenter', () => { im.src = src; }, { once: true }); });
+    card.addEventListener('pointerenter', () => { clearInterval(t); t = setInterval(() => { i = (i + 1) % list.length; cover.src = list[i]; }, 650); });
+    card.addEventListener('pointerleave', () => { clearInterval(t); i = 0; cover.src = list[0]; });
+  });
+})();
