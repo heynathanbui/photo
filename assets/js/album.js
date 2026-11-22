@@ -26,6 +26,21 @@
       document.querySelectorAll('a[href^="#"]').forEach((a) => a.addEventListener('click', (e) => { const t = document.querySelector(a.getAttribute('href')); if (t) { e.preventDefault(); lenis.scrollTo(t); } }));
     }
   }
+
+  // arriving from a card on the home page: the iris opens on that photo, then it lifts away
+  const into = document.querySelector('.into');
+  const ARR = into && G ? 1.25 : 0;
+  if (into) {
+    if (!G) into.remove();
+    else {
+      const im = into.querySelector('img');
+      gsap.timeline({ onComplete: () => into.remove() })
+        .to(into.querySelector('.into__iris'), { '--r': '150vmax', duration: .9, ease: 'power3.out' }, .05)
+        .fromTo(im, { scale: 1.08 }, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
+        .to(into, { clipPath: 'inset(0% 0% 100% 0%)', duration: .9, ease: 'expo.inOut' }, .85)
+        .to(im, { yPercent: -14, duration: .9, ease: 'expo.inOut' }, .85);
+    }
+  }
   // reveal helper: runs fn once when the figure scrolls in (or straight away without motion)
   const onIn = (f, fn, start = 'top 80%') => { if (!G) return; ScrollTrigger.create({ trigger: f, start, once: true, onEnter: () => fn(f) }); };
   const img = (f) => f.querySelector('img');
@@ -297,11 +312,11 @@
     const stage = el('div', 'stage', '<div class="cur cur--l"><i></i></div><div class="cur cur--r"><i></i></div><div class="valance"></div>');
     document.querySelector('.ahero').append(stage);
     if (!G) return;
-    gsap.fromTo('.cur--l i', { xPercent: 0 }, { xPercent: -70, duration: 2, ease: 'power3.inOut', delay: .3 });
-    gsap.fromTo('.cur--r i', { xPercent: 0 }, { xPercent: 70, duration: 2, ease: 'power3.inOut', delay: .3 });
+    gsap.fromTo('.cur--l i', { xPercent: 0 }, { xPercent: -70, duration: 2, ease: 'power3.inOut', delay: .3 + ARR });
+    gsap.fromTo('.cur--r i', { xPercent: 0 }, { xPercent: 70, duration: 2, ease: 'power3.inOut', delay: .3 + ARR });
     gsap.to('.cur--l', { xPercent: -40, ease: 'none', scrollTrigger: { trigger: '.ahero', start: 'top top', end: 'bottom top', scrub: true } });
     gsap.to('.cur--r', { xPercent: 40, ease: 'none', scrollTrigger: { trigger: '.ahero', start: 'top top', end: 'bottom top', scrub: true } });
-    gsap.from('[data-in]', { opacity: 0, y: 30, duration: 1, stagger: .1, delay: 1.1, ease: 'power3.out', overwrite: true });
+    gsap.from('[data-in]', { opacity: 0, y: 30, duration: 1, stagger: .1, delay: 1.1 + ARR, ease: 'power3.out', overwrite: true });
     figs.forEach((f) => {
       gsap.set(link(f), { opacity: 0, scale: .94 }); gsap.set(img(f), { filter: 'brightness(0)' });
       onIn(f, () => {
@@ -348,8 +363,41 @@
 
   // ================= run =================
   if (T[theme]) T[theme]();
-  if (G && theme !== 'curtain') gsap.from('[data-in]', { opacity: 0, y: 36, duration: 1.1, stagger: .09, ease: 'power3.out', delay: .1 });
+  if (G && theme !== 'curtain') gsap.from('[data-in]', { opacity: 0, y: 36, duration: 1.1, stagger: .09, ease: 'power3.out', delay: .1 + ARR });
   if (G) addEventListener('load', () => ScrollTrigger.refresh());
+
+
+  // the way into an album: the picture you clicked grows to fill the screen, the title comes up, then the iris closes
+  const leaveTo = (href, img, title, kicker, acc, titleIsHTML) => {
+    const r = img.getBoundingClientRect();
+    const small = img.currentSrc || img.src;
+    const full = small.replace(/-sm\.jpg(\?.*)?$/, '.jpg');
+    const ov = document.createElement('div'); ov.className = 'leave'; ov.style.setProperty('--acc', acc || '#111');
+    const im = new Image(); im.alt = ''; im.src = small; ov.appendChild(im);
+    const big = new Image(); big.onload = () => { im.src = full; }; big.src = full;
+    const t = document.createElement('div'); t.className = 'leave__t';
+    const k = document.createElement('small'); k.textContent = kicker;
+    const b = document.createElement('b'); if (titleIsHTML) b.innerHTML = title; else b.textContent = title;
+    t.append(k, b);
+    const iris = document.createElement('i'); iris.className = 'leave__iris';
+    ov.append(t, iris);
+    Object.assign(ov.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    document.body.appendChild(ov);
+    try { sessionStorage.setItem('nb-into', JSON.stringify({ src: new URL(full, location.href).href, acc })); } catch (e) {}
+    gsap.timeline({ onComplete: () => { location.href = href; } })
+      .to(ov, { left: 0, top: 0, width: innerWidth, height: innerHeight, duration: .8, ease: 'expo.inOut' })
+      .fromTo(im, { scale: 1.18 }, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
+      .fromTo(t, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, ease: 'power3.out' }, .55)
+      .to(iris, { '--r': '0vmax', duration: .55, ease: 'power3.in' }, 1.2);
+  };
+  addEventListener('pageshow', (e) => { if (e.persisted) document.querySelectorAll('.leave').forEach((n) => n.remove()); });
+  const plainClick = (e) => !(e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
+  const nextCard = document.querySelector('.anext__card');
+  if (G && nextCard) nextCard.addEventListener('click', (e) => {
+    if (!plainClick(e)) return;
+    e.preventDefault();
+    leaveTo(nextCard.href, nextCard.querySelector('img'), nextCard.querySelector('.anext__txt b').textContent, 'Next album', getComputedStyle(nextCard).getPropertyValue('--nacc').trim(), false);
+  });
 
   // ================= lightbox =================
   const lb = document.querySelector('.lb');

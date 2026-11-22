@@ -113,6 +113,20 @@
   const fxOf = (fig) => FX[fig.closest('.set').dataset.fx] || FX.focus;
   document.querySelectorAll('.set--events .ph').forEach((fig) => { const f = document.createElement('i'); f.className = 'flash'; fig.appendChild(f); });
   if (!reduce) {
+    // album cards: the cover reveals with its section's effect, the card behind it fans in after
+    document.querySelectorAll('.acard').forEach((card) => {
+      gsap.set(card.querySelector('.acard__cover'), fxOf(card).from);
+      gsap.set(card.querySelectorAll('.acard__stack img:not(.acard__cover)'), { autoAlpha: 0 });
+      gsap.set(card.querySelector('.acard__meta'), { autoAlpha: 0, x: -16 });
+    });
+    ScrollTrigger.batch('.acard', {
+      start: 'top 88%', once: true,
+      onEnter: (batch) => batch.forEach((card, i) => gsap.delayedCall(i * .14, () => {
+        fxOf(card).play(card.querySelector('.acard__cover'), card);
+        gsap.to(card.querySelectorAll('.acard__stack img:not(.acard__cover)'), { autoAlpha: 1, duration: .6, stagger: .12, delay: .5, clearProps: 'opacity,visibility' });
+        gsap.to(card.querySelector('.acard__meta'), { autoAlpha: 1, x: 0, duration: .8, delay: .35, ease: 'power3.out', clearProps: 'all' });
+      })),
+    });
     document.querySelectorAll('.ph').forEach((fig) => gsap.set(fig.querySelector('img'), fxOf(fig).from));
     ScrollTrigger.batch('.ph', {
       start: 'top 92%', once: true,
@@ -148,7 +162,7 @@
   function q(s) { return document.querySelector(s); }
   const visible = new Set();
   const io = new IntersectionObserver((es) => es.forEach((e) => e.isIntersecting ? visible.add(e.target) : visible.delete(e.target)), { rootMargin: '-30% 0px -30% 0px' });
-  document.querySelectorAll('.ph').forEach((f) => io.observe(f));
+  document.querySelectorAll('.ph, .acard').forEach((f) => io.observe(f));
   let last = '';
   const setHud = (o) => {
     const key = o.f + o.ss + o.iso + o.mm + o.n; if (key === last) return; last = key;
@@ -162,7 +176,7 @@
       let best = null, bd = Infinity;
       visible.forEach((f) => { const r = f.getBoundingClientRect(), d = Math.abs(r.top + r.height / 2 - innerHeight / 2); if (d < bd && !f.hidden) { bd = d; best = f; } });
       if (best) {
-        const [fs, ss, iso, mm] = best.querySelector('a').dataset.exif.split(' · ');
+        const [fs, ss, iso, mm] = (best.matches('a') ? best : best.querySelector('a')).dataset.exif.split(' · ');
         setHud({ f: fs.replace('f/', 'F'), ss, iso, mm, n: best.dataset.n });
       }
     }
@@ -179,10 +193,10 @@
     let target = null, mx = st.x, my = st.y;
     addEventListener('pointermove', (e) => { mx = e.clientX; my = e.clientY; }, { passive: true });
     document.addEventListener('pointerover', (e) => {
-      const a = e.target.closest('.ph a, .strip__frame');
+      const a = e.target.closest('.ph a, .strip__frame, .acard__stack');
       if (a !== target) {
         target = a; af.classList.toggle('is-locked', !!a);
-        if (a && a.dataset.exif) label.textContent = a.dataset.exif; else label.textContent = '';
+        const ex = a && (a.dataset.exif || (a.closest('.acard') || {}).dataset?.exif); label.textContent = ex || '';
       }
       af.classList.toggle('is-link', !a && !!e.target.closest('a, button, .chip, input, select, textarea'));
     });
@@ -261,5 +275,85 @@
     list.slice(1).forEach((src) => { const im = new Image(); card.addEventListener('pointerenter', () => { im.src = src; }, { once: true }); });
     card.addEventListener('pointerenter', () => { clearInterval(t); t = setInterval(() => { i = (i + 1) % list.length; cover.src = list[i]; }, 650); });
     card.addEventListener('pointerleave', () => { clearInterval(t); i = 0; cover.src = list[0]; });
+  });
+})();
+
+// 3D film rolls (one per section) + the transition into an album
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const G = window.gsap && window.ScrollTrigger && !reduce;
+  if (!G) return;
+  const fine = matchMedia('(pointer: fine)').matches;
+
+  // the way into an album: the picture you clicked grows to fill the screen, the title comes up, then the iris closes
+  const leaveTo = (href, img, title, kicker, acc, titleIsHTML) => {
+    const r = img.getBoundingClientRect();
+    const small = img.currentSrc || img.src;
+    const full = small.replace(/-sm\.jpg(\?.*)?$/, '.jpg');
+    const ov = document.createElement('div'); ov.className = 'leave'; ov.style.setProperty('--acc', acc || '#111');
+    const im = new Image(); im.alt = ''; im.src = small; ov.appendChild(im);
+    const big = new Image(); big.onload = () => { im.src = full; }; big.src = full;
+    const t = document.createElement('div'); t.className = 'leave__t';
+    const k = document.createElement('small'); k.textContent = kicker;
+    const b = document.createElement('b'); if (titleIsHTML) b.innerHTML = title; else b.textContent = title;
+    t.append(k, b);
+    const iris = document.createElement('i'); iris.className = 'leave__iris';
+    ov.append(t, iris);
+    Object.assign(ov.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
+    document.body.appendChild(ov);
+    try { sessionStorage.setItem('nb-into', JSON.stringify({ src: new URL(full, location.href).href, acc })); } catch (e) {}
+    gsap.timeline({ onComplete: () => { location.href = href; } })
+      .to(ov, { left: 0, top: 0, width: innerWidth, height: innerHeight, duration: .8, ease: 'expo.inOut' })
+      .fromTo(im, { scale: 1.18 }, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
+      .fromTo(t, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, ease: 'power3.out' }, .55)
+      .to(iris, { '--r': '0vmax', duration: .55, ease: 'power3.in' }, 1.2);
+  };
+  addEventListener('pageshow', (e) => { if (e.persisted) document.querySelectorAll('.leave').forEach((n) => n.remove()); });
+  const plainClick = (e) => !(e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
+
+  document.querySelectorAll('.reel').forEach((reel) => {
+    const stage = reel.querySelector('.reel__stage'), world = reel.querySelector('.reel__world');
+    const ring = reel.querySelector('.reel__ring'), cam = reel.querySelector('.cam'), burst = reel.querySelector('.reel__burst');
+    const tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: reel, start: 'top bottom', end: 'bottom top', scrub: 1 } });
+    if (reel.classList.contains('reel--people')) {
+      // portraits: the camera turns on its side partway through
+      tl.fromTo(ring, { '--spin': '-30deg' }, { '--spin': '220deg', duration: 1 }, 0)
+        .fromTo(world, { '--yaw': '-40deg' }, { '--yaw': '-14deg', duration: 1 }, 0)
+        .fromTo(cam, { '--roll': '0deg' }, { '--roll': '-90deg', duration: .3, ease: 'power2.inOut' }, .3);
+    } else if (reel.classList.contains('reel--events')) {
+      // events: the roll runs fast and the flash fires three times
+      const flashFace = reel.querySelector('.cam__flash .cf--fr');
+      const fire = () => {
+        gsap.fromTo(burst, { opacity: 1 }, { opacity: 0, duration: .8, ease: 'expo.out', overwrite: true });
+        gsap.fromTo(flashFace, { filter: 'brightness(2.2)' }, { filter: 'brightness(1)', duration: .6, ease: 'expo.out', overwrite: true });
+      };
+      tl.fromTo(ring, { '--spin': '0deg' }, { '--spin': '-470deg', duration: 1 }, 0)
+        .fromTo(world, { '--yaw': '-52deg' }, { '--yaw': '-18deg', duration: 1 }, 0);
+      [.34, .5, .66].forEach((p) => tl.call(fire, null, p));
+    } else {
+      // landscapes: a slow wind-on, like panning across a view
+      tl.fromTo(ring, { '--spin': '40deg' }, { '--spin': '-290deg', duration: 1 }, 0)
+        .fromTo(world, { '--yaw': '-48deg' }, { '--yaw': '-12deg', duration: 1 }, 0);
+    }
+    if (fine) {
+      stage.addEventListener('pointermove', (e) => {
+        const b = stage.getBoundingClientRect();
+        const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
+        gsap.to(world, { '--py': x * 16 + 'deg', '--pp': -y * 10 + 'deg', duration: .8, ease: 'power2.out' });
+      });
+      stage.addEventListener('pointerleave', () => gsap.to(world, { '--py': '0deg', '--pp': '0deg', duration: 1, ease: 'power2.out' }));
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    const a = e.target.closest('a.acard, a.reel__f');
+    if (!a || !plainClick(e)) return;
+    e.preventDefault();
+    const acc = getComputedStyle(a).getPropertyValue('--acc').trim();
+    if (a.classList.contains('acard')) {
+      leaveTo(a.href, a.querySelector('.acard__cover'), a.querySelector('.acard__meta b').innerHTML, a.querySelector('.acard__meta small').textContent, acc, true);
+    } else {
+      leaveTo(a.href, a.querySelector('img'), (a.getAttribute('aria-label') || '').replace(/^Open album: /, ''), 'Frame ' + a.querySelector('em').textContent, acc, false);
+    }
   });
 })();
