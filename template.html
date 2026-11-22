@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Be+Vietnam+Pro:wght@400;500;600&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css?v=20261122c">
+  <link rel="stylesheet" href="assets/css/site.css?v=20261122e">
   <script>document.documentElement.classList.add('js');</script>
   <script type="importmap">
     { "imports": {
@@ -137,18 +137,12 @@
             <p class="set__for"><b>Good for</b> cafés and venues, travel pages, website photos</p>
           </div>
         </header>
+{{REEL_SCENERY}}
         <div class="albums">
-          <p class="albums__k"><span>Albums</span><small>Each one opens on its own page</small></p>
+          <p class="albums__k"><span>{{N_ALBUMS_SCENERY}} albums</span><small>Open one to see the whole set</small></p>
           <div class="albums__row">
 {{ALBUMS_SCENERY}}
           </div>
-        </div>
-        <p class="browse__k">Or browse every photo</p>
-        <div class="chips" role="group" aria-label="Filter landscapes">
-{{CHIPS_SCENERY}}
-        </div>
-        <div class="grid">
-{{SCENERY}}
         </div>
         <p class="set__cta">Need photos of your café, venue or space? <a href="#book">Get in touch →</a></p>
       </div>
@@ -167,22 +161,16 @@
           <span class="set__no">02 / Portrait</span>
           <h2 class="set__t">Portraits, grads <em>and concepts</em></h2>
           <div class="set__side">
-            <p>Grad days at USyd and Macquarie, close-up portraits, and a styled concept shoot under the jacarandas. Pick a filter to see just one kind. I'll find a spot with nice light and help with posing if you want it.</p>
+            <p>Grad days at USyd and Macquarie, close-up portraits, and a styled concept shoot under the jacarandas. I'll find a spot with nice light and help with posing if you want it.</p>
             <p class="set__for"><b>Good for</b> graduations, portraits, concept and styled shoots, LinkedIn photos</p>
           </div>
         </header>
+{{REEL_PEOPLE}}
         <div class="albums">
-          <p class="albums__k"><span>Albums</span><small>Each one opens on its own page</small></p>
+          <p class="albums__k"><span>{{N_ALBUMS_PEOPLE}} albums</span><small>Open one to see the whole set</small></p>
           <div class="albums__row">
 {{ALBUMS_PEOPLE}}
           </div>
-        </div>
-        <p class="browse__k">Or browse every photo</p>
-        <div class="chips" role="group" aria-label="Filter portraits">
-{{CHIPS_PEOPLE}}
-        </div>
-        <div class="grid">
-{{PEOPLE}}
         </div>
         <aside class="tips" aria-labelledby="tips-t">
           <h3 id="tips-t">Booking a grad shoot? A few things that help</h3>
@@ -214,18 +202,12 @@
             <p class="set__for"><b>Good for</b> student societies, launches, performances, sports days, community events</p>
           </div>
         </header>
+{{REEL_EVENTS}}
         <div class="albums">
-          <p class="albums__k"><span>Albums</span><small>Each one opens on its own page</small></p>
+          <p class="albums__k"><span>{{N_ALBUMS_EVENTS}} albums</span><small>Open one to see the whole set</small></p>
           <div class="albums__row">
 {{ALBUMS_EVENTS}}
           </div>
-        </div>
-        <p class="browse__k">Or browse every photo</p>
-        <div class="chips" role="group" aria-label="Filter events">
-{{CHIPS_EVENTS}}
-        </div>
-        <div class="grid">
-{{EVENTS}}
         </div>
         <p class="set__cta">Running an event soon? <a href="#book">Let's talk →</a></p>
       </div>
@@ -327,7 +309,7 @@
   <footer class="footer">
     <div class="wrap">
       <span>© <span data-year>2026</span> Thanh (Nathan) Nhật Bùi · Photography · <a href="https://www.instagram.com/nath._.pogg/" target="_blank" rel="noopener">Instagram</a></span>
-      <span>Landscape {{N_SCENERY}} · Portrait {{N_PEOPLE}} · Events {{N_EVENTS}} · Shot on Fujifilm X-T30 II</span>
+      <span>{{N_ALBUMS}} albums · {{N_ALBUM_PHOTOS}} photos · Shot on Fujifilm X-T30 II</span>
     </div>
   </footer>
 
@@ -335,7 +317,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="assets/js/site.js?v=20261122a"></script>
+  <script src="assets/js/site.js?v=20261122e"></script>
   <script type="module" src="assets/js/scene.js?v=20261026a"></script>
 </body>
 </html>

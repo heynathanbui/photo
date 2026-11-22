@@ -234,12 +234,15 @@ def plain(t):
     return t.replace("*", "")
 
 
-def album_card(a, i):
+def album_card(a, i, lead=False):
     cover = a.get("cover", a["photos"][0])
     thumbs = [f"assets/img/{n}-sm.jpg" for n in [cover] + [p for p in a["photos"] if p != cover]]
-    return f"""          <a class="acard" href="albums/{a['slug']}/" style="--acc:{a['accent']}" data-thumbs='{json.dumps(thumbs[:6])}'>
-            <span class="acard__stack"><img src="{thumbs[2 % len(thumbs)]}" alt="" loading="lazy"><img src="{thumbs[1]}" alt="" loading="lazy"><img class="acard__cover" src="{thumbs[0]}" alt="" loading="lazy"></span>
-            <span class="acard__meta"><small>Album {i:02d} · {len(a['photos'])} photos</small><b>{stars(a['title'])}</b><span>{html.escape(a['where'])} · {html.escape(a['when'])}</span></span>
+    exif = html.escape(ALL[cover][2])
+    n = list(ALL).index(cover) + 1
+    cls = "acard acard--lead" if lead else "acard"
+    return f"""          <a class="{cls}" href="albums/{a['slug']}/" style="--acc:{a['accent']}" data-thumbs='{json.dumps(thumbs[:6])}' data-exif="{exif}" data-n="{n:03d}">
+            <span class="acard__stack"><img src="{thumbs[2 % len(thumbs)]}" alt="" loading="lazy"><img src="{thumbs[1]}" alt="" loading="lazy"><img class="acard__cover" src="{thumbs[0]}" alt="" loading="lazy"><i class="flash"></i></span>
+            <span class="acard__meta"><small>Album {i:02d} · {len(a['photos'])} photos</small><b>{stars(a['title'])}</b><span>{html.escape(a['where'])} · {html.escape(a['when'])}</span><span class="acard__intro">{html.escape(a['intro'])}</span></span>
             <span class="acard__go" aria-hidden="true">Open album →</span>
           </a>"""
 
@@ -255,19 +258,117 @@ def album_photo(n, i, time=None):
       </figure>"""
 
 
+
+# ---------- 3D camera + film roll, one per section ----------
+def cuboid(cls, w, h, d, x=0, y=0, z=0):
+    hw, hh, hd = w / 2, h / 2, d / 2
+    faces = [
+        ("fr", w, h, 0, 0, f"translateZ({hd}px)"),
+        ("bk", w, h, 0, 0, f"rotateY(180deg) translateZ({hd}px)"),
+        ("r", d, h, (w - d) / 2, 0, f"rotateY(90deg) translateZ({hw}px)"),
+        ("l", d, h, (w - d) / 2, 0, f"rotateY(-90deg) translateZ({hw}px)"),
+        ("t", w, d, 0, (h - d) / 2, f"rotateX(90deg) translateZ({hh}px)"),
+        ("b", w, d, 0, (h - d) / 2, f"rotateX(-90deg) translateZ({hh}px)"),
+    ]
+    inner = "".join(f'<i class="cf cf--{n}" style="width:{fw}px;height:{fh}px;left:{fl}px;top:{ft}px;transform:{tr}"></i>' for n, fw, fh, fl, ft, tr in faces)
+    return f'<b class="cub {cls}" style="width:{w}px;height:{h}px;margin:{-hh}px 0 0 {-hw}px;transform:translate3d({x}px,{y}px,{z}px)">{inner}</b>'
+
+
+def discs(cls, r, n, step, x, y, z0, axis="z", kinds=None):
+    out = []
+    for k in range(n):
+        kind = kinds(k) if kinds else ""
+        if axis == "z":
+            tr = f"translate3d({x}px,{y}px,{z0 + k * step}px)"
+        else:  # stacked upward (dials)
+            tr = f"translate3d({x}px,{y - k * step}px,{z0}px) rotateX(90deg)"
+        out.append(f'<i class="dk {cls} {kind}" style="width:{2*r}px;height:{2*r}px;margin:{-r}px 0 0 {-r}px;transform:{tr}"></i>')
+    return "".join(out)
+
+
+def lens_ring(k):
+    if k < 2: return "dk--mount"
+    if 6 <= k <= 12: return "dk--knurl"
+    if k in (16, 17): return "dk--ap"
+    return ""
+
+
+def camera(key):
+    parts = [cuboid("cam__body", 300, 176, 80),
+             cuboid("cam__hump", 96, 44, 66, x=18, y=-110, z=-4),
+             cuboid("cam__grip", 50, 128, 24, x=-118, y=22, z=52),
+             cuboid("cam__shoe", 40, 6, 40, x=18, y=-135, z=-4),
+             discs("dk--lens", 58, 24, 5, 18, 18, 40, kinds=lens_ring),
+             '<i class="dk dk--glass" style="width:104px;height:104px;margin:-52px 0 0 -52px;transform:translate3d(18px,18px,156px)"></i>',
+             discs("dk--dial", 21, 4, 4, -92, -88, 2, axis="y", kinds=lambda k: "dk--knurl" if k < 3 else "dk--cap"),
+             discs("dk--dial", 18, 4, 4, 108, -88, 6, axis="y", kinds=lambda k: "dk--knurl" if k < 3 else "dk--cap"),
+             discs("dk--btn", 8, 3, 3, -122, -88, 26, axis="y")]
+    if key == "EVENTS":
+        parts.append(cuboid("cam__flash", 64, 52, 46, x=18, y=-164, z=-4))
+    return "".join(parts)
+
+
+ROLL_NO = {"SCENERY": "01", "PEOPLE": "02", "EVENTS": "03"}
+ROLL_LINE = {
+    "SCENERY": "The landscape albums, loaded on one roll. It winds on as you scroll.",
+    "PEOPLE": "Portraits get shot with the camera turned on its side. Scroll and it turns.",
+    "EVENTS": "Event nights mean flash. Scroll and it fires.",
+}
+KIND_WORD = {"SCENERY": "Landscape", "PEOPLE": "Portrait", "EVENTS": "Events"}
+
+
+def reel(key):
+    mine = [(i + 1, a) for i, a in enumerate(ALBUMS) if a["kind"] == key]
+    picks, depth = [], 0
+    while len(picks) < 10:
+        for no, a in mine:
+            cov = a.get("cover", a["photos"][0])
+            order = [cov] + [x for x in a["photos"] if x != cov]
+            if depth < len(order) and len(picks) < 10:
+                picks.append((a, order[depth]))
+        depth += 1
+    frames = []
+    for k, (a, ph) in enumerate(picks):
+        t = html.escape(plain(a["title"]))
+        frames.append(
+            f'          <a class="reel__f" href="albums/{a["slug"]}/" style="--i:{k};--acc:{a["accent"]}" aria-label="Open album: {t}">'
+            f'<span class="reel__fr"><img src="assets/img/{ph}-sm.jpg" alt="" loading="lazy" decoding="async"><em>{k + 1}A</em><small>{t}</small></span>'
+            f'<span class="reel__bk"></span></a>')
+    ring = "\n".join(frames)
+    return f"""        <div class="reel reel--{key.lower()}">
+          <div class="reel__copy">
+            <p class="reel__k"><b>Roll {ROLL_NO[key]}</b><span>{KIND_WORD[key]} · {len(mine)} albums · 10 frames</span></p>
+            <p class="reel__line">{ROLL_LINE[key]}</p>
+            <p class="reel__hint">Click a frame to open its album</p>
+          </div>
+          <div class="reel__stage">
+            <div class="reel__world">
+              <i class="reel__floor"></i>
+              <div class="cam" aria-hidden="true">{camera(key)}</div>
+              <div class="reel__ring">
+{ring}
+              </div>
+            </div>
+            <i class="reel__burst" aria-hidden="true"></i>
+          </div>
+        </div>"""
+
 out = (ROOT / "template.html").read_text()
-for key, items in (("SCENERY", SCENERY), ("PEOPLE", PEOPLE), ("EVENTS", EVENTS)):
-    out = out.replace(f"{{{{{key}}}}}", "\n".join(figure(*p) for p in items))
-    out = out.replace(f"{{{{CHIPS_{key}}}}}", chips(key))
-    out = out.replace(f"{{{{N_{key}}}}}", f"{len(items):02d}")
 for key in ("SCENERY", "PEOPLE", "EVENTS"):
-    out = out.replace(f"{{{{ALBUMS_{key}}}}}", "\n".join(album_card(a, i + 1) for i, a in enumerate(ALBUMS) if a["kind"] == key))
+    mine = [(i + 1, a) for i, a in enumerate(ALBUMS) if a["kind"] == key]
+    # 5 albums -> two big lead cards, then three; 3 albums -> one even row
+    leads = 2 if len(mine) % 3 == 2 else 0
+    out = out.replace(f"{{{{ALBUMS_{key}}}}}", "\n".join(album_card(a, i, j < leads) for j, (i, a) in enumerate(mine)))
+    out = out.replace(f"{{{{N_ALBUMS_{key}}}}}", str(len(mine)))
+    out = out.replace(f"{{{{REEL_{key}}}}}", reel(key))
+out = out.replace("{{N_ALBUMS}}", str(len(ALBUMS)))
+out = out.replace("{{N_ALBUM_PHOTOS}}", str(sum(len(a["photos"]) for a in ALBUMS)))
 out = out.replace("{{N_ALL}}", f"{len(ALL):03d}")
 data = json.dumps({"roll": frames(ROLL), "hero": frames(HERO)}, ensure_ascii=False)
 out = out.replace("{{SCENE_DATA}}", data.replace("</", "<\\/"))
 assert not re.search(r"\{\{\w+\}\}", out), "unfilled placeholder"
 (ROOT / "index.html").write_text(out)
-print("index.html built:", len(SCENERY), "scenery,", len(PEOPLE), "people,", len(EVENTS), "events;", len(ROLL), "on the roll")
+print("index.html built:", len(ALBUMS), "album cards;", len(ROLL), "on the roll")
 
 atpl = (ROOT / "album.html").read_text()
 (ROOT / "albums").mkdir(exist_ok=True)
