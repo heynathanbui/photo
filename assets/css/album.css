@@ -1,0 +1,430 @@
+/* ==========================================================
+   Nathan Bui — album pages
+   One shared skeleton; each album sets its own palette, layout
+   and motion through body.alb--<theme>. Built from build.py.
+   ========================================================== */
+
+:root {
+  --oxblood: #6b1f24; --night: #120607; --cream: #f6e3cb; --paper: #fbf1e3; --gold: #c9a43f; --gold-soft: #e2c77a;
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "Be Vietnam Pro", system-ui, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+  --script: "Dancing Script", cursive;
+  --gutter: clamp(16px, 5vw, 80px);
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: clip; }
+:where(body.alb) { --bg: var(--paper); --fg: #2a0d10; --fg2: rgba(42, 13, 16, .72); --line: rgba(42, 13, 16, .16); }
+body.alb {
+  margin: 0; min-height: 100vh; background: var(--bg); color: var(--fg); font: 400 17px/1.6 var(--sans);
+  -webkit-font-smoothing: antialiased; overflow-x: clip;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--acc); outline-offset: 3px; }
+.ahero, .agal, .anext, .afoot { position: relative; z-index: 2; }
+.grain {
+  position: fixed; inset: -50%; z-index: 40; pointer-events: none; opacity: .06; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 1s steps(6) infinite;
+}
+@keyframes grain { 0%, 100% { transform: none; } 25% { transform: translate(-3%, 2%); } 50% { transform: translate(2%, -4%); } 75% { transform: translate(-4%, -1%); } }
+
+/* ---------- nav ---------- */
+.anav { position: fixed; top: 16px; left: 50%; z-index: 50; transform: translateX(-50%); display: flex; align-items: center; gap: 4px; max-width: calc(100% - 32px);
+  padding: 6px 6px 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(14px) saturate(1.3);
+  border: 1px solid var(--line); box-shadow: 0 10px 30px -16px rgba(0, 0, 0, .5); color: var(--fg); }
+.anav__brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; text-decoration: none; font: 500 16px/1 var(--serif); white-space: nowrap; }
+.anav__brand svg { width: 22px; height: 22px; color: var(--acc); }
+.anav__link { padding: 9px 14px; border-radius: 999px; text-decoration: none; font-size: 14px; font-weight: 500; white-space: nowrap; }
+.anav__link:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
+.anav__cta { background: var(--acc); color: #150707; }
+.anav__cta:hover { background: var(--acc); filter: brightness(1.08); }
+@media (max-width: 560px) { .anav__brand span { display: none; } .anav__link { padding: 9px 11px; font-size: 13px; } }
+
+/* ---------- hero ---------- */
+.ahero { min-height: 100svh; display: grid; align-items: end; padding: 120px var(--gutter) clamp(56px, 9vh, 100px); overflow: hidden; isolation: isolate; }
+.decor { position: absolute; inset: 0; z-index: -1; pointer-events: none; }
+.ahero__in { max-width: 1000px; }
+.ahero__k { margin: 0; font: 500 12px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--acc); }
+.ahero__t { margin: 16px 0 22px; font: 300 clamp(56px, 10.5vw, 172px)/.9 var(--serif); letter-spacing: -.025em; font-variation-settings: "opsz" 144, "SOFT" 50; text-wrap: balance; }
+.ahero__t em { font-style: italic; color: var(--acc); font-variation-settings: "opsz" 144, "SOFT" 100; }
+.ahero__meta { display: flex; flex-wrap: wrap; gap: 6px 0; margin: 0 0 18px; font: 500 12px/1.4 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--fg2); }
+.ahero__meta span + span::before { content: "·"; margin: 0 12px; color: var(--acc); }
+.ahero__lede { max-width: 56ch; margin: 0; font-size: clamp(17px, 1.35vw, 20px); line-height: 1.6; color: var(--fg2); }
+.ahero__down { position: absolute; right: var(--gutter); bottom: clamp(56px, 9vh, 100px); display: grid; justify-items: center; gap: 10px; text-decoration: none; font: 500 11px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--fg2); }
+.ahero__down i { width: 1px; height: 54px; background: linear-gradient(var(--acc), transparent); animation: drip 2.2s var(--ease) infinite; transform-origin: top; }
+@keyframes drip { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+@media (max-width: 760px) { .ahero__down { display: none; } }
+
+/* ---------- gallery base ---------- */
+.agal { padding: clamp(60px, 8vw, 130px) var(--gutter); }
+.agal__track { position: relative; max-width: 1320px; margin: 0 auto; display: grid; gap: clamp(44px, 6vw, 96px); }
+.ap { position: relative; margin: 0; }
+.ap__a { position: relative; display: block; overflow: hidden; cursor: zoom-in; }
+.ap img { width: 100%; height: auto; }
+.ap figcaption { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; margin-top: 12px; font-size: 14px; }
+.ap__n { font: 500 12px/1 var(--mono); color: var(--acc); }
+.ap figcaption b { font: 400 18px/1.3 var(--serif); }
+.ap figcaption small { margin-left: auto; font: 400 11px/1.4 var(--mono); color: var(--fg2); }
+
+/* ---------- next album + footer ---------- */
+.anext { padding: clamp(60px, 8vw, 120px) var(--gutter) 40px; border-top: 1px solid var(--line); }
+.anext__card { --nacc: var(--acc); position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: 20px; max-width: 1320px; margin: 0 auto;
+  min-height: clamp(260px, 36vw, 460px); padding: clamp(22px, 3vw, 44px); overflow: hidden; border-radius: 6px; text-decoration: none; color: #fbf1e3; isolation: isolate; }
+.anext__card img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.anext__card::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(0deg, rgba(10, 4, 4, .85), rgba(10, 4, 4, .1) 70%); }
+.anext__card:hover img { transform: scale(1.05); }
+.anext__txt { display: grid; gap: 8px; }
+.anext__txt small { font: 500 12px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--nacc); }
+.anext__txt b { font: 300 clamp(36px, 6vw, 88px)/.95 var(--serif); letter-spacing: -.02em; }
+.anext__txt b em { color: var(--nacc); }
+.anext__txt span { font-size: 15px; opacity: .85; }
+.anext__arrow { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--nacc); color: #150707; font-size: 26px; transition: transform .4s var(--ease); }
+.anext__card:hover .anext__arrow { transform: translateX(6px); }
+.anext__row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px 30px; max-width: 1320px; margin: 28px auto 0; font-size: 15px; color: var(--fg2); }
+.anext__row p { margin: 0; }
+.anext__row a { color: var(--fg); font-weight: 500; text-underline-offset: 4px; text-decoration-color: var(--acc); }
+.afoot { padding: 30px var(--gutter) 40px; text-align: center; font: 400 12px/1.6 var(--mono); color: var(--fg2); }
+
+/* ---------- lightbox ---------- */
+.lb { width: 100vw; height: 100vh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: rgba(10, 4, 5, .97); color: var(--cream); }
+.lb[open] { display: grid; grid-template-columns: 64px minmax(0, 1fr) 64px; align-items: center; }
+.lb::backdrop { background: rgba(0, 0, 0, .6); }
+.lb__fig { margin: 0; grid-column: 2; grid-row: 1; display: grid; justify-items: center; gap: 14px; }
+.lb__fig img { max-width: 100%; max-height: calc(100vh - 120px); width: auto; height: auto; border-radius: 3px; }
+.lb__fig figcaption { display: flex; gap: 18px; align-items: baseline; flex-wrap: wrap; justify-content: center; text-align: center; padding: 0 8px; }
+.lb__fig b { font: 400 20px/1.2 var(--serif); }
+.lb__fig span { font: 500 12px/1 var(--mono); color: rgba(246, 227, 203, .6); }
+.lb button { all: unset; cursor: pointer; color: var(--cream); display: grid; place-items: center; font: 300 44px/1 var(--serif); }
+.lb button:hover, .lb button:focus-visible { color: var(--acc); }
+.lb .lb__x { position: fixed; top: 18px; right: 26px; z-index: 2; }
+.lb .lb__prev { grid-column: 1; grid-row: 1; height: 100%; }
+.lb .lb__next { grid-column: 3; grid-row: 1; height: 100%; }
+@media (max-width: 600px) { .lb[open] { grid-template-columns: 40px minmax(0, 1fr) 40px; } }
+
+/* =====================================================================
+   01 HORIZON (harbour): sideways along the shore while the sun goes down
+   ===================================================================== */
+.alb--horizon { --bg: #a9c3d3; --fg: #1d0e0b; --fg2: color-mix(in srgb, var(--fg) 74%, transparent); --line: color-mix(in srgb, var(--fg) 18%, transparent);
+  --sky1: #9db9cc; --sky2: #e9dcc4; --sea1: #5d7f93; --sea2: #2f4a5a; --sun-y: 18vh; background: var(--sky1); }
+.sky { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: linear-gradient(var(--sky1), var(--sky2) 66%); }
+.sky .sun { position: absolute; left: 74%; top: var(--sun-y); width: 26vmin; aspect-ratio: 1; border-radius: 50%; transform: translate(-50%, -50%);
+  background: radial-gradient(circle, #fff7df 0 22%, #f7cf7d 34%, rgba(247, 207, 125, .35) 50%, rgba(247, 207, 125, 0) 70%); }
+.sky .sea { position: absolute; left: 0; right: 0; top: 66vh; bottom: 0; background: linear-gradient(var(--sea1), var(--sea2)); }
+.sky .sea::before { content: ""; position: absolute; inset: 0; opacity: .25; background: repeating-linear-gradient(0deg, transparent 0 7px, rgba(255, 240, 210, .5) 7px 8px); mask: linear-gradient(transparent, #000 30%, transparent); animation: shimmer 6s linear infinite; }
+.sky .sea::after { content: ""; position: absolute; left: 74%; top: 0; width: 8vmin; height: 70%; transform: translateX(-50%); background: linear-gradient(rgba(255, 220, 150, .55), transparent); filter: blur(6px); opacity: var(--glint, .8); }
+@keyframes shimmer { to { background-position: 0 40px; } }
+.alb--horizon .ahero__t em { color: #b4462e; }
+.alb--horizon .ahero__k { color: #8a3a22; }
+.alb--horizon .agal { padding: 0; }
+.alb--horizon .agal__track { display: flex; align-items: flex-end; gap: 5vw; width: max-content; max-width: none; height: 100vh; margin: 0; padding: 0 34vw 9vh 10vw; }
+.alb--horizon .ap { display: flex; flex-direction: column-reverse; gap: 14px; }
+.alb--horizon .ap img { height: 54vh; width: auto; max-width: none; border-radius: 2px; box-shadow: 0 30px 60px -30px rgba(0, 0, 0, .6); }
+.alb--horizon .ap figcaption { margin: 0; max-width: 46vh; }
+.alb--horizon .ap::before { content: attr(data-time); font: 300 clamp(34px, 3.4vw, 54px)/1 var(--serif); font-style: italic; letter-spacing: -.02em; order: 3; }
+.clock { position: fixed; left: var(--gutter); top: 96px; z-index: 30; display: grid; gap: 4px; color: var(--fg); opacity: 0; transition: opacity .4s; pointer-events: none; }
+.clock.is-on { opacity: 1; }
+.clock small { font: 500 11px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: var(--fg2); }
+.clock b { font: 400 22px/1 var(--mono); }
+@media (max-width: 760px) {
+  .alb--horizon .agal { padding: 40px var(--gutter) 80px; }
+  .alb--horizon .agal__track { flex-direction: column; align-items: stretch; width: auto; height: auto; padding: 0; gap: 64px; }
+  .alb--horizon .ap img { height: auto; width: 100%; }
+  .alb--horizon .ap figcaption { max-width: none; }
+}
+
+/* =====================================================================
+   02 SKYLINE (Sydney): towers at night, columns that rise at different speeds
+   ===================================================================== */
+.alb--skyline { --bg: #0a0e1a; --fg: #ece6d8; --fg2: rgba(236, 230, 216, .68); --line: rgba(236, 230, 216, .14); }
+.alb--skyline .decor { background: radial-gradient(ellipse 80% 60% at 50% 110%, rgba(226, 199, 122, .18), transparent 70%); }
+.city { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 46vh; }
+.city .b { fill: #121829; }
+.city .b2 { fill: #0e1322; }
+.city .w { fill: #f3d38a; opacity: 0; animation: lit 5s steps(1) infinite; }
+@keyframes lit { 0%, 100% { opacity: 0; } 20%, 70% { opacity: .9; } }
+.trail { position: absolute; left: 0; height: 2px; width: 40vw; border-radius: 2px; filter: blur(.6px); animation: trail linear infinite; }
+.trail--r { background: linear-gradient(90deg, transparent, #ff5a4a); }
+.trail--w { background: linear-gradient(270deg, transparent, #fff1c8); animation-direction: reverse; }
+@keyframes trail { from { transform: translateX(-45vw); } to { transform: translateX(110vw); } }
+.alb--skyline .ahero__t { font-weight: 200; }
+.alb--skyline .ahero__in { padding-bottom: 18vh; }
+.cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 48px); align-items: start; }
+.col { display: grid; gap: clamp(40px, 6vw, 90px); }
+.col:nth-child(2) { margin-top: 26vh; }
+.col:nth-child(3) { margin-top: 10vh; }
+.alb--skyline .ap__a { border-radius: 2px; box-shadow: 0 0 0 1px rgba(236, 230, 216, .08), 0 40px 70px -40px #000; }
+.alb--skyline .ap figcaption b { font: 400 13px/1.4 var(--mono); letter-spacing: .04em; }
+.alb--skyline .ap figcaption small { margin-left: 0; width: 100%; }
+@media (max-width: 760px) { .cols { grid-template-columns: 1fr; } .col:nth-child(n) { margin-top: 0; } .alb--skyline .ahero__in { padding-bottom: 10vh; } }
+
+/* =====================================================================
+   03 INK (Ninh Bình): rice paper, karst hills in ink, photos bloom from ink
+   ===================================================================== */
+.alb--ink { --bg: #ece3d1; --fg: #1b1a17; --fg2: rgba(27, 26, 23, .72); --line: rgba(27, 26, 23, .15);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.02 .6' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 .4 0 0 0 0 .35 0 0 0 0 .28 0 0 0 .12 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E"); }
+.alb--ink .ahero__t { font-weight: 400; color: #1b1a17; text-shadow: 0 0 1px rgba(27, 26, 23, .5); }
+.alb--ink .ahero__in { position: relative; z-index: 2; }
+.karst { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 70vh; }
+.mist { position: absolute; width: 60vw; height: 16vh; border-radius: 50%; background: radial-gradient(closest-side, rgba(236, 227, 209, .95), rgba(236, 227, 209, 0)); filter: blur(8px); animation: drift 26s ease-in-out infinite alternate; }
+@keyframes drift { from { transform: translateX(-12vw); } to { transform: translateX(14vw); } }
+.seal { position: absolute; right: var(--gutter); top: 120px; display: grid; place-items: center; width: 74px; height: 74px; border-radius: 6px; background: #a3262b; color: #f6e3cb;
+  font: 600 22px/1 var(--serif); letter-spacing: .04em; box-shadow: inset 0 0 0 3px #a3262b, inset 0 0 0 5px #f6e3cb; transform: rotate(-4deg); opacity: .9; }
+.vtext { position: absolute; right: calc(var(--gutter) + 26px); top: 220px; writing-mode: vertical-rl; font: 500 12px/1 var(--mono); letter-spacing: .4em; text-transform: uppercase; color: var(--fg2); }
+.alb--ink .agal__track { max-width: 1160px; gap: clamp(70px, 11vw, 170px); }
+.alb--ink .ap { width: min(100%, 78%); }
+.alb--ink .ap:nth-child(even) { justify-self: end; width: min(100%, 64%); }
+.alb--ink .ap:not(.ap--land) { width: min(100%, 44%); }
+.alb--ink .ap:not(.ap--land):nth-child(odd) { margin-left: 12%; }
+.alb--ink .ap__a { --m: 260%; -webkit-mask: var(--blob) center / var(--m) var(--m) no-repeat; mask: var(--blob) center / var(--m) var(--m) no-repeat; }
+.ink-num { position: absolute; top: -.1em; left: -.1em; transform: translate(-100%, 0); writing-mode: vertical-rl; font: italic 300 clamp(30px, 3.4vw, 52px)/1 var(--serif); color: #a3262b; padding-right: 14px; }
+.alb--ink .ap:nth-child(even) .ink-num { left: auto; right: -.1em; transform: translate(100%, 0); padding: 0 0 0 14px; }
+@media (max-width: 760px) { .alb--ink .ap, .alb--ink .ap:nth-child(n) { width: 100%; margin-left: 0; } .ink-num { display: none; } .seal { width: 56px; height: 56px; font-size: 17px; top: 90px; } .vtext { display: none; } }
+
+/* =====================================================================
+   04 LANTERN (Hội An): warm night, swaying lanterns, prints stack up
+   ===================================================================== */
+.alb--lantern { --bg: #160605; --fg: #f6e3cb; --fg2: rgba(246, 227, 203, .72); --line: rgba(246, 227, 203, .14); }
+.alb--lantern .decor { background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(232, 116, 44, .25), transparent 70%); }
+.lan { position: absolute; top: 0; width: var(--s); transform-origin: 50% 0; animation: sway var(--d) ease-in-out infinite alternate; }
+.lan::before { content: ""; display: block; width: 1px; height: var(--h); margin: 0 auto; background: rgba(246, 227, 203, .35); }
+.lan b { display: block; aspect-ratio: 1 / 1.15; border-radius: 46% 46% 46% 46% / 40% 40% 60% 60%; position: relative;
+  background: repeating-linear-gradient(90deg, rgba(0, 0, 0, .12) 0 1px, transparent 1px 16%), radial-gradient(circle at 50% 45%, #ffd79a, var(--c) 55%, color-mix(in srgb, var(--c) 60%, #000) 100%);
+  box-shadow: 0 0 40px 6px color-mix(in srgb, var(--c) 55%, transparent), 0 0 120px 30px color-mix(in srgb, var(--c) 22%, transparent); }
+.lan b::before, .lan b::after { content: ""; position: absolute; left: 30%; right: 30%; height: 7%; background: #3a1a0c; border-radius: 2px; }
+.lan b::before { top: -3%; } .lan b::after { bottom: -3%; }
+.lan i { display: block; width: 3px; height: calc(var(--s) * .4); margin: 2px auto 0; background: linear-gradient(var(--c), transparent); }
+@keyframes sway { from { transform: rotate(-5deg); } to { transform: rotate(5deg); } }
+.warm { position: fixed; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(circle 30vmax at var(--px, 50%) var(--py, 30%), rgba(255, 170, 80, .14), transparent 70%); }
+.alb--lantern .ahero__t em { color: #f0a050; }
+.alb--lantern .agal__track { display: block; max-width: 1200px; }
+.alb--lantern .ap { position: sticky; top: 11vh; height: 80vh; display: grid; place-content: center; justify-items: center; margin-bottom: 22vh; }
+.alb--lantern .ap:last-child { margin-bottom: 0; }
+.alb--lantern .ap__a { border-radius: 4px; box-shadow: 0 0 0 1px rgba(240, 160, 80, .3), 0 0 80px -10px rgba(232, 116, 44, .45), 0 40px 80px -30px #000; }
+.alb--lantern .ap img { max-height: 70vh; width: auto; }
+.alb--lantern .ap figcaption { justify-content: center; }
+.alb--lantern .ap figcaption small { margin-left: 0; }
+
+/* =====================================================================
+   05 BLINDS (Shanghai): cool steel, big characters, window-blind reveals
+   ===================================================================== */
+.alb--blinds { --bg: #dfe3e6; --fg: #1d232b; --fg2: rgba(29, 35, 43, .72); --line: rgba(29, 35, 43, .16);
+  background-image: linear-gradient(90deg, rgba(29, 35, 43, .06) 1px, transparent 1px); background-size: calc(100% / 12) 100%; }
+.big-cn { position: absolute; right: -2vw; top: 50%; transform: translateY(-58%); font: 700 clamp(160px, 34vw, 520px)/1 "Noto Serif SC", "Songti SC", "STSong", serif; color: transparent; -webkit-text-stroke: 1.5px rgba(179, 38, 45, .55); white-space: nowrap; }
+.alb--blinds .ahero__t { font-weight: 500; letter-spacing: -.04em; }
+.alb--blinds .ahero__t em { font-style: normal; color: var(--fg); }
+.alb--blinds .ahero__k::after { content: " · 上海"; }
+.alb--blinds .agal__track { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(12px, 2vw, 28px); row-gap: clamp(60px, 8vw, 120px); align-items: start; }
+.alb--blinds .ap:nth-child(5n+1) { grid-column: 1 / 7; }
+.alb--blinds .ap:nth-child(5n+2) { grid-column: 8 / 13; margin-top: 18vh; }
+.alb--blinds .ap:nth-child(5n+3) { grid-column: 2 / 7; }
+.alb--blinds .ap:nth-child(5n+4) { grid-column: 6 / 13; }
+.alb--blinds .ap:nth-child(5n+5) { grid-column: 3 / 8; }
+.alb--blinds .ap::before { content: attr(data-i); position: absolute; top: -.62em; left: -.08em; z-index: -1; font: 700 clamp(90px, 12vw, 190px)/1 var(--sans); letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 1px rgba(29, 35, 43, .25); }
+.slats { position: absolute; inset: 0; display: grid; grid-template-rows: repeat(8, 1fr); pointer-events: none; }
+.slats i { background: var(--bg); }
+.slats i:nth-child(odd) { transform-origin: 50% 0; } .slats i:nth-child(even) { transform-origin: 50% 100%; }
+@media (max-width: 760px) { .alb--blinds .agal__track { grid-template-columns: 1fr; } .alb--blinds .ap:nth-child(n) { grid-column: 1; margin-top: 0; } }
+
+/* =====================================================================
+   06 CONTACT (USyd portraits): contact sheet, grease pencil, jacaranda petals
+   ===================================================================== */
+.alb--contact { --bg: #f3ece2; --fg: #2a1f33; --fg2: rgba(42, 31, 51, .72); --line: rgba(42, 31, 51, .14); }
+.alb--contact .ahero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 5vw; align-items: center; }
+.alb--contact .decor { position: relative; inset: auto; z-index: 1; grid-column: 2; grid-row: 1; }
+.alb--contact .ahero__in { grid-column: 1; grid-row: 1; }
+.alb--contact .ahero__t { font-size: clamp(52px, 7.4vw, 124px); }
+.sheet { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 26px 14px; background: #17120f; border-radius: 3px; transform: rotate(2deg); box-shadow: 0 40px 80px -40px rgba(42, 31, 51, .8); }
+.sheet span { position: relative; aspect-ratio: 2 / 3; background: #0c0908 center / cover; filter: saturate(.9); }
+.sheet span::before { content: attr(data-f); position: absolute; top: -18px; left: 2px; font: 500 9px/1 var(--mono); color: #e8893a; }
+.sheet svg { position: absolute; inset: -18% -22%; width: 144%; height: 136%; overflow: visible; }
+.sheet path { fill: none; stroke: #d0342c; stroke-width: 3.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.petals { position: fixed; inset: 0; z-index: 30; pointer-events: none; overflow: hidden; }
+.petals i { position: absolute; top: -20px; width: var(--s); height: calc(var(--s) * 1.3); border-radius: 80% 0 80% 0; background: var(--c); opacity: .85; animation: fall var(--d) linear var(--dl) infinite; }
+@keyframes fall { 0% { transform: translate(0, -5vh) rotate(0); } 50% { transform: translate(6vw, 50vh) rotate(200deg); } 100% { transform: translate(-3vw, 108vh) rotate(420deg); } }
+.alb--contact .agal__track { grid-template-columns: repeat(12, minmax(0, 1fr)); column-gap: clamp(14px, 2vw, 30px); row-gap: clamp(50px, 7vw, 110px); align-items: start; }
+.alb--contact .ap { grid-column: span 6; }
+.alb--contact .ap:nth-child(6n+1) { grid-column: 2 / 12; }
+.alb--contact .ap:nth-child(6n+2) { grid-column: 1 / 6; }
+.alb--contact .ap:nth-child(6n+3) { grid-column: 7 / 13; margin-top: 14vh; }
+.alb--contact .ap:nth-child(6n+4) { grid-column: 3 / 9; }
+.alb--contact .ap:nth-child(6n+5) { grid-column: 1 / 7; }
+.alb--contact .ap:nth-child(6n+6) { grid-column: 8 / 13; margin-top: 20vh; }
+.alb--contact .ap figcaption b { font-style: italic; }
+@media (max-width: 860px) {
+  .alb--contact .ahero { grid-template-columns: 1fr; align-items: end; }
+  .alb--contact .decor { grid-column: 1; grid-row: 1; max-width: 520px; margin-bottom: 20px; }
+  .alb--contact .ahero__in { grid-row: 2; }
+  .alb--contact .agal__track { grid-template-columns: 1fr; } .alb--contact .ap:nth-child(n) { grid-column: 1; margin-top: 0; }
+}
+
+/* =====================================================================
+   07 ARCHES (USyd graduation): sandstone, gothic arches, caps in the air
+   ===================================================================== */
+.alb--arches { --bg: #efe4cf; --fg: #1c2540; --fg2: rgba(28, 37, 64, .74); --line: rgba(28, 37, 64, .16);
+  background-image: repeating-linear-gradient(0deg, transparent 0 63px, rgba(150, 115, 60, .12) 63px 64px); }
+.arcade { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 44vh; }
+.arcade path { fill: none; stroke: rgba(28, 37, 64, .16); stroke-width: 1.5; }
+.cap { position: absolute; left: var(--x); bottom: -120px; width: clamp(64px, 8vw, 120px); }
+.alb--arches .ahero { text-align: center; justify-items: center; }
+.alb--arches .ahero__in { display: grid; justify-items: center; }
+.alb--arches .ahero__t { font-weight: 400; }
+.alb--arches .agal__track { grid-auto-flow: dense; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(40px, 5vw, 80px) clamp(20px, 3vw, 48px); align-items: end; }
+.alb--arches .ap--land { grid-column: span 2; }
+.alb--arches .ap__a { aspect-ratio: 3 / 4.3; border-radius: 999px 999px 3px 3px; outline: 1px solid var(--acc); outline-offset: 9px; overflow: hidden; margin: 10px; }
+.alb--arches .ap--land .ap__a { aspect-ratio: 16 / 10.5; border-radius: 50% 50% 3px 3px / 36% 36% 3px 3px; }
+.alb--arches .ap img { width: 100%; height: 100%; object-fit: cover; }
+.alb--arches .ap figcaption { justify-content: center; text-align: center; margin-top: 22px; }
+.alb--arches .ap figcaption small { width: 100%; margin: 0; }
+@media (max-width: 760px) { .alb--arches .agal__track { grid-template-columns: 1fr; } .alb--arches .ap--land { grid-column: auto; } }
+
+/* =====================================================================
+   08 ALBUM (Macquarie graduation): a family photo album with corners
+   ===================================================================== */
+.alb--album { --bg: #23302a; --fg: #f3e9d6; --fg2: rgba(243, 233, 214, .72); --line: rgba(243, 233, 214, .15);
+  background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, .025) 0 2px, transparent 2px 6px), repeating-linear-gradient(-45deg, rgba(0, 0, 0, .05) 0 2px, transparent 2px 6px); }
+.ribbon { position: absolute; right: 12vw; top: -10px; width: 34px; height: 46vh; background: linear-gradient(90deg, #8e6f22, var(--gold) 40%, #a5832b); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 92%, 0 100%); box-shadow: 0 10px 20px rgba(0, 0, 0, .3); }
+.flower { position: absolute; width: var(--s); opacity: .5; }
+.alb--album .ahero__t { font-weight: 400; }
+.alb--album .ahero__t em { font-family: var(--script); font-style: normal; font-weight: 600; letter-spacing: 0; color: var(--gold-soft); }
+.alb--album .agal__track { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(40px, 5vw, 80px) clamp(28px, 4vw, 64px); max-width: 1200px; }
+.alb--album .ap { width: min(100%, 30%); transform: rotate(var(--r, 0deg)); }
+.alb--album .ap--land { width: min(100%, 52%); }
+.alb--album .ap__a { padding: 12px 12px 14px; background: #fbf7ee; box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .7); overflow: visible; }
+.corner { position: absolute; width: 34px; height: 34px; background: #151a17; z-index: 2; }
+.corner:nth-of-type(1) { top: -6px; left: -6px; clip-path: polygon(0 0, 100% 0, 0 100%); }
+.corner:nth-of-type(2) { top: -6px; right: -6px; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.corner:nth-of-type(3) { bottom: -6px; left: -6px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.corner:nth-of-type(4) { bottom: -6px; right: -6px; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.alb--album .ap figcaption { justify-content: center; margin-top: 16px; }
+.alb--album .ap figcaption b { font: 600 24px/1.1 var(--script); color: var(--gold-soft); }
+.alb--album .ap figcaption small, .alb--album .ap__n { display: none; }
+@media (max-width: 760px) { .alb--album .ap, .alb--album .ap--land { width: 100%; } .ribbon { right: 8vw; } }
+
+/* =====================================================================
+   09 ROUTE (Sydney Go): map paper, a route that draws, checkpoint stamps
+   ===================================================================== */
+.alb--route { --bg: #f4ecdc; --fg: #2a0d10; --fg2: rgba(42, 13, 16, .72); --line: rgba(42, 13, 16, .15);
+  background-image: linear-gradient(rgba(107, 31, 36, .07) 1px, transparent 1px), linear-gradient(90deg, rgba(107, 31, 36, .07) 1px, transparent 1px), linear-gradient(rgba(107, 31, 36, .05) 1px, transparent 1px), linear-gradient(90deg, rgba(107, 31, 36, .05) 1px, transparent 1px);
+  background-size: 200px 200px, 200px 200px, 40px 40px, 40px 40px; }
+.compass { position: absolute; right: var(--gutter); top: 110px; width: clamp(110px, 14vw, 190px); color: var(--oxblood); animation: spin 60s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.alb--route .ahero__t { font-weight: 500; letter-spacing: -.04em; }
+.alb--route .ahero__k { color: var(--oxblood); }
+.alb--route .agal__track { max-width: 1120px; gap: clamp(80px, 10vw, 150px); }
+.alb--route .ap { width: min(100%, 56%); z-index: 1; }
+.alb--route .ap:nth-child(even) { justify-self: end; }
+.alb--route .ap__a { border: 8px solid #fff; box-shadow: 0 16px 30px -16px rgba(42, 13, 16, .5); overflow: hidden; }
+.route { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; z-index: 0; }
+.route .r-base { fill: none; stroke: rgba(107, 31, 36, .25); stroke-width: 2.5; stroke-dasharray: 2 9; stroke-linecap: round; }
+.route .r-live { fill: none; stroke: var(--oxblood); stroke-width: 3.5; stroke-linecap: round; }
+.pin { position: absolute; top: -18px; left: -18px; z-index: 3; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: #fff; border: 2px solid var(--oxblood); transition: background .3s; }
+.pin b { transform: rotate(45deg); font: 600 13px/1 var(--mono); color: var(--oxblood); }
+.ap:nth-child(even) .pin { left: auto; right: -18px; }
+.pin.is-hit { background: var(--oxblood); } .pin.is-hit b { color: #fff; }
+.stamp { position: absolute; right: 18px; bottom: 18px; z-index: 3; padding: 8px 12px; border: 3px double #b3262d; border-radius: 4px; color: #b3262d; background: rgba(244, 236, 220, .88);
+  font: 600 13px/1.2 var(--mono); letter-spacing: .12em; text-transform: uppercase; transform: rotate(-8deg); mix-blend-mode: multiply; }
+@media (max-width: 760px) { .alb--route .ap { width: 100%; } .compass { width: 84px; top: 84px; } }
+
+/* =====================================================================
+   10 TERMINAL (Hackathon): black screen, windows, photos render in pixels
+   ===================================================================== */
+.alb--terminal { --bg: #0b0b0a; --fg: #d9d4c5; --fg2: rgba(217, 212, 197, .62); --line: rgba(217, 212, 197, .14); }
+.alb--terminal::after { content: ""; position: fixed; inset: 0; z-index: 41; pointer-events: none; background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .18) 0 1px, transparent 1px 3px); }
+.term { position: absolute; left: var(--gutter); top: 110px; margin: 0; font: 400 clamp(12px, 1.1vw, 15px)/1.8 var(--mono); color: rgba(226, 199, 122, .8); white-space: pre-wrap; }
+.term .cur { display: inline-block; width: .6em; height: 1.1em; vertical-align: -.2em; background: var(--acc); animation: blink 1s steps(1) infinite; }
+@keyframes blink { 50% { opacity: 0; } }
+.alb--terminal .ahero__t { font-family: var(--mono); font-weight: 400; letter-spacing: -.05em; font-size: clamp(46px, 8.6vw, 140px); }
+.alb--terminal .ahero__t em { font-style: normal; }
+.alb--terminal .ahero__t::after { content: ""; display: inline-block; width: .5em; height: .8em; margin-left: .08em; background: var(--acc); animation: blink 1s steps(1) infinite; }
+.alb--terminal .agal__track { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 3vw, 44px); align-items: start; }
+.alb--terminal .ap { border: 1px solid var(--line); background: #131312; border-radius: 8px; overflow: hidden; }
+.alb--terminal .ap:nth-child(3n+1) { grid-column: 1 / -1; }
+.win { display: flex; align-items: center; gap: 7px; padding: 10px 14px; border-bottom: 1px solid var(--line); font: 400 12px/1 var(--mono); color: var(--fg2); }
+.win i { width: 11px; height: 11px; border-radius: 50%; background: #3a3936; }
+.win i:first-child { background: #b3262d; } .win i:nth-child(2) { background: var(--gold); }
+.win code { margin-left: 10px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.alb--terminal .ap__a canvas { position: absolute; inset: 0; width: 100%; height: 100%; image-rendering: pixelated; }
+.alb--terminal .ap figcaption { margin: 0; padding: 12px 14px 14px; font-family: var(--mono); }
+.alb--terminal .ap figcaption b { font: 400 13px/1.4 var(--mono); }
+.alb--terminal .ap figcaption b::before { content: "> "; color: var(--acc); }
+@media (max-width: 760px) { .alb--terminal .agal__track { grid-template-columns: 1fr; } .term { display: none; } }
+
+/* =====================================================================
+   11 CURTAIN (Đại hội): velvet curtains open, photos light up in gold frames
+   ===================================================================== */
+.alb--curtain { --bg: #240809; --fg: #f6e3cb; --fg2: rgba(246, 227, 203, .72); --line: rgba(201, 164, 63, .22); }
+.alb--curtain .ahero { justify-items: center; align-items: center; text-align: center; }
+.alb--curtain .ahero__in { display: grid; justify-items: center; }
+.alb--curtain .ahero__t { color: var(--gold-soft); font-weight: 400; }
+.alb--curtain .ahero__t em { color: var(--fg); }
+.alb--curtain .decor { background: radial-gradient(ellipse 50% 30% at 50% 100%, rgba(226, 199, 122, .22), transparent 70%), radial-gradient(ellipse 40% 60% at 50% 40%, rgba(107, 31, 36, .6), transparent 70%); }
+.stage { position: absolute; inset: 0; z-index: 5; pointer-events: none; overflow: hidden; }
+.cur { position: absolute; top: 0; bottom: 0; width: 51%; }
+.cur--l { left: 0; } .cur--r { right: 0; }
+.cur i { position: absolute; inset: 0; display: block; background: repeating-linear-gradient(90deg, #4a0a0f 0, #7d1a21 2.2vw, #96262c 3vw, #6a141a 4.2vw, #3e080c 5.4vw); box-shadow: inset 0 -40px 60px rgba(0, 0, 0, .5); }
+.cur--l i { border-bottom-right-radius: 40% 6%; } .cur--r i { border-bottom-left-radius: 40% 6%; }
+.valance { position: absolute; left: 0; right: 0; top: 0; height: 13vh; z-index: 2; background: radial-gradient(circle at 50% 0, #7d1a21 60%, transparent 62%) 0 0 / 9vw 100%, linear-gradient(#5a0f14, #7d1a21); border-bottom: 3px solid var(--gold); }
+.valance::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 3.5vw; background: radial-gradient(circle at 50% 0, #7d1a21 0 60%, transparent 62%) 0 0 / 7vw 100%; }
+.alb--curtain .agal__track { max-width: 1000px; gap: clamp(70px, 9vw, 140px); }
+.alb--curtain .ap__a { padding: 12px; border: 1px solid var(--gold); outline: 1px solid rgba(201, 164, 63, .45); outline-offset: 7px; background: #170506; }
+.alb--curtain .ap figcaption { justify-content: center; text-align: center; margin-top: 26px; }
+.alb--curtain .ap figcaption b { font-variant: small-caps; letter-spacing: .06em; font-size: 20px; }
+.alb--curtain .ap figcaption small { width: 100%; margin: 0; }
+.alb--curtain .ap__n { color: var(--gold); }
+
+/* =====================================================================
+   12 RICE PAPER (Cultural Day): a recipe, step by step, photos unroll
+   ===================================================================== */
+.alb--ricepaper { --bg: #f7f1e3; --fg: #24301c; --fg2: rgba(36, 48, 28, .74); --line: rgba(36, 48, 28, .15); }
+.disc { position: absolute; width: var(--s); aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(160, 140, 100, .25);
+  background: repeating-linear-gradient(45deg, rgba(200, 180, 140, .12) 0 2px, transparent 2px 9px), repeating-linear-gradient(-45deg, rgba(200, 180, 140, .12) 0 2px, transparent 2px 9px), rgba(255, 252, 244, .5);
+  animation: spin 80s linear infinite; }
+.leaf { position: absolute; width: var(--s); color: var(--c); animation: bob 7s ease-in-out infinite alternate; animation-delay: var(--dl); }
+@keyframes bob { from { transform: translateY(-10px) rotate(var(--r)); } to { transform: translateY(12px) rotate(calc(var(--r) + 14deg)); } }
+.alb--ricepaper .ahero__t em { color: #b3262d; }
+.alb--ricepaper .agal__track { max-width: 1180px; gap: clamp(70px, 9vw, 140px); }
+.alb--ricepaper .ap { display: grid; grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: clamp(20px, 4vw, 60px); align-items: center; perspective: 1400px; }
+.alb--ricepaper .ap:nth-child(even) { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); }
+.alb--ricepaper .ap:nth-child(even) figcaption { order: -1; }
+.alb--ricepaper .ap__a { border-radius: 20px; box-shadow: 0 30px 50px -30px rgba(36, 48, 28, .6); }
+.alb--ricepaper .ap figcaption { display: grid; gap: 10px; margin: 0; }
+.alb--ricepaper .ap figcaption::before { content: "Bước · step"; font: 600 13px/1 var(--mono); letter-spacing: .2em; text-transform: uppercase; color: #b3262d; }
+.alb--ricepaper .ap__n { font: italic 300 clamp(80px, 10vw, 150px)/.8 var(--serif); color: var(--acc); }
+.alb--ricepaper .ap figcaption b { font-size: clamp(22px, 2.4vw, 32px); line-height: 1.15; }
+.alb--ricepaper .ap figcaption small { margin: 0; }
+@media (max-width: 760px) { .alb--ricepaper .ap, .alb--ricepaper .ap:nth-child(even) { grid-template-columns: 1fr; } .alb--ricepaper .ap:nth-child(even) figcaption { order: 0; } .alb--ricepaper .ap__n { font-size: 72px; } }
+
+/* =====================================================================
+   13 SPOTLIGHT (Serenade): black stage, your cursor is the spotlight
+   ===================================================================== */
+.alb--spotlight { --bg: #050505; --fg: #efe9dc; --fg2: rgba(239, 233, 220, .64); --line: rgba(239, 233, 220, .12); }
+.alb--spotlight .ahero { justify-items: center; text-align: center; }
+.alb--spotlight .ahero__in { display: grid; justify-items: center; }
+.beam { position: absolute; top: -10vh; left: var(--x); width: 70vmin; height: 130vh; transform-origin: 50% 0; transform: translateX(-50%) rotate(var(--r)); animation: beam 9s ease-in-out infinite alternate; animation-delay: var(--dl);
+  background: conic-gradient(from 168deg at 50% 0, transparent 0deg, rgba(255, 240, 200, .22) 12deg, rgba(255, 240, 200, .05) 24deg, transparent 24deg); filter: blur(6px); }
+@keyframes beam { to { transform: translateX(-50%) rotate(calc(var(--r) * -1)); } }
+.dust { position: absolute; width: 3px; height: 3px; border-radius: 50%; background: rgba(255, 240, 200, .6); animation: float var(--d) ease-in-out infinite alternate; }
+@keyframes float { to { transform: translate(var(--dx), -40px); opacity: .1; } }
+.alb--spotlight .agal__track { max-width: 1320px; gap: clamp(80px, 14vh, 180px); }
+.alb--spotlight .ap__a { border-radius: 2px; cursor: none; }
+.alb--spotlight .ap__a::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at var(--x, 50%) var(--y, 45%), transparent 0, transparent var(--r, 70%), rgba(3, 3, 3, .93) calc(var(--r, 70%) + 16%)); }
+.alb--spotlight .ap figcaption { justify-content: center; }
+.alb--spotlight .ap figcaption small { margin-left: 0; }
+
+/* ---------- reduced motion / no JS ---------- */
+.no-motion .grain, .no-motion .petals, .no-motion .trail { display: none; }
+.no-motion *, .no-motion *::before, .no-motion *::after { animation: none !important; }
+.no-motion .alb--horizon .agal__track, .no-motion.alb--horizon .agal__track { flex-direction: column; align-items: stretch; width: auto; height: auto; padding: 60px var(--gutter); max-width: 1200px; margin: 0 auto; gap: 64px; }
+.no-motion .alb--horizon .ap img { height: auto; width: 100%; }
+.no-motion .alb--lantern .ap { position: relative; top: 0; height: auto; margin-bottom: 80px; }
+.no-motion .stage { display: none; }
+.no-motion .alb--spotlight .ap__a::after { display: none; }
+
+/* tall portraits never taller than the screen */
+:is(.alb--contact, .alb--blinds, .alb--skyline, .alb--route, .alb--terminal, .alb--ink) .ap:not(.ap--land) .ap__a { width: fit-content; max-width: 100%; margin-inline: auto; }
+:is(.alb--contact, .alb--blinds, .alb--skyline, .alb--route, .alb--terminal, .alb--ink) .ap:not(.ap--land) img { width: auto; max-height: 86vh; }
+.alb--terminal .ap:not(.ap--land) .ap__a { margin-block: 16px; }
