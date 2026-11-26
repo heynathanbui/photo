@@ -13,11 +13,12 @@
   <link rel="canonical" href="https://heynathanbui.github.io/photo/">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="theme-color" content="#120607">
-  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@500;600&family=Be+Vietnam+Pro:wght@400;500;600&family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..600,0..100;1,9..144,300..600,0..100&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/site.css?v=20261122e">
+  <link rel="stylesheet" href="assets/css/floaters.css?v=20261126a">
+  <link rel="stylesheet" href="assets/css/site.css?v=20261126h">
   <script>document.documentElement.classList.add('js');</script>
   <script type="importmap">
     { "imports": {
@@ -53,18 +54,19 @@
     <div class="nav__pill">
       <a class="nav__brand" href="#top" aria-label="Nathan Bui Photography, back to top">
         <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <path d="M24 40 C17 32 17 20 24 8 C31 20 31 32 24 40Z"/>
-          <path d="M24 40 C14 37 9 28 10 17 C17 21 22 29 24 40Z"/>
-          <path d="M24 40 C34 37 39 28 38 17 C31 21 26 29 24 40Z"/>
-          <path d="M24 40 C12 41 5 35 3 27 C11 27 19 32 24 40Z"/>
-          <path d="M24 40 C36 41 43 35 45 27 C37 27 29 32 24 40Z"/>
+          <rect x="5" y="15" width="38" height="25" rx="4"/>
+          <path d="M16 15 L19 9 H29 L32 15"/>
+          <circle cx="24" cy="27.5" r="8"/>
+          <circle cx="24" cy="27.5" r="3.6"/>
+          <path d="M9.5 20 H13"/>
+          <circle cx="37" cy="20" r="1.3" fill="currentColor" stroke="none"/>
         </svg>
         <span>Nathan Bui <i>Photography</i></span>
       </a>
-      <a class="nav__link" href="#landscape">Landscape</a>
       <a class="nav__link" href="#portrait">Portrait</a>
+      <a class="nav__link" href="#landscape">Landscape</a>
       <a class="nav__link" href="#events">Events</a>
-      <a class="nav__link nav__cta" href="#book">Book a shoot</a>
+      <a class="nav__link nav__cta" href="#book">Book<span class="nav__x"> a shoot</span></a>
     </div>
   </nav>
 
@@ -77,7 +79,7 @@
         <p class="hero__lede" data-intro>Grads, portraits, events, and a lot of sunsets at the harbour. I'm based in Sydney and happy to shoot anywhere around the city.</p>
         <div class="hero__cta" data-intro>
           <a class="btn btn--solid" href="#book">Book a shoot</a>
-          <a class="btn btn--ghost" href="#landscape">See the work</a>
+          <a class="btn btn--ghost" href="#portrait">See the work</a>
         </div>
       </div>
       <div class="hero__scroll" data-intro><span>Scroll to focus</span><i></i></div>
@@ -98,7 +100,7 @@
         <span class="roll__exif" data-roll="exif"></span>
       </div>
       <div class="roll__bar"><i data-roll="bar"></i></div>
-      <a class="roll__skip" href="#landscape" data-skip>
+      <a class="roll__skip" href="#portrait" data-skip>
         <span class="roll__skip-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5l9 7-9 7z"/><path d="M12 5l9 7-9 7z"/></svg></span>
         <span class="roll__skip-text"><b>Skip the roll</b><small>Go straight to the photos</small></span>
         <kbd aria-hidden="true">Esc</kbd>
@@ -110,64 +112,36 @@
     <div class="recent" aria-label="Recent events">
       <div class="recent__track">
         <span class="recent__k">Recently shot</span>
-        <span>UAVS Sydney Go 2026</span><span>UAVS Sports Day 2026</span><span>Hackathon 2026</span><span>Đại hội 2026</span><span>USyd &amp; Macquarie graduations 2026</span><span>Cultural Day 2025</span><span>Serenade '24</span>
+        <span>Portraits at McMahons Point 2026</span>        <span>UAVS Sydney Go 2026</span><span>UAVS Sports Day 2026</span><span>Hackathon 2026</span><span>Đại hội 2026</span><span>USyd &amp; Macquarie graduations 2026</span><span>Cultural Day 2025</span><span>Serenade '24</span>
       </div>
     </div>
-    <div class="iris-break iris-break--scenery" style="--from:#0b0404;--to:#1d0e0b" aria-hidden="true">
+    <div class="iris-break iris-break--people" style="--from:#0b0404;--to:#f1e9ef" aria-hidden="true">
       <div class="iris-break__stick">
-        <div class="iris-break__label"><span>01</span><b>Landscape</b><small>Sydney · Vietnam · Shanghai</small></div>
-        <div class="iris"><div class="iris__blades"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div><div class="iris__ring"></div></div>
-      </div>
-    </div>
-    <section class="set set--scenery" id="landscape" data-fx="expose">
-      <svg class="motif motif--scenery" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-          <defs><radialGradient id="sun" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#e2c77a" stop-opacity=".9"/><stop offset=".45" stop-color="#c9a43f" stop-opacity=".35"/><stop offset="1" stop-color="#c9a43f" stop-opacity="0"/></radialGradient></defs>
-          <g class="m-sun"><circle cx="575" cy="300" r="150" fill="url(#sun)" opacity=".7"/><circle cx="575" cy="300" r="40" fill="#e2c77a" opacity=".5"/></g>
-          <path class="m-far" d="M0 300 C70 190 130 180 190 268 C230 150 320 128 372 252 C420 176 492 164 552 272 C612 128 712 116 772 262 C822 196 894 176 954 282 C1006 156 1098 146 1200 262 L1200 420 L0 420Z" fill="#c9a43f" opacity=".04"/>
-          <path class="m-mid" d="M0 340 C60 250 112 232 168 318 C212 214 286 196 334 312 C392 236 462 226 520 326 C584 204 666 190 724 316 C780 250 846 236 902 330 C962 222 1052 208 1120 318 C1150 286 1176 280 1200 300 L1200 420 L0 420Z" fill="#c9a43f" opacity=".06"/>
-          <path class="m-near" d="M0 390 C90 330 160 318 240 372 C320 312 420 306 500 366 C600 316 700 312 780 370 C880 320 980 318 1060 368 C1110 344 1160 340 1200 352 L1200 420 L0 420Z" fill="#1d0e0b"/>
-          <line x1="0" y1="392" x2="1200" y2="392" stroke="#c9a43f" stroke-opacity=".35" stroke-width="1"/>
-        </svg>
-      <div class="wrap">
-        <header class="set__head">
-          <span class="set__no">01 / Landscape</span>
-          <h2 class="set__t">The beauty <em>of scenery</em></h2>
-          <div class="set__side">
-            <p>Most of these came from casual walks with my camera, like an afternoon around the harbour or a day out on a trip to Hội An, Ninh Bình or Shanghai. No big plan, I just go out when the light looks good and see what I find.</p>
-            <p class="set__for"><b>Good for</b> cafés and venues, travel pages, website photos</p>
-          </div>
-        </header>
-{{REEL_SCENERY}}
-        <div class="albums">
-          <p class="albums__k"><span>{{N_ALBUMS_SCENERY}} albums</span><small>Open one to see the whole set</small></p>
-          <div class="albums__row">
-{{ALBUMS_SCENERY}}
-          </div>
-        </div>
-        <p class="set__cta">Need photos of your café, venue or space? <a href="#book">Get in touch →</a></p>
-      </div>
-    </section>
-
-    <div class="iris-break iris-break--people" style="--from:#1d0e0b;--to:#f6e3cb" aria-hidden="true">
-      <div class="iris-break__stick">
-        <div class="iris-break__label"><span>02</span><b>Portrait</b><small>Portraits · Graduation · Concepts</small></div>
+        <div class="iris-break__label"><span>01</span><b>Portrait</b><small>Portraits · Graduation · Concepts</small></div>
         <div class="iris"><div class="iris__blades"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div><div class="iris__ring"></div></div>
       </div>
     </div>
     <section class="set set--people" id="portrait" data-fx="focus">
-      <div class="motif motif--people" aria-hidden="true"><i style="--x:8%;--y:20%;--s:140px;--d:0s;--c:#6b1f24"></i><i style="--x:22%;--y:70%;--s:80px;--d:2s;--c:#c9a43f"></i><i style="--x:38%;--y:15%;--s:60px;--d:4s;--c:#6b1f24"></i><i style="--x:55%;--y:55%;--s:180px;--d:1s;--c:#c9a43f"></i><i style="--x:68%;--y:10%;--s:90px;--d:3s;--c:#6b1f24"></i><i style="--x:80%;--y:62%;--s:120px;--d:5s;--c:#c9a43f"></i><i style="--x:92%;--y:25%;--s:70px;--d:2.5s;--c:#6b1f24"></i><i style="--x:46%;--y:85%;--s:100px;--d:3.5s;--c:#c9a43f"></i><i style="--x:14%;--y:50%;--s:50px;--d:1.5s;--c:#c9a43f"></i><i style="--x:74%;--y:38%;--s:46px;--d:4.5s;--c:#6b1f24"></i></div>
+      <svg class="motif motif--uni" viewBox="0 0 1200 300" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <path class="m-quad" d="M0 300 L0 196 L0 196 L0 189 L8.0 189 L8.0 196 L16 196 L16 189 L24.0 189 L24.0 196 L32 196 L32 189 L40.0 189 L40.0 196 L48 196 L48 189 L56.0 189 L56.0 196 L64 196 L64 189 L72.0 189 L72.0 196 L80 196 L90 196 L90 196 L90 190 L117 150 L120 140 L123 150 L150 190 L150 196 L150 196 L150 189 L158.0 189 L158.0 196 L166 196 L166 189 L174.0 189 L174.0 196 L182 196 L182 189 L190.0 189 L190.0 196 L198 196 L198 189 L206.0 189 L206.0 196 L214 196 L214 189 L222.0 189 L222.0 196 L230 196 L230 189 L238.0 189 L238.0 196 L246 196 L246 189 L254.0 189 L254.0 196 L262 196 L262 189 L270.0 189 L270.0 196 L278 196 L278 189 L286.0 189 L286.0 196 L294 196 L300 196 L300 196 L300 190 L325 154 L328 144 L331 154 L356 190 L356 196 L356 196 L356 189 L364.0 189 L364.0 196 L372 196 L372 189 L380.0 189 L380.0 196 L388 196 L388 189 L396.0 189 L396.0 196 L404 196 L404 189 L412.0 189 L412.0 196 L420 196 L420 189 L428.0 189 L428.0 196 L436 196 L436 189 L444.0 189 L444.0 196 L452 196 L452 189 L460.0 189 L460.0 196 L468 196 L470 196 L470 196 L470 150 L470 142 L480 110 L490 142 L490 150 L490 196 L500 196 L500 150 L500 150 L500 144 L507.0 144 L507.0 150 L514 150 L514 144 L521.0 144 L521.0 150 L528 150 L528 150 L528 150 L528 86 L528 78 L539 34 L550 78 L550 86 L550 86 L550 86 L550 80 L556.0 80 L556.0 86 L562 86 L562 80 L568.0 80 L568.0 86 L574 86 L574 80 L580.0 80 L580.0 86 L586 86 L586 86 L586 86 L590 86 L590 60 L600 52 L600 14 L601 14 L601 4 L624 10 L601 16 L601 52 L610 60 L610 86 L614 86 L614 86 L614 80 L620.0 80 L620.0 86 L626 86 L626 80 L632.0 80 L632.0 86 L638 86 L638 80 L644.0 80 L644.0 86 L650 86 L650 86 L650 86 L650 78 L661 34 L672 78 L672 86 L672 150 L672 150 L672 144 L679.0 144 L679.0 150 L686 150 L686 144 L693.0 144 L693.0 150 L700 150 L700 150 L700 150 L700 196 L710 196 L710 150 L710 142 L720 110 L730 142 L730 150 L730 196 L730 196 L730 189 L738.0 189 L738.0 196 L746 196 L746 189 L754.0 189 L754.0 196 L762 196 L762 189 L770.0 189 L770.0 196 L778 196 L778 189 L786.0 189 L786.0 196 L794 196 L794 189 L802.0 189 L802.0 196 L810 196 L810 189 L818.0 189 L818.0 196 L826 196 L826 189 L834.0 189 L834.0 196 L842 196 L842 189 L850.0 189 L850.0 196 L858 196 L860 196 L860 196 L860 190 L886 152 L889 142 L892 152 L918 190 L918 196 L918 196 L918 189 L926.0 189 L926.0 196 L934 196 L934 189 L942.0 189 L942.0 196 L950 196 L950 189 L958.0 189 L958.0 196 L966 196 L970 196 L970 196 L970 130 L970 130 L970 122 L977 100 L984 122 L984 130 L984 130 L984 130 L984 124 L991.0 124 L991.0 130 L998 130 L998 124 L1005.0 124 L1005.0 130 L1012 130 L1012 124 L1019.0 124 L1019.0 130 L1026 130 L1026 130 L1026 130 L1026 122 L1033 100 L1040 122 L1040 130 L1040 130 L1040 196 L1040 196 L1040 189 L1048.0 189 L1048.0 196 L1056 196 L1056 189 L1064.0 189 L1064.0 196 L1072 196 L1072 189 L1080.0 189 L1080.0 196 L1088 196 L1088 189 L1096.0 189 L1096.0 196 L1104 196 L1104 189 L1112.0 189 L1112.0 196 L1120 196 L1120 189 L1128.0 189 L1128.0 196 L1136 196 L1136 189 L1144.0 189 L1144.0 196 L1152 196 L1152 189 L1160.0 189 L1160.0 196 L1168 196 L1168 189 L1176.0 189 L1176.0 196 L1184 196 L1184 189 L1192.0 189 L1192.0 196 L1200 196 L1200 196 L1200 300Z M210 196 L210 172 L222 172 L222 196Z M806 196 L806 170 L818 170 L818 196Z M1110 196 L1110 174 L1122 174 L1122 196Z" fill="#e0d2e3" stroke="#8c6fa6" stroke-opacity=".35" stroke-width="1.2" stroke-linejoin="round"/>
+        <path d="M20 240 L20 219.0 Q25 211 30 219.0 L30 240Z M20 282 L20 261.0 Q25 253 30 261.0 L30 282Z M44 240 L44 219.0 Q49 211 54 219.0 L54 240Z M44 282 L44 261.0 Q49 253 54 261.0 L54 282Z M68 240 L68 219.0 Q73 211 78 219.0 L78 240Z M68 282 L68 261.0 Q73 253 78 261.0 L78 282Z M166 240 L166 219.0 Q171 211 176 219.0 L176 240Z M166 282 L166 261.0 Q171 253 176 261.0 L176 282Z M190 240 L190 219.0 Q195 211 200 219.0 L200 240Z M190 282 L190 261.0 Q195 253 200 261.0 L200 282Z M214 240 L214 219.0 Q219 211 224 219.0 L224 240Z M214 282 L214 261.0 Q219 253 224 261.0 L224 282Z M238 240 L238 219.0 Q243 211 248 219.0 L248 240Z M238 282 L238 261.0 Q243 253 248 261.0 L248 282Z M262 240 L262 219.0 Q267 211 272 219.0 L272 240Z M262 282 L262 261.0 Q267 253 272 261.0 L272 282Z M372 240 L372 219.0 Q377 211 382 219.0 L382 240Z M372 282 L372 261.0 Q377 253 382 261.0 L382 282Z M396 240 L396 219.0 Q401 211 406 219.0 L406 240Z M396 282 L396 261.0 Q401 253 406 261.0 L406 282Z M420 240 L420 219.0 Q425 211 430 219.0 L430 240Z M420 282 L420 261.0 Q425 253 430 261.0 L430 282Z M444 240 L444 219.0 Q449 211 454 219.0 L454 240Z M444 282 L444 261.0 Q449 253 454 261.0 L454 282Z M746 240 L746 219.0 Q751 211 756 219.0 L756 240Z M746 282 L746 261.0 Q751 253 756 261.0 L756 282Z M770 240 L770 219.0 Q775 211 780 219.0 L780 240Z M770 282 L770 261.0 Q775 253 780 261.0 L780 282Z M794 240 L794 219.0 Q799 211 804 219.0 L804 240Z M794 282 L794 261.0 Q799 253 804 261.0 L804 282Z M818 240 L818 219.0 Q823 211 828 219.0 L828 240Z M818 282 L818 261.0 Q823 253 828 261.0 L828 282Z M934 240 L934 219.0 Q939 211 944 219.0 L944 240Z M934 282 L934 261.0 Q939 253 944 261.0 L944 282Z M1058 240 L1058 219.0 Q1063 211 1068 219.0 L1068 240Z M1058 282 L1058 261.0 Q1063 253 1068 261.0 L1068 282Z M1082 240 L1082 219.0 Q1087 211 1092 219.0 L1092 240Z M1082 282 L1082 261.0 Q1087 253 1092 261.0 L1092 282Z M1106 240 L1106 219.0 Q1111 211 1116 219.0 L1116 240Z M1106 282 L1106 261.0 Q1111 253 1116 261.0 L1116 282Z M1130 240 L1130 219.0 Q1135 211 1140 219.0 L1140 240Z M1130 282 L1130 261.0 Q1135 253 1140 261.0 L1140 282Z M1154 240 L1154 219.0 Q1159 211 1164 219.0 L1164 240Z M1154 282 L1154 261.0 Q1159 253 1164 261.0 L1164 282Z M1178 240 L1178 219.0 Q1183 211 1188 219.0 L1188 240Z M1178 282 L1178 261.0 Q1183 253 1188 261.0 L1188 282Z M112 198 L112 176.0 Q120 165 128 176.0 L128 198Z M320 200 L320 180.0 Q328 169 336 180.0 L336 200Z M881 198 L881 178.0 Q889 167 897 178.0 L897 198Z M580 196 L580 128 Q600 96 620 128 L620 196Z M590 196 L590 132 M600 196 L600 118 M610 196 L610 132 M580 160 L620 160 M574 300 L574 252 Q600 214 626 252 L626 300Z M997 184 L997 158.0 Q1005 147 1013 158.0 L1013 184Z " fill="none" stroke="#7d6296" stroke-opacity=".38" stroke-width="1.1"/>
+        <line x1="0" y1="299.5" x2="1200" y2="299.5" stroke="#8c6fa6" stroke-opacity=".4"/>
+      </svg>
+      {{FLOATERS_PEOPLE}}
+      {{RAILS_PEOPLE}}
       <div class="wrap">
         <header class="set__head">
-          <span class="set__no">02 / Portrait</span>
+          <span class="set__no">01 / Portrait</span>
           <h2 class="set__t">Portraits, grads <em>and concepts</em></h2>
           <div class="set__side">
             <p>Grad days at USyd and Macquarie, close-up portraits, and a styled concept shoot under the jacarandas. I'll find a spot with nice light and help with posing if you want it.</p>
             <p class="set__for"><b>Good for</b> graduations, portraits, concept and styled shoots, LinkedIn photos</p>
           </div>
         </header>
-{{REEL_PEOPLE}}
         <div class="albums">
+          {{BGREEL_PEOPLE}}
           <p class="albums__k"><span>{{N_ALBUMS_PEOPLE}} albums</span><small>Open one to see the whole set</small></p>
+          {{MSTRIP_PEOPLE}}
           <div class="albums__row">
 {{ALBUMS_PEOPLE}}
           </div>
@@ -185,7 +159,48 @@
       </div>
     </section>
 
-    <div class="iris-break iris-break--events" style="--from:#f6e3cb;--to:#6b1f24" aria-hidden="true">
+    <div class="iris-break iris-break--scenery" style="--from:#ebe1ec;--to:#0e1a26" aria-hidden="true">
+      <div class="iris-break__stick">
+        <div class="iris-break__label"><span>02</span><b>Landscape</b><small>Sydney · Vietnam · Shanghai</small></div>
+        <div class="iris"><div class="iris__blades"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div><div class="iris__ring"></div></div>
+      </div>
+    </div>
+    <section class="set set--scenery" id="landscape" data-fx="expose">
+      <svg class="motif motif--scenery" viewBox="0 0 1200 420" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+          <defs><radialGradient id="sun" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#f1d98f" stop-opacity=".85"/><stop offset=".45" stop-color="#c9a43f" stop-opacity=".3"/><stop offset="1" stop-color="#c9a43f" stop-opacity="0"/></radialGradient></defs>
+          <g class="m-sun"><circle cx="690" cy="250" r="170" fill="url(#sun)" opacity=".55"/><circle cx="690" cy="250" r="34" fill="#f1d98f" opacity=".42"/></g>
+          <path class="m-far" d="M0 372 L0 333 L28 333 L28 372Z M31 372 L31 346 L69 346 L69 372Z M69 372 L69 284 L113 284 L113 372Z M113 372 L113 345 L142 345 L142 372Z M146 372 L146 348 L170 348 L170 372Z M170 372 L170 299 L201 299 L201 372Z M201 372 L201 341 L226 341 L226 372Z M230 372 L230 345 L261 345 L261 372Z M267 372 L267 337 L303 337 L303 372Z M304 372 L304 345 L342 345 L342 372Z M346 372 L346 350 L382 350 L382 372Z M382 372 L382 361 L407 361 L407 372Z M411 372 L411 358 L456 358 L456 372Z M458 372 L458 358 L489 358 L489 372Z M493 372 L493 344 L514 344 L514 372Z M516 372 L516 336 L551 336 L551 372Z M556 372 L556 359 L579 359 L579 372Z M583 372 L583 342 L619 342 L619 372Z M620 372 L620 359 L649 359 L649 372Z M653 372 L653 360 L693 360 L693 372Z M697 372 L697 343 L716 343 L716 372Z M717 372 L717 341 L750 341 L750 372Z M754 372 L754 338 L785 338 L785 372Z M787 372 L787 344 L819 344 L819 372Z M822 372 L822 353 L851 353 L851 372Z M852 372 L852 357 L895 357 L895 372Z M900 372 L900 355 L942 355 L942 372Z M942 372 L942 353 L978 353 L978 372Z M982 372 L982 334 L1015 334 L1015 372Z M1017 372 L1017 348 L1058 348 L1058 372Z M1060 372 L1060 343 L1097 343 L1097 372Z M1097 372 L1097 299 L1131 299 L1131 372Z M1132 372 L1132 309 L1174 309 L1174 372Z M1175 372 L1175 299 L1208 299 L1208 372Z" fill="#c9a43f" opacity=".07"/>
+          <g class="m-mid">
+            <path d="M388 372 L409.6 349.1 L431.1 328 L452.7 308.5 L474.3 290.7 L495.9 274.6 L517.4 260.2 L539 247.5 L560.6 236.5 L582.1 227.2 L603.7 219.6 L625.3 213.6 L646.9 209.4 L668.4 206.8 L690 206 L711.6 206.8 L733.1 209.4 L754.7 213.6 L776.3 219.6 L797.9 227.2 L819.4 236.5 L841 247.5 L862.6 260.2 L884.1 274.6 L905.7 290.7 L927.3 308.5 L948.9 328 L970.4 349.1 L992 372 M408 372 L428.1 354.1 L448.3 337.5 L468.4 322.3 L488.6 308.3 L508.7 295.7 L528.9 284.4 L549 274.5 L569.1 265.9 L589.3 258.6 L609.4 252.6 L629.6 248 L649.7 244.7 L669.9 242.7 L690 242 L710.1 242.7 L730.3 244.7 L750.4 248 L770.6 252.6 L790.7 258.6 L810.9 265.9 L831 274.5 L851.1 284.4 L871.3 295.7 L891.4 308.3 L911.6 322.3 L931.7 337.5 L951.9 354.1 L972 372 M388 372 L428.1 354.1 M408 372 L388 372 M428.1 354.1 L431.1 328 M428.1 354.1 L409.6 349.1 M431.1 328 L468.4 322.3 M448.3 337.5 L431.1 328 M468.4 322.3 L474.3 290.7 M468.4 322.3 L452.7 308.5 M474.3 290.7 L508.7 295.7 M488.6 308.3 L474.3 290.7 M508.7 295.7 L517.4 260.2 M508.7 295.7 L495.9 274.6 M517.4 260.2 L549 274.5 M528.9 284.4 L517.4 260.2 M549 274.5 L560.6 236.5 M549 274.5 L539 247.5 M560.6 236.5 L589.3 258.6 M569.1 265.9 L560.6 236.5 M589.3 258.6 L603.7 219.6 M589.3 258.6 L582.1 227.2 M603.7 219.6 L629.6 248 M609.4 252.6 L603.7 219.6 M629.6 248 L646.9 209.4 M629.6 248 L625.3 213.6 M646.9 209.4 L669.9 242.7 M649.7 244.7 L646.9 209.4 M669.9 242.7 L690 206 M669.9 242.7 L668.4 206.8 M690 206 L710.1 242.7 M690 242 L690 206 M710.1 242.7 L733.1 209.4 M710.1 242.7 L711.6 206.8 M733.1 209.4 L750.4 248 M730.3 244.7 L733.1 209.4 M750.4 248 L776.3 219.6 M750.4 248 L754.7 213.6 M776.3 219.6 L790.7 258.6 M770.6 252.6 L776.3 219.6 M790.7 258.6 L819.4 236.5 M790.7 258.6 L797.9 227.2 M819.4 236.5 L831 274.5 M810.9 265.9 L819.4 236.5 M831 274.5 L862.6 260.2 M831 274.5 L841 247.5 M862.6 260.2 L871.3 295.7 M851.1 284.4 L862.6 260.2 M871.3 295.7 L905.7 290.7 M871.3 295.7 L884.1 274.6 M905.7 290.7 L911.6 322.3 M891.4 308.3 L905.7 290.7 M911.6 322.3 L948.9 328 M911.6 322.3 L927.3 308.5 M948.9 328 L951.9 354.1 M931.7 337.5 L948.9 328 M951.9 354.1 L992 372 M951.9 354.1 L970.4 349.1 M428.1 354.1 L428.1 300 M448.3 337.5 L448.3 300 M468.4 322.3 L468.4 300 M488.6 308.3 L488.6 300 M528.9 284.4 L528.9 300 M549 274.5 L549 300 M569.1 265.9 L569.1 300 M589.3 258.6 L589.3 300 M609.4 252.6 L609.4 300 M629.6 248 L629.6 300 M649.7 244.7 L649.7 300 M669.9 242.7 L669.9 300 M690 242 L690 300 M710.1 242.7 L710.1 300 M730.3 244.7 L730.3 300 M750.4 248 L750.4 300 M770.6 252.6 L770.6 300 M790.7 258.6 L790.7 300 M810.9 265.9 L810.9 300 M831 274.5 L831 300 M851.1 284.4 L851.1 300 M891.4 308.3 L891.4 300 M911.6 322.3 L911.6 300 M931.7 337.5 L931.7 300 M951.9 354.1 L951.9 300" fill="none" stroke="#c9a43f" stroke-opacity=".5" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M140 300 L1200 300 M140 306 L1200 306" stroke="#c9a43f" stroke-opacity=".55" stroke-width="1.6"/>
+            <path d="M330 372 L330 236 L338 236 L338 224 L380 224 L380 236 L388 236 L388 372Z M992 372 L992 236 L1000 236 L1000 224 L1042 224 L1042 236 L1050 236 L1050 372Z" fill="#0e1a26" stroke="#c9a43f" stroke-opacity=".6" stroke-width="1.3"/>
+            <path d="M70 372 C82 330 108 300 150 288 C138 318 132 346 136 372Z M120 372 C134 338 160 312 198 304 C186 330 182 352 186 372Z M176 372 C186 346 206 326 236 320 C228 340 226 358 228 372Z M40 372 C46 352 60 338 82 332 C76 348 76 362 78 372Z" fill="#0e1a26" stroke="#e8dcc4" stroke-opacity=".55" stroke-width="1.3"/>
+            <g fill="#f1d98f" opacity=".8"><circle cx="431.1" cy="328" r="1.6"/><circle cx="474.3" cy="290.7" r="1.6"/><circle cx="517.4" cy="260.2" r="1.6"/><circle cx="560.6" cy="236.5" r="1.6"/><circle cx="603.7" cy="219.6" r="1.6"/><circle cx="646.9" cy="209.4" r="1.6"/><circle cx="690" cy="206" r="1.6"/><circle cx="733.1" cy="209.4" r="1.6"/><circle cx="776.3" cy="219.6" r="1.6"/><circle cx="819.4" cy="236.5" r="1.6"/><circle cx="862.6" cy="260.2" r="1.6"/><circle cx="905.7" cy="290.7" r="1.6"/><circle cx="948.9" cy="328" r="1.6"/></g><g fill="#f1d98f" opacity=".45"><circle cx="150" cy="297" r="1.1"/><circle cx="176" cy="297" r="1.1"/><circle cx="202" cy="297" r="1.1"/><circle cx="228" cy="297" r="1.1"/><circle cx="254" cy="297" r="1.1"/><circle cx="280" cy="297" r="1.1"/><circle cx="306" cy="297" r="1.1"/><circle cx="332" cy="297" r="1.1"/><circle cx="358" cy="297" r="1.1"/><circle cx="384" cy="297" r="1.1"/><circle cx="410" cy="297" r="1.1"/><circle cx="436" cy="297" r="1.1"/><circle cx="462" cy="297" r="1.1"/><circle cx="488" cy="297" r="1.1"/><circle cx="514" cy="297" r="1.1"/><circle cx="540" cy="297" r="1.1"/><circle cx="566" cy="297" r="1.1"/><circle cx="592" cy="297" r="1.1"/><circle cx="618" cy="297" r="1.1"/><circle cx="644" cy="297" r="1.1"/><circle cx="670" cy="297" r="1.1"/><circle cx="696" cy="297" r="1.1"/><circle cx="722" cy="297" r="1.1"/><circle cx="748" cy="297" r="1.1"/><circle cx="774" cy="297" r="1.1"/><circle cx="800" cy="297" r="1.1"/><circle cx="826" cy="297" r="1.1"/><circle cx="852" cy="297" r="1.1"/><circle cx="878" cy="297" r="1.1"/><circle cx="904" cy="297" r="1.1"/><circle cx="930" cy="297" r="1.1"/><circle cx="956" cy="297" r="1.1"/><circle cx="982" cy="297" r="1.1"/><circle cx="1008" cy="297" r="1.1"/><circle cx="1034" cy="297" r="1.1"/><circle cx="1060" cy="297" r="1.1"/><circle cx="1086" cy="297" r="1.1"/><circle cx="1112" cy="297" r="1.1"/><circle cx="1138" cy="297" r="1.1"/><circle cx="1164" cy="297" r="1.1"/><circle cx="1190" cy="297" r="1.1"/></g>
+          </g>
+          <path class="m-near" d="M0 372 L1200 372 L1200 420 L0 420Z" fill="#0e1a26"/>
+          <g stroke="#f1d98f" stroke-opacity=".22" stroke-width="1.2"><line x1="420" y1="384" x2="540" y2="384"/><line x1="600" y1="384" x2="690" y2="384"/><line x1="760" y1="388" x2="910" y2="388"/><line x1="480" y1="396" x2="560" y2="396"/><line x1="640" y1="398" x2="760" y2="398"/><line x1="300" y1="392" x2="370" y2="392"/><line x1="900" y1="394" x2="960" y2="394"/><line x1="560" y1="408" x2="700" y2="408"/><line x1="220" y1="404" x2="280" y2="404"/><line x1="820" y1="410" x2="900" y2="410"/></g>
+          <line x1="0" y1="372" x2="1200" y2="372" stroke="#c9a43f" stroke-opacity=".35" stroke-width="1"/>
+        </svg>
+      <div class="wrap">
+        <header class="set__head">
+          <span class="set__no">02 / Landscape</span>
+          <h2 class="set__t">The beauty <em>of scenery</em></h2>
+          <div class="set__side">
+            <p>Most of these came from casual walks with my camera, like an afternoon around the harbour or a day out on a trip to Hội An, Ninh Bình or Shanghai. No big plan, I just go out when the light looks good and see what I find.</p>
+            <p class="set__for"><b>Good for</b> cafés and venues, travel pages, website photos</p>
+          </div>
+        </header>
+        <div class="albums">
+          <p class="albums__k"><span>{{N_ALBUMS_SCENERY}} albums</span><small>Open one to see the whole set</small></p>
+          <div class="albums__row">
+{{ALBUMS_SCENERY}}
+          </div>
+        </div>
+        <p class="set__cta">Need photos of your café, venue or space? <a href="#book">Get in touch →</a></p>
+      </div>
+    </section>
+
+    <div class="iris-break iris-break--events" style="--from:#0e1a26;--to:#6b1f24" aria-hidden="true">
       <div class="iris-break__stick">
         <div class="iris-break__label"><span>03</span><b>Events</b><small>Stage · Community · Conferences</small></div>
         <div class="iris"><div class="iris__blades"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i><i style="--i:6"></i><i style="--i:7"></i></div><div class="iris__ring"></div></div>
@@ -202,7 +217,6 @@
             <p class="set__for"><b>Good for</b> student societies, launches, performances, sports days, community events</p>
           </div>
         </header>
-{{REEL_EVENTS}}
         <div class="albums">
           <p class="albums__k"><span>{{N_ALBUMS_EVENTS}} albums</span><small>Open one to see the whole set</small></p>
           <div class="albums__row">
@@ -317,7 +331,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="assets/js/site.js?v=20261122e"></script>
+  <script src="assets/js/site.js?v=20261126c"></script>
   <script type="module" src="assets/js/scene.js?v=20261026a"></script>
 </body>
 </html>

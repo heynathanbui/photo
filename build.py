@@ -45,6 +45,10 @@ SCENERY = [
     ("harbour-5346", "People on the rocks under the bridge · Sydney", "f/4.5 · 1/100s · ISO 320 · 29mm", "sydney"),
 ]
 PEOPLE = [
+    ("mcmahons-9550", "By the water, the Bridge behind · McMahons Point", "f/6.3 · 1/160s · ISO 100 · 19mm", "portrait"),
+    ("mcmahons-9562", "On the bench in the Henry Lawson shelter · McMahons Point", "f/5.6 · 1/160s · ISO 160 · 50mm", "portrait"),
+    ("mcmahons-9565", "Beside the shelter, the Bridge and the Opera House behind · McMahons Point", "f/5.6 · 1/320s · ISO 100 · 50mm", "portrait"),
+    ("mcmahons-9585", "Wind in her hair, the Opera House behind · McMahons Point", "f/9 · 1/160s · ISO 100 · 28mm", "portrait"),
     ("ivy-5378", "Sitting on the ledge · USyd", "f/7.1 · 1/170s · ISO 320 · 15mm", "concept"),
     ("grad-4198", "Graduation day in áo dài · USyd", "f/18 · 1/125s · ISO 160 · 58mm", "graduation"),
     ("ivy-5413", "On the steps · USyd", "f/5.6 · 1/140s · ISO 1600 · 45mm", "portrait"),
@@ -63,6 +67,7 @@ PEOPLE = [
     ("grad-4549", "Celebrating · USyd graduation", "f/5.6 · 1/1250s · ISO 320 · 58mm", "graduation"),
     ("ivy-5504", "On the path to the Quad · USyd", "f/6.4 · 1/160s · ISO 320 · 17mm", "concept"),
     ("mqgrad-5123", "The stole, from behind · Macquarie", "f/5.6 · 1/150s · ISO 160 · 30mm", "graduation"),
+    ("grad-4282", "With family under the ivy arch · USyd graduation", "f/6.4 · 1/125s · ISO 320 · 55mm", "graduation"),
     ("grad-4232", "In front of the Quad · USyd graduation", "f/22 · 1/125s · ISO 320 · 55mm", "graduation"),
     ("ivy-5426", "By the stair rail · USyd", "f/5.6 · 1/140s · ISO 800 · 45mm", "portrait"),
     ("ivy-5411", "Sitting on the stairs · USyd", "f/5.6 · 1/140s · ISO 2000 · 45mm", "concept"),
@@ -124,7 +129,7 @@ FILTERS = {
 
 # Albums: each one gets its own page at albums/<slug>/ with its own look ("theme").
 # title uses *stars* for the italic part. "times" (optional) labels each photo, in order.
-ALBUMS = [
+ALBUMS_RAW = [
     dict(slug="harbour", cover="harbour-5313", kind="SCENERY", theme="horizon", title="The harbour, *one evening*",
          where="Sydney Harbour", when="Sunday 11 October 2026", accent="#e2a85a",
          intro="I went for a walk around the harbour and kept shooting for about an hour, from just after six until the sun went down. They're in the order I took them, so you can watch the light change as you scroll.",
@@ -150,14 +155,18 @@ ALBUMS = [
          where="University of Sydney", when="2026", accent="#7d5ba6",
          intro="A styled portrait session around the Quad: the arches, the stairs, the lawn and a lot of afternoon sun. These are my own colour edits.",
          photos=["ivy-5378", "ivy-5385", "ivy-5389", "ivy-5393", "ivy-5400", "ivy-5411", "ivy-5413", "ivy-5414", "ivy-5420", "ivy-5425", "ivy-5426", "ivy-5450", "ivy-5484", "ivy-5488", "ivy-5493", "ivy-5504", "ivy-5521"]),
-    dict(slug="usyd-graduation", kind="PEOPLE", theme="arches", title="Graduation *at USyd*",
+    dict(slug="usyd-graduation", cover="grad-4282", kind="PEOPLE", theme="arches", title="Graduation *at USyd*",
          where="University of Sydney", when="2026", accent="#b48a3c",
          intro="Grad day at USyd, in gowns and áo dài. The Quad, the flowers, the bench, and the group photo at the end.",
-         photos=["grad-4198", "grad-4232", "grad-4310", "grad-4327", "grad-4386", "grad-4422", "grad-4459", "grad-4549"]),
+         photos=["grad-4282", "grad-4198", "grad-4232", "grad-4310", "grad-4327", "grad-4386", "grad-4422", "grad-4459", "grad-4549"]),
     dict(slug="macquarie-graduation", cover="mqgrad-4761", kind="PEOPLE", theme="album", title="Graduation *at Macquarie*",
          where="Macquarie University", when="October 2026", accent="#c9a43f",
          intro="A grad shoot at Macquarie. The fountain, a lot of flowers, and the group photos with everyone who came.",
          photos=["mqgrad-4605", "mqgrad-4761", "mqgrad-4889", "mqgrad-4985", "mqgrad-5091", "mqgrad-5123"]),
+    dict(slug="mcmahons-point", cover="mcmahons-9550", kind="PEOPLE", theme="postcard", title="Portraits *at McMahons Point*",
+         where="McMahons Point, North Sydney", when="November 2026", accent="#b5523a", camera="Sony a6400",
+         intro="An afternoon portrait shoot at McMahons Point: the Harbour Bridge, the Opera House across the water, and the old Henry Lawson shelter by the wharf.",
+         photos=["mcmahons-9550", "mcmahons-9562", "mcmahons-9565", "mcmahons-9585"]),
     dict(slug="sydney-go", cover="sydneygo-1023", kind="EVENTS", theme="route", title="Sydney Go *2026*",
          where="UAVS · around Sydney", when="2026", accent="#6b1f24",
          intro="UAVS's day of clues and challenges around the city. I followed the teams from the first clue to the group photo at the end.",
@@ -179,6 +188,7 @@ ALBUMS = [
          intro="A stage show with dance performances, shot at ISO 4000 under the stage lights. Move your mouse to light up the stage.",
          photos=["stage-4146", "stage-4156", "stage-4166"]),
 ]
+ALBUMS = [a for k in ("PEOPLE", "SCENERY", "EVENTS") for a in ALBUMS_RAW if a["kind"] == k]
 KIND_LABEL = {"SCENERY": ("Landscape", "landscape"), "PEOPLE": ("Portrait", "portrait"), "EVENTS": ("Events", "events")}
 
 
@@ -234,16 +244,143 @@ def plain(t):
     return t.replace("*", "")
 
 
+# ---------- place stamps: my own line drawings of each uni's / place's landmark (not official logos) ----------
+_WAVES = '<path d="M6 54q4-3 8 0t8 0t8 0t8 0t8 0t8 0t8 0"/>'
+MARK_ART = {
+    # USyd: the Quadrangle gate tower (twin turrets, flag, Gothic window, arched gateway)
+    "quad": '<path d="M15 31V16h9v15M40 31V16h9v15M14 16h11M39 16h11M15 16l4.5-10L24 16M40 16l4.5-10L49 16M19.5 6V2.5M18.2 3.8h2.6M44.5 6V2.5M43.2 3.8h2.6M24 31l8-9 8 9M32 22v-7l4.5 1.6-4.5 1.6M30.5 26.5v3M33.5 26.5v3M13 31h38v27H13zM25 46v-6a7 7 0 0 1 14 0v6zM29.7 46v-9.5M34.3 46v-9.5M25 42h14M27 58v-6a5 5 0 0 1 10 0v6M2 58V40h11M51 40h11v18M2 40v-2.5h2.5V40h2.5v-2.5h2.5V40M54.5 40v-2.5h2.5V40h2.5v-2.5h2.5V40M8 40v-8h3v8M53 40v-8h3v8M5.5 53v-5a1.5 1.5 0 0 1 3 0v5M55.5 53v-5a1.5 1.5 0 0 1 3 0v5M1 58h62"/>',
+    # Macquarie: simplified shield, lighthouse and seven-point star (from the university's logo, at the user's request)
+    "mq": '<path class="pstamp__fill" d="M13 5h38v28c0 13-8 21-19 27-11-6-19-14-19-27z"/><path d="M13 5h38v28c0 13-8 21-19 27-11-6-19-14-19-27zM13 5l20 18L51 5M33 23l18 13"/><path d="M19.5 55l2.6-20h7.8L32.5 55M18.5 35h15M19.5 35v-3h13v3M22.5 32v-7h7v7M22.5 25l7 7M29.5 25l-7 7M22.5 25q3.5-4.5 7 0M26 21v-2.2M24.6 55v-4a1.4 1.4 0 0 1 2.8 0v4"/><path class="pstamp__solid" d="M44.50 16.00L45.45 19.02L48.41 17.88L46.64 20.51L49.37 22.11L46.22 22.37L46.67 25.50L44.50 23.20L42.33 25.50L42.78 22.37L39.63 22.11L42.36 20.51L40.59 17.88L43.55 19.02Z"/>',
+    # harbour: the bridge arch, deck and pylons
+    "bridge": '<path d="M7 42Q32 6 57 42M11 42Q32 16 53 42M2 42h60M4 42V29h6v13M54 42V29h6v13M18 42V27M25 42V21M32 42V18M39 42V21M46 42V27"/>' + _WAVES,
+    # city: the Opera House sails
+    "sails": '<path d="M9 44q4-20 16-26-3 14-1 26M21 44q6-24 21-28-5 16-3 28M36 44q8-19 21-20-5 11-3 20M4 44h56v4H4z"/>' + _WAVES,
+    # Ninh Binh: limestone peaks over the river, a rowing boat
+    "karst": '<path d="M2 44q5-28 11-14 3-16 9-4 4-12 8 2 5-22 12-6 4-8 8 4 4-10 12 18M24 50q8 4 16 0l-2-2H26zM34 48l4-9"/><path d="M6 56q4-3 8 0t8 0M42 56q4-3 8 0t8 0"/>',
+    # Hoi An: a silk lantern
+    "lantern": '<path d="M32 3v7M26 10h12M26 12q-9 17 0 34h12q9-17 0-34zM32 12v34M29 12q-5 17 0 34M35 12q5 17 0 34M27 46h10v3H27zM32 49v9M29.5 58h5"/>',
+    # Shanghai: the Oriental Pearl Tower among the towers of Lujiazui
+    "pearl": '<circle cx="32" cy="40" r="7"/><circle cx="32" cy="20" r="4.5"/><circle cx="32" cy="9" r="2"/><path d="M32 7V1M30 33v-8.6M34 33v-8.6M31 15.6V11M33 15.6V11M26 58l3-12M38 58l-3-12M32 58V47M8 58h48M12 58V34h6v24M46 58V28h6v24M41 58V40h4v18"/>',
+}
+MARKS = {
+    "usyd-portraits": ("quad", "THE UNIVERSITY OF SYDNEY · THE QUADRANGLE ·"),
+    "usyd-graduation": ("quad", "THE UNIVERSITY OF SYDNEY · GRADUATION ·"),
+    "macquarie-graduation": ("mq", "MACQUARIE UNIVERSITY · GRADUATION ·"),
+    "harbour": ("bridge", "SYDNEY HARBOUR · 11 OCTOBER 2026 ·"),
+    "mcmahons-point": ("bridge", "McMAHONS POINT · NORTH SYDNEY · 2026 ·"),
+    "sydney": ("sails", "SYDNEY · OPERA HOUSE · THE CITY ·"),
+    "ninh-binh": ("karst", "NINH BÌNH · VIỆT NAM · JULY 2026 ·"),
+    "hoi-an": ("lantern", "HỘI AN · VIỆT NAM · OLD TOWN ·"),
+    "shanghai": ("pearl", "上海 · SHANGHAI · LUJIAZUI ·"),
+}
+
+
+def seal(slug, cls="pstamp"):
+    if slug not in MARKS:
+        return ""
+    art, ring = MARKS[slug]
+    rid = f"ring-{slug}"
+    return (f'<svg class="{cls}" viewBox="0 0 120 120" aria-hidden="true" focusable="false">'
+            f'<defs><path id="{rid}" d="M60 60m-46 0a46 46 0 1 1 92 0a46 46 0 1 1-92 0"/></defs>'
+            f'<circle class="pstamp__bg" cx="60" cy="60" r="58"/><circle class="pstamp__o" cx="60" cy="60" r="56"/><circle class="pstamp__i" cx="60" cy="60" r="37"/>'
+            f'<g class="pstamp__spin"><text class="pstamp__t"><textPath href="#{rid}" textLength="286" lengthAdjust="spacing">{html.escape(ring)}</textPath></text></g>'
+            f'<g class="pstamp__m" transform="translate(34 34) scale(.8125)">{MARK_ART[art]}</g></svg>')
+
+
+# small print on each card frame: film edge code (landscape) / slide mount label (events)
+FRAME_LEFT = {"SCENERY": "NB 400", "PEOPLE": "NB 160", "EVENTS": "NB 800"}
+
+
+
+# ---------- floating grad + Sydney line drawings behind the graduation albums ----------
+FLOAT_ART = {
+    "cap": '<path d="M32 14 60 25 32 36 4 25Z"/><path d="M16 30v12c0 7 32 7 32 0V30"/><path d="M32 25l20 5v14"/><path d="M52 44l-2.5 9h5z"/>',
+    "diploma": '<path d="M10 26h40a6 6 0 0 1 0 12H10a6 6 0 0 1 0-12Z"/><path d="M10 26a6 6 0 0 0 0 12"/><path d="M30 26v12M34 26v12"/><path d="M32 38l-6 13M32 38l6 13"/>',
+    "bridge": '<path d="M2 44h60"/><path d="M10 54V35h7v19M47 54V35h7v19"/><path d="M17 52Q32 10 47 52"/><path d="M19 52Q32 22 45 52"/><path d="M24 44v-9M28 44v-13M32 44v-14M36 44v-13M40 44v-9"/><path d="M2 58h60" opacity=".5"/>',
+    "sails": '<path d="M4 48h56"/><path d="M10 48c2-14 10-24 22-28-4 10-6 20-4 28"/><path d="M24 48c4-12 12-18 22-20-3 8-4 14-3 20"/><path d="M38 48c3-7 8-10 16-11-2 5-2 8-2 11"/><path d="M8 54h48" opacity=".5"/>',
+    "laurel": '<path d="M22 58C16 42 20 24 36 8"/><path d="M20 48c-8-1-11-7-10-12 7 1 10 7 10 12Z"/><path d="M19 38c-7-3-8-9-6-13 6 2 8 8 6 13Z"/><path d="M22 28c-5-4-5-10-2-13 5 3 5 9 2 13Z"/><path d="M21 48c6-5 13-5 16-2-5 5-11 5-16 2Z"/><path d="M22 37c6-5 12-6 15-3-4 5-10 6-15 3Z"/><path d="M26 26c5-5 11-6 14-4-3 5-9 7-14 4Z"/>',
+    "gumleaf": '<path d="M14 54C10 34 26 14 52 8c-2 22-16 40-38 46Z"/><path d="M14 54C26 40 38 26 52 8"/><path d="M10 59l4-5"/>',
+    "blossom": '<circle cx="32" cy="32" r="4"/>' + "".join(f'<ellipse cx="32" cy="19" rx="6" ry="11" transform="rotate({r} 32 32)"/>' for r in (0, 72, 144, 216, 288)),
+    "quad": '<path d="M4 58h56"/><path d="M22 58V24h20v34"/><path d="M22 24V14l3-6 3 6v10M36 24V14l3-6 3 6v10"/><path d="M28 24v-5h8v5"/><path d="M28 58V49a4 4 0 0 1 8 0v9"/><path d="M29 39v-6a3 3 0 0 1 6 0v6Z"/><path d="M8 58V40h14M42 40h14v18"/><path d="M8 40v-3h3v3M14 40v-3h3v3M45 40v-3h3v3M51 40v-3h3v3"/>',
+    "lighthouse": '<path d="M26 56l2-34h8l2 34Z"/><path d="M26 22h12M28 22v-6h8v6M30 16l2-5 2 5"/><path d="M27 41h10M27.6 31h8.8"/><path d="M18 56h28"/><path d="M38 17l16-6M38 20l16 6" opacity=".6"/>',
+    "tassel": '<path d="M32 4v28"/><circle cx="32" cy="35" r="3.5"/><path d="M28.5 38l-4 20h15l-4-20"/><path d="M29 44v13M32 44v14M35 44v13"/>',
+    "bouquet": '<path d="M21 33l11 27 11-27Z"/><path d="M26 47h12"/><circle cx="23" cy="25" r="7"/><circle cx="41" cy="25" r="7"/><circle cx="32" cy="17" r="7"/><circle cx="32" cy="30" r="5"/>',
+    "star": '<path d="M32.0,10.0 L35.9,23.9 L49.2,18.3 L40.8,30.0 L53.4,36.9 L39.0,37.6 L41.5,51.8 L32.0,41.0 L22.5,51.8 L25.0,37.6 L10.6,36.9 L23.2,30.0 L14.8,18.3 L28.1,23.9Z"/>',
+}
+FLOAT_POOLS = {
+    "home-portrait": ["cap", "diploma", "tassel", "laurel", "blossom", "bouquet", "quad", "cap", "lighthouse", "star", "class", "bridge", "cap", "blossom"],
+    "usyd-graduation": ["cap", "quad", "blossom", "diploma", "bridge", "laurel", "tassel", "sails", "cap", "bouquet", "gumleaf", "class", "blossom", "cap"],
+    "macquarie-graduation": ["cap", "lighthouse", "star", "diploma", "bridge", "laurel", "tassel", "bouquet", "cap", "gumleaf", "star", "class", "sails", "cap"],
+}
+# (count of drawings, falling petals or confetti, sparkles, petal colours)
+FLOAT_MIX = {
+    "home-portrait": (30, 22, 12, ["#9d7fcc", "#b79ad9", "#8466b8"]),
+    "usyd-graduation": (34, 26, 14, ["#9d7fcc", "#b79ad9", "#8466b8"]),
+    "macquarie-graduation": (34, 26, 14, ["#c8384a", "#e2c77a", "#f6e3cb"]),
+}
+
+
+def floaters(key):
+    """grad + Sydney line drawings drifting at different depths; some caps get tossed now and then; petals (or confetti) fall; sparkles twinkle"""
+    pool = FLOAT_POOLS.get(key)
+    if not pool:
+        return ""
+    n, n_petal, n_spark, colours = FLOAT_MIX[key]
+    seed = sum(map(ord, key))
+    rnd = lambda k, lo, hi: lo + (hi - lo) * (((seed * 9301 + k * 49297) % 233280) / 233280)
+    out = []
+    for k in range(n):
+        name = pool[(k * 5 + seed) % len(pool)]
+        side = k % 3  # 0 left edge, 1 right edge, 2 anywhere
+        x = rnd(k, 0, 14) if side == 0 else rnd(k, 84, 96) if side == 1 else rnd(k, 15, 82)
+        y = 1 + 95 * k / n + rnd(k + 50, -2, 2)
+        depth = round(rnd(k + 99, .25, 1), 2)
+        size = round(46 + 70 * depth)
+        cls = f"fl fl--{name}"
+        if k % 5 == 2: cls += " fl--acc"
+        if name == "cap" and k % 2 == 0: cls += " fl--toss"
+        if name == "class":
+            art = '<svg viewBox="0 0 132 34"><path d="M6 4h120l-8 13 8 13H6l8-13Z"/><text x="66" y="21.5" text-anchor="middle">CLASS OF 2026</text></svg>'
+            size = round(size * 1.9)
+        else:
+            art = f'<svg viewBox="0 0 64 64">{FLOAT_ART[name]}</svg>'
+        out.append(f'<span class="{cls}" style="--x:{x:.1f}%;--y:{y:.1f}%;--s:{size}px;--d:{depth};--t:{rnd(k + 7, 7, 13):.1f}s;--dl:-{rnd(k + 3, 0, 12):.1f}s;--rot:{rnd(k + 11, -18, 18):.0f}deg">{art}</span>')
+    for k in range(n_petal):
+        out.append(f'<i class="petal" style="--x:{rnd(k + 300, 0, 100):.1f}%;--s:{rnd(k + 301, 9, 17):.0f}px;--t:{rnd(k + 302, 16, 30):.1f}s;--dl:-{rnd(k + 303, 0, 30):.1f}s;--sw:{rnd(k + 304, -70, 70):.0f}px;--c:{colours[k % len(colours)]}"></i>')
+    for k in range(n_spark):
+        out.append(f'<i class="spark" style="--x:{rnd(k + 500, 2, 98):.1f}%;--y:{rnd(k + 501, 2, 97):.1f}%;--s:{rnd(k + 502, 8, 18):.0f}px;--t:{rnd(k + 503, 2.4, 5):.1f}s;--dl:-{rnd(k + 504, 0, 5):.1f}s"></i>')
+    return '<div class="floaters" aria-hidden="true">' + "".join(out) + "</div>"
+
+
+def side_strips(thumbs, lead):
+    """two more frames from the album, cut as their own strips, tucked behind the card; they fan out side to side on hover"""
+    picks = (thumbs[3:5] + thumbs[1:3])[:2] if len(thumbs) > 1 else thumbs * 2
+    sizes = "(max-width: 900px) 70vw, 34vw" if lead else "(max-width: 900px) 40vw, 24vw"
+    out = ""
+    for side, src in zip(("l", "r"), picks):
+        big = src.replace("-sm.jpg", ".jpg")
+        out += f'<span class="acard__side acard__side--{side}" aria-hidden="true"><img src="{src}" srcset="{src} 800w, {big} 1800w" sizes="{sizes}" alt="" loading="lazy" decoding="async"></span>'
+    return out
+
+
+UNI = {  # each uni's own gradient for the mat behind its film strip
+    "usyd": "linear-gradient(155deg, #f4cf96 0%, #dd9a6e 40%, #9a7bc6 100%)",      # sandstone to jacaranda
+    "mq": "linear-gradient(155deg, #f5e7d4 0%, #de8676 42%, #8f1d2c 100%)",        # sand to Macquarie red
+    "harbour": "linear-gradient(155deg, #f6dba4 0%, #e2925f 40%, #3d6f9f 100%)",   # afternoon sun to harbour blue
+}
+UNI_OF = {"usyd-portraits": "usyd", "usyd-graduation": "usyd", "macquarie-graduation": "mq", "mcmahons-point": "harbour"}
+
+
 def album_card(a, i, lead=False):
     cover = a.get("cover", a["photos"][0])
     thumbs = [f"assets/img/{n}-sm.jpg" for n in [cover] + [p for p in a["photos"] if p != cover]]
     exif = html.escape(ALL[cover][2])
     n = list(ALL).index(cover) + 1
     cls = "acard acard--lead" if lead else "acard"
-    return f"""          <a class="{cls}" href="albums/{a['slug']}/" style="--acc:{a['accent']}" data-thumbs='{json.dumps(thumbs[:6])}' data-exif="{exif}" data-n="{n:03d}">
-            <span class="acard__stack"><img src="{thumbs[2 % len(thumbs)]}" alt="" loading="lazy"><img src="{thumbs[1]}" alt="" loading="lazy"><img class="acard__cover" src="{thumbs[0]}" alt="" loading="lazy"><i class="flash"></i></span>
+    return f"""          <a class="{cls}" href="albums/{a['slug']}/" style="--acc:{a['accent']}{(';--uni:' + UNI[UNI_OF[a['slug']]]) if a['slug'] in UNI_OF else ''}"{' data-uni="' + UNI_OF[a['slug']] + '"' if a['slug'] in UNI_OF else ''} data-thumbs='{json.dumps(thumbs[:6])}' data-exif="{exif}" data-n="{n:03d}">
+            <span class="acard__fan"><span class="acard__stack"><img src="{thumbs[2 % len(thumbs)]}" alt="" loading="lazy"><img src="{thumbs[1]}" alt="" loading="lazy"><img class="acard__cover" src="{thumbs[0]}" srcset="{thumbs[0]} 800w, {thumbs[0].replace('-sm.jpg', '.jpg')} 1800w" sizes="{'(max-width: 900px) 92vw, 46vw' if lead else '(max-width: 560px) 92vw, (max-width: 900px) 46vw, 30vw'}" alt="" loading="lazy" decoding="async"><i class="flash"></i><span class="acard__frame" aria-hidden="true"><b>{FRAME_LEFT[a["kind"]]}</b><i>{i:02d}A ▸</i><em>{html.escape(plain(a["title"]))}</em><u>▸ {i + 1:02d}</u></span></span>{side_strips(thumbs, lead)}</span>
             <span class="acard__meta"><small>Album {i:02d} · {len(a['photos'])} photos</small><b>{stars(a['title'])}</b><span>{html.escape(a['where'])} · {html.escape(a['when'])}</span><span class="acard__intro">{html.escape(a['intro'])}</span></span>
-            <span class="acard__go" aria-hidden="true">Open album →</span>
+            <span class="acard__go" aria-hidden="true">Open album →</span>{('<template class="stamp-tpl">' + seal(a['slug']) + '</template>') if a['slug'] in MARKS else ''}
           </a>"""
 
 
@@ -259,100 +396,6 @@ def album_photo(n, i, time=None):
 
 
 
-# ---------- 3D camera + film roll, one per section ----------
-def cuboid(cls, w, h, d, x=0, y=0, z=0):
-    hw, hh, hd = w / 2, h / 2, d / 2
-    faces = [
-        ("fr", w, h, 0, 0, f"translateZ({hd}px)"),
-        ("bk", w, h, 0, 0, f"rotateY(180deg) translateZ({hd}px)"),
-        ("r", d, h, (w - d) / 2, 0, f"rotateY(90deg) translateZ({hw}px)"),
-        ("l", d, h, (w - d) / 2, 0, f"rotateY(-90deg) translateZ({hw}px)"),
-        ("t", w, d, 0, (h - d) / 2, f"rotateX(90deg) translateZ({hh}px)"),
-        ("b", w, d, 0, (h - d) / 2, f"rotateX(-90deg) translateZ({hh}px)"),
-    ]
-    inner = "".join(f'<i class="cf cf--{n}" style="width:{fw}px;height:{fh}px;left:{fl}px;top:{ft}px;transform:{tr}"></i>' for n, fw, fh, fl, ft, tr in faces)
-    return f'<b class="cub {cls}" style="width:{w}px;height:{h}px;margin:{-hh}px 0 0 {-hw}px;transform:translate3d({x}px,{y}px,{z}px)">{inner}</b>'
-
-
-def discs(cls, r, n, step, x, y, z0, axis="z", kinds=None):
-    out = []
-    for k in range(n):
-        kind = kinds(k) if kinds else ""
-        if axis == "z":
-            tr = f"translate3d({x}px,{y}px,{z0 + k * step}px)"
-        else:  # stacked upward (dials)
-            tr = f"translate3d({x}px,{y - k * step}px,{z0}px) rotateX(90deg)"
-        out.append(f'<i class="dk {cls} {kind}" style="width:{2*r}px;height:{2*r}px;margin:{-r}px 0 0 {-r}px;transform:{tr}"></i>')
-    return "".join(out)
-
-
-def lens_ring(k):
-    if k < 2: return "dk--mount"
-    if 6 <= k <= 12: return "dk--knurl"
-    if k in (16, 17): return "dk--ap"
-    return ""
-
-
-def camera(key):
-    parts = [cuboid("cam__body", 300, 176, 80),
-             cuboid("cam__hump", 96, 44, 66, x=18, y=-110, z=-4),
-             cuboid("cam__grip", 50, 128, 24, x=-118, y=22, z=52),
-             cuboid("cam__shoe", 40, 6, 40, x=18, y=-135, z=-4),
-             discs("dk--lens", 58, 24, 5, 18, 18, 40, kinds=lens_ring),
-             '<i class="dk dk--glass" style="width:104px;height:104px;margin:-52px 0 0 -52px;transform:translate3d(18px,18px,156px)"></i>',
-             discs("dk--dial", 21, 4, 4, -92, -88, 2, axis="y", kinds=lambda k: "dk--knurl" if k < 3 else "dk--cap"),
-             discs("dk--dial", 18, 4, 4, 108, -88, 6, axis="y", kinds=lambda k: "dk--knurl" if k < 3 else "dk--cap"),
-             discs("dk--btn", 8, 3, 3, -122, -88, 26, axis="y")]
-    if key == "EVENTS":
-        parts.append(cuboid("cam__flash", 64, 52, 46, x=18, y=-164, z=-4))
-    return "".join(parts)
-
-
-ROLL_NO = {"SCENERY": "01", "PEOPLE": "02", "EVENTS": "03"}
-ROLL_LINE = {
-    "SCENERY": "The landscape albums, loaded on one roll. It winds on as you scroll.",
-    "PEOPLE": "Portraits get shot with the camera turned on its side. Scroll and it turns.",
-    "EVENTS": "Event nights mean flash. Scroll and it fires.",
-}
-KIND_WORD = {"SCENERY": "Landscape", "PEOPLE": "Portrait", "EVENTS": "Events"}
-
-
-def reel(key):
-    mine = [(i + 1, a) for i, a in enumerate(ALBUMS) if a["kind"] == key]
-    picks, depth = [], 0
-    while len(picks) < 10:
-        for no, a in mine:
-            cov = a.get("cover", a["photos"][0])
-            order = [cov] + [x for x in a["photos"] if x != cov]
-            if depth < len(order) and len(picks) < 10:
-                picks.append((a, order[depth]))
-        depth += 1
-    frames = []
-    for k, (a, ph) in enumerate(picks):
-        t = html.escape(plain(a["title"]))
-        frames.append(
-            f'          <a class="reel__f" href="albums/{a["slug"]}/" style="--i:{k};--acc:{a["accent"]}" aria-label="Open album: {t}">'
-            f'<span class="reel__fr"><img src="assets/img/{ph}-sm.jpg" alt="" loading="lazy" decoding="async"><em>{k + 1}A</em><small>{t}</small></span>'
-            f'<span class="reel__bk"></span></a>')
-    ring = "\n".join(frames)
-    return f"""        <div class="reel reel--{key.lower()}">
-          <div class="reel__copy">
-            <p class="reel__k"><b>Roll {ROLL_NO[key]}</b><span>{KIND_WORD[key]} · {len(mine)} albums · 10 frames</span></p>
-            <p class="reel__line">{ROLL_LINE[key]}</p>
-            <p class="reel__hint">Click a frame to open its album</p>
-          </div>
-          <div class="reel__stage">
-            <div class="reel__world">
-              <i class="reel__floor"></i>
-              <div class="cam" aria-hidden="true">{camera(key)}</div>
-              <div class="reel__ring">
-{ring}
-              </div>
-            </div>
-            <i class="reel__burst" aria-hidden="true"></i>
-          </div>
-        </div>"""
-
 out = (ROOT / "template.html").read_text()
 for key in ("SCENERY", "PEOPLE", "EVENTS"):
     mine = [(i + 1, a) for i, a in enumerate(ALBUMS) if a["kind"] == key]
@@ -360,7 +403,47 @@ for key in ("SCENERY", "PEOPLE", "EVENTS"):
     leads = 2 if len(mine) % 3 == 2 else 0
     out = out.replace(f"{{{{ALBUMS_{key}}}}}", "\n".join(album_card(a, i, j < leads) for j, (i, a) in enumerate(mine)))
     out = out.replace(f"{{{{N_ALBUMS_{key}}}}}", str(len(mine)))
-    out = out.replace(f"{{{{REEL_{key}}}}}", reel(key))
+out = out.replace("{{FLOATERS_PEOPLE}}", floaters("home-portrait"))
+# behind the Portrait album cards: two long film strips of every portrait frame drifting in opposite directions
+def reel_backdrop(kind):
+    shots = [n for a in ALBUMS if a["kind"] == kind for n in a["photos"]]
+    half = (len(shots) + 1) // 2
+    rows = [shots[:half], shots[half:] + shots[:max(0, half - (len(shots) - half))]]
+    html_rows = ""
+    for r, row in enumerate(rows):
+        frames = "".join(f'<img src="assets/img/{n}-sm.jpg" alt="" loading="lazy" decoding="async">' for n in row)
+        html_rows += f'<div class="bgreel__row bgreel__row--{"ab"[r]}"><div class="bgreel__track">{frames}{frames}</div></div>'
+    return f'<div class="bgreel" aria-hidden="true">{html_rows}</div>'
+out = out.replace("{{BGREEL_PEOPLE}}", reel_backdrop("PEOPLE"))
+
+# the side margins: two vertical film strips down the left and right of the Portrait section (wide screens),
+# and on phones one swipeable strip; every frame opens its album
+def portrait_frames(kind):
+    # newest album first, so the latest shoot is the first thing on the roll
+    return [(a["slug"], n, html.escape(plain(a["title"]))) for a in reversed(ALBUMS) if a["kind"] == kind for n in a["photos"]]
+
+
+def frame_link(slug, n, title, cls):
+    return f'<a class="{cls}" href="albums/{slug}/" tabindex="-1" aria-hidden="true" title="{title}"><img src="assets/img/{n}-sm.jpg" alt="" loading="lazy" decoding="async"></a>'
+
+
+def side_rails(kind):
+    fr = portrait_frames(kind)
+    left, right = fr[0::2], fr[1::2][::-1]
+    out = ""
+    for side, row in (("l", left), ("r", right)):
+        frames = "".join(frame_link(*f, "srail__f") for f in row)
+        out += f'<div class="srail srail--{side}" aria-hidden="true"><div class="srail__track">{frames}{frames}</div></div>'
+    return out
+
+
+def phone_strip(kind):
+    fr = portrait_frames(kind)
+    frames = "".join(f'<a class="mstrip__f" href="albums/{slug}/"><img src="assets/img/{n}-sm.jpg" alt="From {title}" loading="lazy" decoding="async"><small>{title}</small></a>' for slug, n, title in fr)
+    return f'<div class="mstrip"><p class="mstrip__k"><span>{len(fr)} frames</span><small>Swipe the roll, tap one to open its album</small></p><div class="mstrip__track">{frames}</div></div>'
+
+
+out = out.replace("{{RAILS_PEOPLE}}", side_rails("PEOPLE")).replace("{{MSTRIP_PEOPLE}}", phone_strip("PEOPLE"))
 out = out.replace("{{N_ALBUMS}}", str(len(ALBUMS)))
 out = out.replace("{{N_ALBUM_PHOTOS}}", str(sum(len(a["photos"]) for a in ALBUMS)))
 out = out.replace("{{N_ALL}}", f"{len(ALL):03d}")
@@ -381,7 +464,7 @@ for i, a in enumerate(ALBUMS):
         "TITLE": html.escape(plain(a["title"])), "TITLE_HTML": stars(a["title"]), "THEME": a["theme"],
         "ACCENT": a["accent"], "WHERE": html.escape(a["where"]), "WHEN": html.escape(a["when"]),
         "INTRO": html.escape(a["intro"]), "COUNT": str(len(a["photos"])), "KIND": label, "ANCHOR": anchor,
-        "NO": f"{i + 1:02d}", "TOTAL": f"{len(ALBUMS):02d}", "SLUG": a["slug"], "COVER": a.get("cover", a["photos"][0]),
+        "NO": f"{i + 1:02d}", "TOTAL": f"{len(ALBUMS):02d}", "SLUG": a["slug"], "SEAL": seal(a["slug"]), "FLOATERS": floaters(a["slug"]), "CAMERA": a.get("camera", "Fujifilm X-T30 II"), "NEXT_SEAL": seal(nxt["slug"]), "COVER": a.get("cover", a["photos"][0]),
         "PHOTOS": "\n".join(album_photo(n, j + 1, t) for j, (n, t) in enumerate(zip(a["photos"], times))),
         "NEXT_SLUG": nxt["slug"], "NEXT_TITLE": stars(nxt["title"]), "NEXT_ACCENT": nxt["accent"],
         "NEXT_COVER": nxt.get("cover", nxt["photos"][0]), "NEXT_META": html.escape(f"{nxt['where']} · {nxt['when']} · {len(nxt['photos'])} photos"),
