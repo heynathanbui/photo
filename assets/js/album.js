@@ -29,16 +29,22 @@
 
   // arriving from a card on the home page: the iris opens on that photo, then it lifts away
   const into = document.querySelector('.into');
-  const ARR = into && G ? 1.25 : 0;
+  const ARR = into && G ? (into.querySelector('.into__stamp') ? 1.45 : 1.25) : 0;
   if (into) {
     if (!G) into.remove();
     else {
-      const im = into.querySelector('img');
-      gsap.timeline({ onComplete: () => into.remove() })
+      const im = into.querySelector('img'), st = into.querySelector('.into__stamp');
+      const lift = st ? 1.05 : .85;
+      const tl = gsap.timeline({ onComplete: () => into.remove() })
         .to(into.querySelector('.into__iris'), { '--r': '150vmax', duration: .9, ease: 'power3.out' }, .05)
         .fromTo(im, { scale: 1.08 }, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
-        .to(into, { clipPath: 'inset(0% 0% 100% 0%)', duration: .9, ease: 'expo.inOut' }, .85)
-        .to(im, { yPercent: -14, duration: .9, ease: 'expo.inOut' }, .85);
+        .to(into, { clipPath: 'inset(0% 0% 100% 0%)', duration: .9, ease: 'expo.inOut' }, lift)
+        .to(im, { yPercent: -14, duration: .9, ease: 'expo.inOut' }, lift);
+      if (st) {
+        gsap.set(st, { xPercent: -50, yPercent: -50 });
+        tl.fromTo(st.querySelector('.pstamp__spin'), { rotation: 0, svgOrigin: '60 60' }, { rotation: 60, svgOrigin: '60 60', duration: 1.4, ease: 'power2.inOut' }, 0)
+          .to(st, { opacity: 0, scale: 1.3, duration: .6, ease: 'power2.in' }, .6);
+      }
     }
   }
   // reveal helper: runs fn once when the figure scrolls in (or straight away without motion)
@@ -178,7 +184,7 @@
     const sheet = el('div', 'sheet');
     figs.forEach((f, i) => {
       const s = el('span'); s.dataset.f = `${i + 12}A`; s.style.backgroundImage = `url("${img(f).getAttribute('src')}")`;
-      if (picks.has(i)) s.innerHTML = '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path pathLength="1" d="M10 54 C6 18 86 6 92 44 C97 84 20 98 8 60 C4 44 16 26 40 20"/></svg>';
+      if (picks.has(i)) { s.classList.add('is-pick'); s.innerHTML = '<i class="pick-flash"></i><svg class="pick-star" viewBox="0 0 40 40"><path d="M20 1C21.2 13.5 26.5 18.8 39 20 26.5 21.2 21.2 26.5 20 39 18.8 26.5 13.5 21.2 1 20 13.5 18.8 18.8 13.5 20 1Z"/></svg>'; }
       sheet.append(s);
     });
     sheet.append(el('span'));
@@ -187,7 +193,15 @@
     for (let i = 0; i < 16; i++) { const p = el('i'); p.style.cssText = `left:${rnd(0, 100)}%;--s:${rnd(7, 13)}px;--c:${['#9b7fc4', '#b79bd8', '#8467ad'][i % 3]};--d:${rnd(9, 17).toFixed(1)}s;--dl:-${rnd(0, 16).toFixed(1)}s`; pet.append(p); }
     body.append(pet);
     if (!G) return;
-    gsap.fromTo('.sheet path', { strokeDasharray: 1, strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: .7, ease: 'power2.inOut', stagger: .35, delay: 1 });
+    // each pick fires a little flash, then a star pops over the frame and keeps twinkling
+    document.querySelectorAll('.sheet .is-pick').forEach((p, k) => {
+      const at = 1.1 + ARR + k * .35;
+      gsap.timeline({ delay: at })
+        .fromTo(p.querySelector('.pick-flash'), { opacity: 0 }, { opacity: 1, duration: .06 })
+        .to(p.querySelector('.pick-flash'), { opacity: 0, duration: .5, ease: 'expo.out' })
+        .fromTo(p.querySelector('.pick-star'), { scale: 0, rotation: -90, opacity: 0 }, { scale: 1, rotation: 0, opacity: 1, duration: .6, ease: 'back.out(2.4)' }, 0.02)
+        .to(p.querySelector('.pick-star'), { scale: .78, opacity: .8, duration: 1.1, ease: 'sine.inOut', repeat: -1, yoyo: true });
+    });
     gsap.from('.sheet', { rotation: 9, y: 60, opacity: 0, duration: 1.4, ease: 'power3.out', delay: .15 });
     figs.forEach((f) => {
       gsap.set(img(f), { filter: 'blur(18px)', scale: 1.07 });
@@ -195,12 +209,18 @@
     });
   };
 
+  // floating grad + Sydney drawings: nearer ones (bigger --d) slide faster as you scroll, so they sit at different depths
+  if (G) document.querySelectorAll('.fl').forEach((f) => {
+    const d = parseFloat(getComputedStyle(f).getPropertyValue('--d')) || .5;
+    gsap.to(f, { y: () => -d * innerHeight * .9, ease: 'none', scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: .6 } });
+  });
+
   // 07 USyd graduation: arches rise up, caps get thrown on arrival
   T.arches = () => {
     let p = '';
     for (let i = 0; i < 9; i++) { const x = i * 160; p += `M${x + 10} 420 V230 C${x + 10} 130 ${x + 80} 90 ${x + 80} 90 C${x + 80} 90 ${x + 150} 130 ${x + 150} 230 V420 `; }
     decor.innerHTML = `<svg class="arcade" viewBox="0 0 1440 420" preserveAspectRatio="xMidYMax slice"><path d="${p}"/><path d="M0 60 H1440 M0 74 H1440"/></svg>`;
-    const capSVG = '<svg viewBox="0 0 120 90"><path d="M60 8 L116 30 L60 52 L4 30Z" fill="#1c2540"/><path d="M28 40 V62 C28 74 92 74 92 62 V40 L60 52Z" fill="#111830"/><path d="M60 30 L100 40 V64" stroke="#c9a43f" stroke-width="2.5" fill="none"/><circle cx="100" cy="68" r="4" fill="#c9a43f"/></svg>';
+    const capSVG = '<svg viewBox="0 0 120 90"><path d="M60 8 L116 30 L60 52 L4 30Z" fill="#3a1417"/><path d="M28 40 V62 C28 74 92 74 92 62 V40 L60 52Z" fill="#240b0d"/><path d="M60 30 L100 40 V64" stroke="#c9a43f" stroke-width="2.5" fill="none"/><circle cx="100" cy="68" r="4" fill="#c9a43f"/></svg>';
     [22, 50, 76].forEach((x) => { const c = el('span', 'cap', capSVG); c.style.setProperty('--x', x + '%'); decor.append(c); });
     if (!G) { document.querySelectorAll('.cap').forEach((c, i) => { c.style.bottom = (30 + i * 8) + 'vh'; }); return; }
     gsap.utils.toArray('.cap').forEach((c, i) => {
@@ -217,11 +237,39 @@
     });
   };
 
+  // 14 McMahons Point: harbour-day postcards; each one lands, then gets a stamp and a postmark
+  T.postcard = () => {
+    let truss = '';
+    for (let k = 1; k < 24; k++) { const t = k / 24, x = 300 + 840 * t, yt = 300 - 4 * 200 * t * (1 - t), yl = 300 - 4 * 160 * t * (1 - t); truss += `M${x.toFixed(1)} ${yt.toFixed(1)} L${(x + (k % 2 ? 35 : -35)).toFixed(1)} ${yl.toFixed(1)} `; }
+    decor.innerHTML = `<svg class="pc-bridge" viewBox="0 0 1440 360" preserveAspectRatio="xMidYMax slice"><path d="M300 300 Q720 -100 1140 300 M330 300 Q720 -20 1110 300"/><path d="${truss}"/><path d="M0 236 H1440 M0 244 H1440"/><path d="M262 330 V176 h22 v-10 h40 v10 h22 V330 M1094 330 V176 h22 v-10 h40 v10 h22 V330"/><path class="pc-water" d="M0 334 H1440 M120 346 h180 M520 350 h260 M960 344 h200 M300 356 h120"/></svg>`;
+    const gull = '<svg viewBox="0 0 26 10"><path d="M1 8 Q7 0 13 7 Q19 0 25 8"/></svg>';
+    [[14, 22, 18, -2], [22, 30, 26, -11], [9, 16, 34, -20], [30, 20, 40, -6]].forEach(([y, s, t, dl]) => {
+      const g = el('span', 'gull', gull); g.style.cssText = `--y:${y}vh;--s:${s}px;--t:${t}s;--dl:${dl}s`; decor.append(g);
+    });
+    const stamp = `<svg viewBox="0 0 50 60"><rect x="0" y="0" width="50" height="60" fill="#cfe2f0"/><path d="M0 44 H50 V60 H0Z" fill="#3d6f9f" opacity=".55"/><path d="M5 40 Q25 10 45 40 M8 40 Q25 18 42 40" fill="none" stroke="#b5523a" stroke-width="1.6"/><path d="M2 36 H48" stroke="#b5523a" stroke-width="1.6"/><path d="M7 44 V30 h4 V44 M39 44 V30 h4 V44" fill="#b5523a"/><text x="25" y="55" text-anchor="middle" font-size="6" font-family="monospace" fill="#fbf7ef">NB · 2026</text></svg>`;
+    const mark = (i) => `<svg viewBox="-34 0 134 100"><defs><path id="pm${i}" d="M50 50 m-35 0 a35 35 0 1 1 70 0 a35 35 0 1 1 -70 0"/></defs><circle cx="50" cy="50" r="44" stroke-width="1.6"/><circle cx="50" cy="50" r="26" stroke-width="1"/><text><textPath href="#pm${i}">McMAHONS POINT · NSW 2060 ·</textPath></text><text x="50" y="47" text-anchor="middle">17 NOV</text><text x="50" y="58" text-anchor="middle">2026</text><path d="M-32 34 q5 -4 10 0 t10 0 t10 0 M-32 46 q5 -4 10 0 t10 0 t10 0 M-32 58 q5 -4 10 0 t10 0 t10 0 M-32 70 q5 -4 10 0 t10 0 t10 0" stroke-width="1.4"/></svg>`;
+    figs.forEach((f, i) => {
+      const r = [-2.2, 1.6, 2.4, -1.4][i % 4];
+      f.style.setProperty('--r', r + 'deg');
+      const a = link(f);
+      const st = el('span', 'pc-stamp', stamp), pm = el('span', 'pc-mark', mark(i));
+      a.append(st, pm);
+      if (!G) return;
+      gsap.set(f, { y: 90, rotation: r + (i % 2 ? 8 : -8), opacity: 0 });
+      gsap.set(st, { scale: 1.9, opacity: 0, rotation: 18 }); gsap.set(pm, { scale: .6, opacity: 0, rotation: -40 });
+      onIn(f, () => gsap.timeline()
+        .to(f, { y: 0, rotation: r, opacity: 1, duration: 1.1, ease: 'power3.out' })
+        .to(st, { scale: 1, opacity: 1, rotation: 0, duration: .45, ease: 'back.out(2.2)' }, '-=.35')
+        .to(pm, { scale: 1, opacity: 1, rotation: -14, duration: .3, ease: 'power4.out' }, '-=.05')
+        .fromTo(a, { x: 0 }, { x: 3, duration: .05, yoyo: true, repeat: 3 }, '<'), 'top 85%');
+    });
+  };
+
   // 08 Macquarie graduation: prints placed into an old album with photo corners
   T.album = () => {
     const flower = (c) => `<svg viewBox="0 0 60 60"><g fill="${c}">${[0, 72, 144, 216, 288].map((r) => `<ellipse cx="30" cy="15" rx="8" ry="14" transform="rotate(${r} 30 30)"/>`).join('')}</g><circle cx="30" cy="30" r="5" fill="#c9a43f"/></svg>`;
     decor.innerHTML = '<i class="ribbon"></i>';
-    [[8, 18, 70, '#c98a8a'], [62, 12, 44, '#e3d3b2'], [84, 58, 60, '#b98aa8'], [40, 70, 36, '#e3d3b2']].forEach(([x, y, s, c]) => {
+    [[8, 18, 70, '#a8494f'], [62, 12, 44, '#e3d3b2'], [84, 58, 60, '#c9a43f'], [40, 70, 36, '#e3d3b2']].forEach(([x, y, s, c]) => {
       const f = el('span', 'flower', flower(c)); f.style.cssText = `left:${x}%;top:${y}%;--s:${s}px;transform:rotate(${rnd(0, 90)}deg)`; decor.append(f);
     });
     figs.forEach((f, i) => {
@@ -368,7 +416,7 @@
 
 
   // the way into an album: the picture you clicked grows to fill the screen, the title comes up, then the iris closes
-  const leaveTo = (href, img, title, kicker, acc, titleIsHTML) => {
+  const leaveTo = (href, img, title, kicker, acc, titleIsHTML, tpl) => {
     const r = img.getBoundingClientRect();
     const small = img.currentSrc || img.src;
     const full = small.replace(/-sm\.jpg(\?.*)?$/, '.jpg');
@@ -380,15 +428,29 @@
     const b = document.createElement('b'); if (titleIsHTML) b.innerHTML = title; else b.textContent = title;
     t.append(k, b);
     const iris = document.createElement('i'); iris.className = 'leave__iris';
-    ov.append(t, iris);
+    // the place's stamp (uni or landmark) draws itself in the middle while the title comes up
+    let stamp = null;
+    if (tpl && tpl.content && tpl.content.firstElementChild) { stamp = document.createElement('div'); stamp.className = 'leave__stamp'; stamp.appendChild(tpl.content.cloneNode(true)); }
+    ov.append(t); if (stamp) ov.append(stamp); ov.append(iris);
     Object.assign(ov.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
     document.body.appendChild(ov);
     try { sessionStorage.setItem('nb-into', JSON.stringify({ src: new URL(full, location.href).href, acc })); } catch (e) {}
-    gsap.timeline({ onComplete: () => { location.href = href; } })
+    const tl = gsap.timeline({ onComplete: () => { location.href = href; } })
       .to(ov, { left: 0, top: 0, width: innerWidth, height: innerHeight, duration: .8, ease: 'expo.inOut' })
       .fromTo(im, { scale: 1.18 }, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
-      .fromTo(t, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, ease: 'power3.out' }, .55)
-      .to(iris, { '--r': '0vmax', duration: .55, ease: 'power3.in' }, 1.2);
+      .fromTo(t, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, ease: 'power3.out' }, .55);
+    let close = 1.2;
+    if (stamp) {
+      const lines = [...stamp.querySelectorAll('.pstamp__m path, .pstamp__m circle, .pstamp__o')];
+      lines.forEach((el) => { const L = el.getTotalLength ? Math.ceil(el.getTotalLength()) : 300; el.style.strokeDasharray = L; el.style.strokeDashoffset = L; });
+      gsap.set(stamp, { xPercent: -50, yPercent: -50 });
+      tl.fromTo(stamp, { opacity: 0, scale: .72 }, { opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.6)' }, .5)
+        .to(lines, { strokeDashoffset: 0, duration: .9, stagger: .025, ease: 'power2.inOut' }, .55)
+        .fromTo(stamp.querySelector('.pstamp__spin'), { rotation: -120, svgOrigin: '60 60' }, { rotation: 0, svgOrigin: '60 60', duration: 1.6, ease: 'power3.out' }, .5)
+        .fromTo(stamp.querySelectorAll('.pstamp__t, .pstamp__i'), { opacity: 0 }, { opacity: 1, duration: .5 }, .75);
+      close = 1.9;
+    }
+    tl.to(iris, { '--r': '0vmax', duration: .55, ease: 'power3.in' }, close);
   };
   addEventListener('pageshow', (e) => { if (e.persisted) document.querySelectorAll('.leave').forEach((n) => n.remove()); });
   const plainClick = (e) => !(e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
@@ -396,7 +458,7 @@
   if (G && nextCard) nextCard.addEventListener('click', (e) => {
     if (!plainClick(e)) return;
     e.preventDefault();
-    leaveTo(nextCard.href, nextCard.querySelector('img'), nextCard.querySelector('.anext__txt b').textContent, 'Next album', getComputedStyle(nextCard).getPropertyValue('--nacc').trim(), false);
+    leaveTo(nextCard.href, nextCard.querySelector('img'), nextCard.querySelector('.anext__txt b').textContent, 'Next album', getComputedStyle(nextCard).getPropertyValue('--nacc').trim(), false, nextCard.querySelector('template.stamp-tpl'));
   });
 
   // ================= lightbox =================

@@ -83,7 +83,7 @@
 
   // ---------- section motifs ----------
   if (!reduce) {
-    const sky = { trigger: '.set--scenery', start: 'top bottom', end: 'top -30%', scrub: true };
+    const sky = { trigger: '.motif--scenery', start: 'top bottom', end: 'bottom 60%', scrub: true };
     gsap.fromTo('.m-sun', { y: 110 }, { y: -70, ease: 'none', scrollTrigger: sky });
     gsap.fromTo('.m-far', { y: 40 }, { y: -10, ease: 'none', scrollTrigger: sky });
     gsap.fromTo('.m-mid', { y: 24 }, { y: 0, ease: 'none', scrollTrigger: sky });
@@ -265,28 +265,14 @@
   }
 })();
 
-// album cards: hovering flips through a few frames from that album
-(() => {
-  document.querySelectorAll('.acard').forEach((card) => {
-    const cover = card.querySelector('.acard__cover');
-    let list = []; try { list = JSON.parse(card.dataset.thumbs || '[]'); } catch (e) {}
-    if (!cover || list.length < 2) return;
-    let t = 0, i = 0;
-    list.slice(1).forEach((src) => { const im = new Image(); card.addEventListener('pointerenter', () => { im.src = src; }, { once: true }); });
-    card.addEventListener('pointerenter', () => { clearInterval(t); t = setInterval(() => { i = (i + 1) % list.length; cover.src = list[i]; }, 650); });
-    card.addEventListener('pointerleave', () => { clearInterval(t); i = 0; cover.src = list[0]; });
-  });
-})();
-
-// 3D film rolls (one per section) + the transition into an album
+// the transition into an album
 (() => {
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const G = window.gsap && window.ScrollTrigger && !reduce;
   if (!G) return;
-  const fine = matchMedia('(pointer: fine)').matches;
 
   // the way into an album: the picture you clicked grows to fill the screen, the title comes up, then the iris closes
-  const leaveTo = (href, img, title, kicker, acc, titleIsHTML) => {
+  const leaveTo = (href, img, title, kicker, acc, titleIsHTML, tpl) => {
     const r = img.getBoundingClientRect();
     const small = img.currentSrc || img.src;
     const full = small.replace(/-sm\.jpg(\?.*)?$/, '.jpg');
@@ -298,62 +284,71 @@
     const b = document.createElement('b'); if (titleIsHTML) b.innerHTML = title; else b.textContent = title;
     t.append(k, b);
     const iris = document.createElement('i'); iris.className = 'leave__iris';
-    ov.append(t, iris);
+    // the place's stamp (uni or landmark) draws itself in the middle while the title comes up
+    let stamp = null;
+    if (tpl && tpl.content && tpl.content.firstElementChild) { stamp = document.createElement('div'); stamp.className = 'leave__stamp'; stamp.appendChild(tpl.content.cloneNode(true)); }
+    ov.append(t); if (stamp) ov.append(stamp); ov.append(iris);
     Object.assign(ov.style, { left: r.left + 'px', top: r.top + 'px', width: r.width + 'px', height: r.height + 'px' });
     document.body.appendChild(ov);
     try { sessionStorage.setItem('nb-into', JSON.stringify({ src: new URL(full, location.href).href, acc })); } catch (e) {}
-    gsap.timeline({ onComplete: () => { location.href = href; } })
+    const tl = gsap.timeline({ onComplete: () => { location.href = href; } })
       .to(ov, { left: 0, top: 0, width: innerWidth, height: innerHeight, duration: .8, ease: 'expo.inOut' })
       .fromTo(im, { scale: 1.18 }, { scale: 1, duration: 1.2, ease: 'power2.out' }, 0)
-      .fromTo(t, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, ease: 'power3.out' }, .55)
-      .to(iris, { '--r': '0vmax', duration: .55, ease: 'power3.in' }, 1.2);
+      .fromTo(t, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: .5, ease: 'power3.out' }, .55);
+    let close = 1.2;
+    if (stamp) {
+      const lines = [...stamp.querySelectorAll('.pstamp__m path, .pstamp__m circle, .pstamp__o')];
+      lines.forEach((el) => { const L = el.getTotalLength ? Math.ceil(el.getTotalLength()) : 300; el.style.strokeDasharray = L; el.style.strokeDashoffset = L; });
+      gsap.set(stamp, { xPercent: -50, yPercent: -50 });
+      tl.fromTo(stamp, { opacity: 0, scale: .72 }, { opacity: 1, scale: 1, duration: .6, ease: 'back.out(1.6)' }, .5)
+        .to(lines, { strokeDashoffset: 0, duration: .9, stagger: .025, ease: 'power2.inOut' }, .55)
+        .fromTo(stamp.querySelector('.pstamp__spin'), { rotation: -120, svgOrigin: '60 60' }, { rotation: 0, svgOrigin: '60 60', duration: 1.6, ease: 'power3.out' }, .5)
+        .fromTo(stamp.querySelectorAll('.pstamp__t, .pstamp__i'), { opacity: 0 }, { opacity: 1, duration: .5 }, .75);
+      close = 1.9;
+    }
+    tl.to(iris, { '--r': '0vmax', duration: .55, ease: 'power3.in' }, close);
   };
   addEventListener('pageshow', (e) => { if (e.persisted) document.querySelectorAll('.leave').forEach((n) => n.remove()); });
   const plainClick = (e) => !(e.defaultPrevented || e.button || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey);
 
-  document.querySelectorAll('.reel').forEach((reel) => {
-    const stage = reel.querySelector('.reel__stage'), world = reel.querySelector('.reel__world');
-    const ring = reel.querySelector('.reel__ring'), cam = reel.querySelector('.cam'), burst = reel.querySelector('.reel__burst');
-    const tl = gsap.timeline({ defaults: { ease: 'none' }, scrollTrigger: { trigger: reel, start: 'top bottom', end: 'bottom top', scrub: 1 } });
-    if (reel.classList.contains('reel--people')) {
-      // portraits: the camera turns on its side partway through
-      tl.fromTo(ring, { '--spin': '-30deg' }, { '--spin': '220deg', duration: 1 }, 0)
-        .fromTo(world, { '--yaw': '-40deg' }, { '--yaw': '-14deg', duration: 1 }, 0)
-        .fromTo(cam, { '--roll': '0deg' }, { '--roll': '-90deg', duration: .3, ease: 'power2.inOut' }, .3);
-    } else if (reel.classList.contains('reel--events')) {
-      // events: the roll runs fast and the flash fires three times
-      const flashFace = reel.querySelector('.cam__flash .cf--fr');
-      const fire = () => {
-        gsap.fromTo(burst, { opacity: 1 }, { opacity: 0, duration: .8, ease: 'expo.out', overwrite: true });
-        gsap.fromTo(flashFace, { filter: 'brightness(2.2)' }, { filter: 'brightness(1)', duration: .6, ease: 'expo.out', overwrite: true });
-      };
-      tl.fromTo(ring, { '--spin': '0deg' }, { '--spin': '-470deg', duration: 1 }, 0)
-        .fromTo(world, { '--yaw': '-52deg' }, { '--yaw': '-18deg', duration: 1 }, 0);
-      [.34, .5, .66].forEach((p) => tl.call(fire, null, p));
-    } else {
-      // landscapes: a slow wind-on, like panning across a view
-      tl.fromTo(ring, { '--spin': '40deg' }, { '--spin': '-290deg', duration: 1 }, 0)
-        .fromTo(world, { '--yaw': '-48deg' }, { '--yaw': '-12deg', duration: 1 }, 0);
-    }
-    if (fine) {
-      stage.addEventListener('pointermove', (e) => {
-        const b = stage.getBoundingClientRect();
-        const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
-        gsap.to(world, { '--py': x * 16 + 'deg', '--pp': -y * 10 + 'deg', duration: .8, ease: 'power2.out' });
-      });
-      stage.addEventListener('pointerleave', () => gsap.to(world, { '--py': '0deg', '--pp': '0deg', duration: 1, ease: 'power2.out' }));
-    }
-  });
-
   document.addEventListener('click', (e) => {
-    const a = e.target.closest('a.acard, a.reel__f');
+    const a = e.target.closest('a.acard');
     if (!a || !plainClick(e)) return;
     e.preventDefault();
     const acc = getComputedStyle(a).getPropertyValue('--acc').trim();
-    if (a.classList.contains('acard')) {
-      leaveTo(a.href, a.querySelector('.acard__cover'), a.querySelector('.acard__meta b').innerHTML, a.querySelector('.acard__meta small').textContent, acc, true);
-    } else {
-      leaveTo(a.href, a.querySelector('img'), (a.getAttribute('aria-label') || '').replace(/^Open album: /, ''), 'Frame ' + a.querySelector('em').textContent, acc, false);
-    }
+    leaveTo(a.href, a.querySelector('.acard__cover'), a.querySelector('.acard__meta b').innerHTML, a.querySelector('.acard__meta small').textContent, acc, true, a.querySelector('template.stamp-tpl'));
   });
+})();
+
+// home floaters: nearer drawings (bigger --d) slide faster as the Portrait section scrolls past
+(() => {
+  if (!window.gsap || !window.ScrollTrigger || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('.set .floaters .fl').forEach((f) => {
+    const d = parseFloat(getComputedStyle(f).getPropertyValue('--d')) || .5;
+    gsap.fromTo(f, { y: d * 160 }, { y: -d * 220, ease: 'none', scrollTrigger: { trigger: f.closest('.set'), start: 'top bottom', end: 'bottom top', scrub: .6 } });
+  });
+})();
+
+// mstrip hint: on phones the roll nudges once when it comes into view so people know it swipes
+(() => {
+  const tr = document.querySelector('.mstrip__track');
+  if (!tr || matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return; io.disconnect();
+    setTimeout(() => { tr.scrollTo({ left: tr.clientWidth * .6, behavior: 'smooth' }); setTimeout(() => tr.scrollTo({ left: 0, behavior: 'smooth' }), 900); }, 400);
+  }), { threshold: .6 });
+  io.observe(tr);
+})();
+
+// nav: mark the section in view, so phones show where you are
+(() => {
+  const links = [...document.querySelectorAll('.nav__link:not(.nav__cta)')];
+  const secs = links.map((a) => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+  if (!secs.length || !('IntersectionObserver' in window)) return;
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    links.forEach((a) => a.toggleAttribute('aria-current', a.getAttribute('href') === '#' + e.target.id));
+    links.forEach((a) => a.getAttribute('aria-current') !== null && a.setAttribute('aria-current', 'true'));
+  }), { rootMargin: '-45% 0px -50% 0px' });
+  secs.forEach((s) => io.observe(s));
 })();
