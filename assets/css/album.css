@@ -36,7 +36,7 @@ a { color: inherit; }
   padding: 6px 6px 6px 14px; border-radius: 999px; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(14px) saturate(1.3);
   border: 1px solid var(--line); box-shadow: 0 10px 30px -16px rgba(0, 0, 0, .5); color: var(--fg); }
 .anav__brand { display: flex; align-items: center; gap: 8px; margin-right: 8px; text-decoration: none; font: 500 16px/1 var(--serif); white-space: nowrap; }
-.anav__brand svg { width: 22px; height: 22px; color: var(--acc); }
+.anav__brand svg { width: 22px; height: 22px; color: var(--acc); stroke-linejoin: round; }
 .anav__link { padding: 9px 14px; border-radius: 999px; text-decoration: none; font-size: 14px; font-weight: 500; white-space: nowrap; }
 .anav__link:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
 .anav__cta { background: var(--acc); color: #150707; }
@@ -239,8 +239,9 @@ a { color: inherit; }
 .sheet { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; padding: 26px 14px; background: #17120f; border-radius: 3px; transform: rotate(2deg); box-shadow: 0 40px 80px -40px rgba(42, 31, 51, .8); }
 .sheet span { position: relative; aspect-ratio: 2 / 3; background: #0c0908 center / cover; filter: saturate(.9); }
 .sheet span::before { content: attr(data-f); position: absolute; top: -18px; left: 2px; font: 500 9px/1 var(--mono); color: #e8893a; }
-.sheet svg { position: absolute; inset: -18% -22%; width: 144%; height: 136%; overflow: visible; }
-.sheet path { fill: none; stroke: #d0342c; stroke-width: 3.2; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.sheet .pick-flash { position: absolute; inset: 0; background: radial-gradient(circle, #fff, rgba(255, 246, 220, .7) 45%, rgba(255, 246, 220, 0) 75%); opacity: 0; pointer-events: none; }
+.sheet .pick-star { position: absolute; top: -19px; right: -19px; width: 46px; height: 46px; z-index: 2; overflow: visible; filter: drop-shadow(0 0 6px rgba(255, 226, 150, .95)) drop-shadow(0 0 2px #fff); }
+.sheet .pick-star path { fill: #fff1c4; }
 .petals { position: fixed; inset: 0; z-index: 30; pointer-events: none; overflow: hidden; }
 .petals i { position: absolute; top: -20px; width: var(--s); height: calc(var(--s) * 1.3); border-radius: 80% 0 80% 0; background: var(--c); opacity: .85; animation: fall var(--d) linear var(--dl) infinite; }
 @keyframes fall { 0% { transform: translate(0, -5vh) rotate(0); } 50% { transform: translate(6vw, 50vh) rotate(200deg); } 100% { transform: translate(-3vw, 108vh) rotate(420deg); } }
@@ -263,10 +264,10 @@ a { color: inherit; }
 /* =====================================================================
    07 ARCHES (USyd graduation): sandstone, gothic arches, caps in the air
    ===================================================================== */
-.alb--arches { --bg: #efe4cf; --fg: #1c2540; --fg2: rgba(28, 37, 64, .74); --line: rgba(28, 37, 64, .16);
+.alb--arches { --bg: #f3e4cc; --fg: #2a0d10; --fg2: rgba(42, 13, 16, .74); --line: rgba(42, 13, 16, .15);
   background-image: repeating-linear-gradient(0deg, transparent 0 63px, rgba(150, 115, 60, .12) 63px 64px); }
 .arcade { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 44vh; }
-.arcade path { fill: none; stroke: rgba(28, 37, 64, .16); stroke-width: 1.5; }
+.arcade path { fill: none; stroke: rgba(107, 31, 36, .16); stroke-width: 1.5; }
 .cap { position: absolute; left: var(--x); bottom: -120px; width: clamp(64px, 8vw, 120px); }
 .alb--arches .ahero { text-align: center; justify-items: center; }
 .alb--arches .ahero__in { display: grid; justify-items: center; }
@@ -283,7 +284,7 @@ a { color: inherit; }
 /* =====================================================================
    08 ALBUM (Macquarie graduation): a family photo album with corners
    ===================================================================== */
-.alb--album { --bg: #23302a; --fg: #f3e9d6; --fg2: rgba(243, 233, 214, .72); --line: rgba(243, 233, 214, .15);
+.alb--album { --bg: #2a1214; --fg: #f6e3cb; --fg2: rgba(246, 227, 203, .74); --line: rgba(246, 227, 203, .15);
   background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, .025) 0 2px, transparent 2px 6px), repeating-linear-gradient(-45deg, rgba(0, 0, 0, .05) 0 2px, transparent 2px 6px); }
 .ribbon { position: absolute; right: 12vw; top: -10px; width: 34px; height: 46vh; background: linear-gradient(90deg, #8e6f22, var(--gold) 40%, #a5832b); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 92%, 0 100%); box-shadow: 0 10px 20px rgba(0, 0, 0, .3); }
 .flower { position: absolute; width: var(--s); opacity: .5; }
@@ -293,7 +294,7 @@ a { color: inherit; }
 .alb--album .ap { width: min(100%, 30%); transform: rotate(var(--r, 0deg)); }
 .alb--album .ap--land { width: min(100%, 52%); }
 .alb--album .ap__a { padding: 12px 12px 14px; background: #fbf7ee; box-shadow: 0 22px 40px -18px rgba(0, 0, 0, .7); overflow: visible; }
-.corner { position: absolute; width: 34px; height: 34px; background: #151a17; z-index: 2; }
+.corner { position: absolute; width: 34px; height: 34px; background: #120607; z-index: 2; }
 .corner:nth-of-type(1) { top: -6px; left: -6px; clip-path: polygon(0 0, 100% 0, 0 100%); }
 .corner:nth-of-type(2) { top: -6px; right: -6px; clip-path: polygon(0 0, 100% 0, 100% 100%); }
 .corner:nth-of-type(3) { bottom: -6px; left: -6px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
@@ -441,3 +442,59 @@ a { color: inherit; }
 .leave__t b { font: 400 clamp(40px, 7vw, 108px)/.95 'Fraunces', serif; }
 .leave__t b em { font-style: italic; }
 @keyframes into-failsafe { to { opacity: 0; visibility: hidden; } }
+
+/* ================= place stamp: shown big in the middle of the album transition ================= */
+.pstamp { display: block; overflow: visible; }
+.pstamp__bg { fill: rgba(12, 5, 4, .42); }
+.pstamp__o, .pstamp__i { fill: none; stroke: currentColor; stroke-width: 1.4; }
+.pstamp__i { stroke-dasharray: 2 3; }
+.pstamp__t { fill: currentColor; font: 600 9.5px/1 'JetBrains Mono', ui-monospace, monospace; letter-spacing: .12em; }
+.pstamp__m { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.pstamp__spin { transform-origin: 60px 60px; transform-box: view-box; }
+.leave__stamp, .into__stamp { position: absolute; z-index: 2; left: 50%; top: 45%; width: clamp(180px, 24vw, 300px); margin: 0; transform: translate(-50%, -50%); color: #fff8ec; filter: drop-shadow(0 10px 30px rgba(0, 0, 0, .45)); }
+.leave__stamp::before, .into__stamp::before { content: ""; position: absolute; inset: -60%; z-index: -1; border-radius: 50%; background: radial-gradient(closest-side, rgba(10, 4, 3, .55), rgba(10, 4, 3, 0)); }
+.pstamp__fill { fill: currentColor; fill-opacity: .16; stroke: none; }
+.pstamp__solid { fill: currentColor; }
+
+.sheet .is-pick::after { content: ""; position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 0 2px rgba(255,238,190,.9), 0 0 16px rgba(255,214,130,.55); }
+
+body.alb { position: relative; }
+.alb .floaters { color: var(--fg); }
+
+/* each grad page fades through its uni's gradient as you scroll down: USyd sandstone → jacaranda, Macquarie night → Macquarie red */
+body.alb.alb--arches { background-image: repeating-linear-gradient(0deg, transparent 0 63px, rgba(150, 115, 60, .05) 63px 64px), linear-gradient(180deg, #f3e4cc 0%, #f0dfd6 45%, #eadced 100%); }
+body.alb.alb--album { background-image: repeating-linear-gradient(45deg, rgba(255, 255, 255, .02) 0 2px, transparent 2px 6px), repeating-linear-gradient(-45deg, rgba(0, 0, 0, .05) 0 2px, transparent 2px 6px), linear-gradient(180deg, #2a1214 0%, #3a111a 55%, #551522 100%); }
+
+/* =====================================================================
+   14 POSTCARD (McMahons Point): harbour-day postcards, a stamp and a postmark on each
+   neutrals: sky haze to warm cream; one accent: the shelter's terracotta roof
+   ===================================================================== */
+.alb--postcard { --bg: #f4ebdc; --fg: #1d2733; --fg2: rgba(29, 39, 51, .74); --line: rgba(29, 39, 51, .14); }
+body.alb.alb--postcard { background-image: linear-gradient(180deg, #d8e7f2 0%, #e9eeeb 26%, #f4ebdc 55%, #f1e3cd 100%); }
+.pc-bridge { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 46vh; }
+.pc-bridge path { fill: none; stroke: rgba(29, 39, 51, .16); stroke-width: 1.5; stroke-linejoin: round; }
+.pc-bridge .pc-water { stroke: rgba(61, 111, 159, .22); }
+.gull { position: absolute; left: -60px; top: var(--y); width: var(--s); color: rgba(29, 39, 51, .4); animation: gull var(--t) linear var(--dl) infinite; }
+.gull svg { display: block; width: 100%; overflow: visible; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; animation: flap 1.1s ease-in-out infinite alternate; transform-origin: 50% 60%; }
+@keyframes gull { from { transform: translate(0, 0); } 50% { transform: translate(55vw, -30px); } to { transform: translate(110vw, 10px); } }
+@keyframes flap { from { transform: scaleY(1); } to { transform: scaleY(.55); } }
+.alb--postcard .ahero__t { font-weight: 400; }
+.alb--postcard .ahero__t em { color: var(--acc); }
+.alb--postcard .agal__track { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-start; gap: clamp(48px, 6vw, 96px) clamp(28px, 4vw, 64px); max-width: 1240px; }
+.alb--postcard .ap { width: min(100%, 34%); transform: rotate(var(--r, 0deg)); }
+.alb--postcard .ap--land { width: min(100%, 58%); }
+.alb--postcard .ap__a { position: relative; padding: 14px; background: #fbf7ef; box-shadow: 0 1px 2px rgba(29, 39, 51, .12), 0 30px 50px -28px rgba(29, 39, 51, .55); overflow: visible; }
+.pc-stamp { position: absolute; top: 24px; right: 24px; z-index: 2; width: clamp(48px, 5vw, 66px); aspect-ratio: 5 / 6; padding: 5px; background: #fbf7ef;
+  -webkit-mask: radial-gradient(circle 3px at 50% 50%, transparent 96%, #000) -4px -4px / 8px 8px, linear-gradient(#000 0 0) 4px 4px / calc(100% - 8px) calc(100% - 8px) no-repeat;
+  mask: radial-gradient(circle 3px at 50% 50%, transparent 96%, #000) -4px -4px / 8px 8px, linear-gradient(#000 0 0) 4px 4px / calc(100% - 8px) calc(100% - 8px) no-repeat;
+  -webkit-mask-composite: source-over; mask-composite: add; filter: drop-shadow(0 2px 3px rgba(29, 39, 51, .25)); }
+.pc-stamp svg { display: block; width: 100%; height: 100%; }
+.pc-mark { position: absolute; top: 46px; right: 58px; z-index: 3; width: clamp(70px, 7vw, 96px); color: rgba(29, 39, 51, .62); transform: rotate(-14deg); mix-blend-mode: multiply; pointer-events: none; }
+.pc-mark svg { display: block; width: 100%; overflow: visible; fill: none; stroke: currentColor; }
+.pc-mark text { fill: currentColor; stroke: none; font: 600 8.4px/1 'JetBrains Mono', monospace; letter-spacing: .08em; }
+.alb--postcard .ap figcaption { justify-content: center; text-align: center; margin-top: 18px; }
+.alb--postcard .ap figcaption b { font: 600 24px/1.15 var(--script); color: var(--acc); }
+.alb--postcard .ap figcaption small { width: 100%; margin: 4px 0 0; }
+.alb--postcard .ap__n { display: none; }
+@media (max-width: 760px) { .alb--postcard .ap, .alb--postcard .ap--land { width: 100%; } .pc-mark { right: 40px; } }
+@media (prefers-reduced-motion: reduce) { .gull, .gull svg { animation: none; } .gull { display: none; } }
